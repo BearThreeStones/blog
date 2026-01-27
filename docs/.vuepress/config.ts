@@ -1,12 +1,15 @@
 import { defineUserConfig } from "vuepress";
 import { viteBundler } from "@vuepress/bundler-vite";
 import { echartsTabsPlugin } from "./plugins/echarts-tabs-plugin/index.js";
+import { componentsPlugin } from "vuepress-plugin-components";
+import { mdEnhancePlugin } from "vuepress-plugin-md-enhance";
+import { lightgalleryPlugin } from "vuepress-plugin-lightgallery";
 
 import theme from "./theme.js";
 
 export default defineUserConfig({
   bundler: viteBundler(),
-  
+
   base: "/",
 
   lang: "zh-CN",
