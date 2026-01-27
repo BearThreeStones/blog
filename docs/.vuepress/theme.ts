@@ -29,6 +29,8 @@ export default hopeTheme({
 
   // 博客相关
   blog: {
+    avatar: "https://theme-hope-assets.vuejs.press/logo.svg",
+    name: "StonyBear",
     description: "分享游戏开发和算法知识",
     intro: "/intro.html",
     medias: {
@@ -138,12 +140,21 @@ export default hopeTheme({
   plugins: {
     blog: true,
 
-    // 启用之前需安装 @waline/client
-    // 警告: 这是一个仅供演示的测试服务，在生产环境中请自行部署并使用自己的服务！
-    // comment: {
-    //   provider: "Waline",
-    //   serverURL: "https://waline-comment.vuejs.press",
-    // },
+    // Giscus 评论插件
+    comment: {
+      provider: "Giscus",
+      repo: "BearThreeStones/blog",
+      repoId: "R_kgDOPmzUPw",
+      category: "Announcements",
+      categoryId: "DIC_kwDOPmzUP84C1fCH",
+      mapping: "pathname",
+      strict: true,
+      reactionsEnabled: false,
+      inputPosition: "top",
+      lightTheme: "light",
+      darkTheme: "dark",
+      lazyLoading: true,
+    },
 
     components: {
       components: ["Badge", "VPCard"],

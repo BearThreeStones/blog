@@ -4,9 +4,15 @@ export default sidebar({
   "/": [
     "",
     {
-      text: "文章",
-      icon: "book",
-      prefix: "posts/",
+      text: "算法",
+      icon: "code",
+      prefix: "posts/algorithm/",
+      children: "structure",
+    },
+    {
+      text: "游戏开发",
+      icon: "gamepad",
+      prefix: "posts/game-dev/",
       children: "structure",
     },
   ],

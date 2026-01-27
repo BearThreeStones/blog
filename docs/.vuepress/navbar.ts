@@ -3,39 +3,24 @@ import { navbar } from "vuepress-theme-hope";
 export default navbar([
   "/",
   {
-    text: "博文",
+    text: "文章",
     icon: "pen-to-square",
     prefix: "/posts/",
     children: [
       {
-        text: "Unity",
-        icon: "pen-to-square",
-        prefix: "unity/",
-        children: [
-          { text: "Unity 1", icon: "pen-to-square", link: "1" },
-          { text: "Unity 2", icon: "pen-to-square", link: "2" },
-        ],
+        text: "算法",
+        icon: "code",
+        link: "algorithm/",
       },
       {
-        text: "C++",
-        icon: "pen-to-square",
-        prefix: "cpp/",
+        text: "游戏开发",
+        icon: "gamepad",
+        prefix: "game-dev/",
         children: [
-          {
-            text: "C++ 1",
-            icon: "pen-to-square",
-            link: "1",
-          },
-          {
-            text: "C++ 2",
-            icon: "pen-to-square",
-            link: "2",
-          },
-          "3",
-          "4",
+          { text: "游戏开发", icon: "gamepad", link: "" },
+          { text: "游戏设计模式", icon: "puzzle-piece", link: "game-design-patterns/" },
         ],
       },
-      { text: "算法", icon: "pen-to-square", link: "algorithm" },
     ],
-  }
+  },
 ]);

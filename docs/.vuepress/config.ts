@@ -13,8 +13,8 @@ export default defineUserConfig({
   base: "/",
 
   lang: "zh-CN",
-  title: "StonyBear 的博客",
-  description: "StonyBear 的博客",
+  title: "StonyBear 程序开发分享",
+  description: "StonyBear 程序开发分享",
 
   theme,
 
