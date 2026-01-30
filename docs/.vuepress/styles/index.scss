@@ -1,1 +1,388 @@
-// place your custom styles here
+/* GitHub Primer-compliant styles - 80ms transitions only */
+// Aligned with GitHub Primer Design System (primer.style)
+// Animation policy: 80ms color transitions only, no decorative motion
+
+/* ========================================
+ * NO FONT IMPORTS - Using System Fonts
+ * ======================================== */
+
+/* ========================================
+ * Global Improvements
+ * ======================================== */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Remove excessive spacing and decorations
+* {
+  box-sizing: border-box;
+}
+
+/* ========================================
+ * Hero Section Styles - Minimalist
+ * ======================================== */
+
+// Simple, clean hero without animations
+.vp-hero {
+  padding: 3rem 1.5rem;
+  
+  .vp-hero-info-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+
+.vp-hero-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600; // GitHub uses 600, not 700
+  color: var(--vp-c-text);
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+
+.vp-hero-description {
+  font-size: 1.25rem;
+  color: var(--vp-c-text-2);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.vp-hero-actions {
+  margin-top: 2rem;
+  
+  .vp-button {
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    transition: background-color 80ms cubic-bezier(0.33, 1, 0.68, 1), border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+}
+
+/* ========================================
+ * Navigation Styles - GitHub Style
+ * ======================================== */
+
+// Clean navigation without blur effects
+.vp-navbar {
+  background: var(--vp-c-bg) !important;
+  border-bottom: 1px solid var(--vp-c-border);
+  backdrop-filter: none; // Remove blur
+  
+  .vp-navbar-title {
+    font-weight: 600;
+  }
+}
+
+.vp-navbar-item a,
+.vp-nav-link {
+  font-weight: 500;
+  transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1);
+  
+  &:hover {
+    color: var(--vp-c-brand) !important;
+  }
+}
+
+// Simple dropdown with Primer multi-layer shadow
+.vp-navbar-dropdown {
+  background: var(--vp-c-bg-elv);
+  border-radius: 6px;
+  box-shadow: 0px 0px 0px 1px rgba(209, 217, 224, 0.5),
+              0px 6px 12px -3px rgba(37, 41, 46, 0.04),
+              0px 6px 18px rgba(37, 41, 46, 0.12);
+  border: 1px solid var(--vp-c-border);
+  backdrop-filter: none;
+}
+
+/* ========================================
+ * Article Card Styles - Information-Dense
+ * ======================================== */
+
+// Clean cards with subtle borders
+.article-item {
+  border-radius: 6px;
+  border: 1px solid var(--vp-c-border);
+  transition: border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
+  box-shadow: none; // No shadows in GitHub style
+  padding: 1rem;
+  
+  &:hover {
+    border-color: var(--vp-c-brand);
+    transform: none; // No lift effect
+    box-shadow: none;
+  }
+  
+  .article-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--vp-c-brand);
+    line-height: 1.5;
+  }
+  
+  .article-excerpt {
+    font-size: 0.875rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.5;
+    margin-top: 0.5rem;
+  }
+}
+
+// Subtle category indicators
+.article-item {
+  a[href*="/posts/algorithm"] & {
+    border-left: 3px solid var(--vp-c-brand);
+  }
+  
+  a[href*="/posts/game-dev"] & {
+    border-left: 3px solid var(--vp-c-brand-secondary);
+  }
+}
+
+// Metadata styling
+.article-info {
+  font-size: 0.75rem;
+  color: var(--vp-c-text-3);
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  
+  .category {
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    background: var(--vp-c-bg-alt);
+    border: 1px solid var(--vp-c-border);
+    color: var(--vp-c-text-2);
+    font-weight: 500;
+  }
+}
+
+/* ========================================
+ * Footer Styles - Minimal
+ * ======================================== */
+
+.vp-footer {
+  background: var(--vp-c-bg);
+  padding: 1.5rem 1.5rem;
+  border-top: 1px solid var(--vp-c-border);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--vp-c-text-3);
+  line-height: 1.5;
+  
+  a {
+    color: var(--vp-c-brand);
+    transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1);
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  img {
+    vertical-align: middle;
+    margin-right: 4px;
+    display: inline-block;
+  }
+}
+
+/* ========================================
+ * Content Typography - GitHub Style
+ * ======================================== */
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  border: none;
+}
+
+// Paragraphs
+p {
+  line-height: 1.6;
+  margin: 1em 0;
+}
+
+// Lists
+ul, ol {
+  padding-left: 2em;
+  
+  li {
+    margin: 0.25em 0;
+  }
+}
+
+// Code blocks
+div[class*="language-"] {
+  border-radius: 6px;
+  border: 1px solid var(--vp-c-border);
+  margin: 1rem 0;
+  box-shadow: none;
+}
+
+// Inline code
+code {
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  background: var(--vp-c-bg-alt);
+  border-radius: 3px;
+  border: 1px solid var(--vp-c-border);
+}
+
+// Blockquotes
+blockquote {
+  padding: 0 1em;
+  color: var(--vp-c-text-2);
+  border-left: 0.25em solid var(--vp-c-border);
+  margin: 1em 0;
+}
+
+// Tables
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  
+  th, td {
+    padding: 0.5em 1em;
+    border: 1px solid var(--vp-c-border);
+  }
+  
+  th {
+    font-weight: 600;
+    background: var(--vp-c-bg-alt);
+  }
+  
+  tr:nth-child(even) {
+    background: var(--vp-c-bg-alt);
+  }
+}
+
+/* ========================================
+ * Animation Utilities - Minimal
+ * ======================================== */
+
+// Only essential transitions, no decorative animations (GitHub Primer: 80ms)
+.transition-colors {
+  transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1), 
+              background-color 80ms cubic-bezier(0.33, 1, 0.68, 1), 
+              border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* ========================================
+ * Responsive Adjustments
+ * Spacing: 8px grid system, hybrid density (tight desktop, comfortable mobile)
+ * ======================================== */
+
+// Desktop: Tighter spacing for information density (GitHub style)
+@media (min-width: 960px) {
+  .vp-hero {
+    padding: 2.5rem 1.5rem; // 40px 24px (reduced from 48px)
+  }
+  
+  .vp-footer {
+    padding: 1rem 1.5rem; // 16px 24px (reduced from 24px vertical)
+  }
+}
+
+// Mobile: Comfortable spacing for touch targets
+@media (max-width: 719px) {
+  .vp-hero {
+    padding: 2rem 1rem;
+  }
+  
+  .vp-hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .vp-hero-description {
+    font-size: 1rem;
+  }
+  
+  .article-item {
+    padding: 0.75rem;
+  }
+  
+  .vp-footer {
+    padding: 1rem;
+    font-size: 0.6875rem;
+  }
+}
+
+/* ========================================
+ * Reduced Motion Support
+ * ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+ * Sidebar - Clean Style
+ * ======================================== */
+
+.vp-sidebar {
+  background: var(--vp-c-bg);
+  border-right: 1px solid var(--vp-c-border);
+  
+  .vp-sidebar-item {
+    font-weight: 500;
+    
+    &.active {
+      font-weight: 600;
+      color: var(--vp-c-brand);
+    }
+  }
+}
+
+/* ========================================
+ * Containers & Custom Blocks
+ * ======================================== */
+
+.custom-container {
+  border-radius: 6px;
+  border: 1px solid var(--vp-c-border);
+  padding: 1rem;
+  margin: 1rem 0;
+  
+  &.tip {
+    border-left-width: 4px;
+    border-left-color: var(--vp-c-brand);
+    background: var(--vp-c-bg-alt);
+  }
+  
+  &.warning {
+    border-left-width: 4px;
+    border-left-color: #d29922;
+    background: var(--vp-c-bg-alt);
+  }
+  
+  &.danger {
+    border-left-width: 4px;
+    border-left-color: #cf222e;
+    background: var(--vp-c-bg-alt);
+  }
+}
+
+/* ========================================
+ * Links - GitHub Style
+ * ======================================== */
+
+a {
+  color: var(--vp-c-brand);
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
