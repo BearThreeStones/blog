@@ -19,8 +19,8 @@ done
 # 生成静态文件
 npm run docs:build
 
-# 使用 rsync 部署到服务器
-rsync -az --delete "docs/.vuepress/dist/" "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
+# 使用 rsync 部署到服务器（避免设置时间戳）
+rsync -rlptgDz --no-times --delete "docs/.vuepress/dist/" "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
 
 # 可选：推送到 GitHub Pages（仅在显式请求时）
 if [ "$PUSH_GITHUB" -eq 1 ]; then
