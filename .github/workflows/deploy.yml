@@ -35,8 +35,14 @@ jobs:
           ssh-keyscan -H 43.138.57.136 >> ~/.ssh/known_hosts
 
       - name: Deploy site
-        run: sh ./deploy.sh
+        run: |
+          sh ./deploy.sh
+          if [ -f debug-f61c0e.log ]; then
+            echo "--- debug-f61c0e.log ---"
+            cat debug-f61c0e.log
+          fi
         env:
           DEPLOY_HOST: 43.138.57.136
           DEPLOY_USER: ubuntu
           DEPLOY_PATH: /home/www/website
+          DEBUG_LOG: debug-f61c0e.log
