@@ -4,7 +4,7 @@ title: 创建 C# 代码样式指南——编写更简洁的可扩展代码
 
 **创建 C# 代码样式指南——编写更简洁的可扩展代码**
 
-![](media/image2.jpeg)
+![](./media/image2.jpeg)
 
 ## 介绍
 
@@ -631,7 +631,7 @@ public class Player : MonoBehaviour
 ```
 引用这个可序列化类到另一个类中，结果变量会在检视面板中以可折叠单元的形式出现。
 
-![](media/image29.png)
+![](./media/image29.png)
 *一个可序列化的类或结构体可以帮助组织检视面板*
 
 ### 大括号或缩进样式
@@ -679,13 +679,13 @@ void DisplayMouseCursor(bool showMouse){
 
 在Visual Studio (Windows)中，导航到**工具&gt;选项&gt;文本编辑器&gt;C\#&gt;制表符选项卡**。 
 
-![](image32.jpeg)
+![](./media/image32.jpeg)
 
 *Visual Studio中的制表符选项卡设置*
 
 在Mac Visual Studio中，导航到**首选项&gt;源代码&gt;C\#源代码**。选择文本样式来调整设置。
 
-![alt text](image34.png)
+![alt text](./media/image34.png)
 
 *将制表符转换为空格以使缩进一致*
 
@@ -892,14 +892,14 @@ public Layer                MaskGroundMask;
 
     使用这些设置来修改“常规”、“缩进”、“换行”、“间距”和“换行”选项。
 
-![](media/image49.jpeg)
+![](./media/image49.jpeg)
 *代码样式格式选项*
 
 - 在 Visual Studio for Mac 中，选择**Visual Studio&gt;首选项**，然后导航到**源代码&gt;代码格式&gt;C# 源代码**。
 
     选择顶部的“策略”。然后在“文本样式”选项卡中设置间距和缩进。在“C# 格式”选项卡中，调整“缩进”、“换行”、“间距”和“换行”设置。
 
-![](media/image50.jpeg)
+![](./media/image50.jpeg)
 *“预览”窗口会显示你的风格指南选项*
 
 如果你想在任何时候强制你的脚本文件符合风格指南:
@@ -911,7 +911,7 @@ public Layer                MaskGroundMask;
 
 在 Windows 上，你还可以通过“工具”&gt;“导入和导出设置”共享你的编辑器设置。导出一个包含风格指南的 C# 代码格式的文件，然后让每个团队成员导入该文件。
 
-![](media/image52.png)
+![](./media/image52.png)
 *导出 C# 代码以进行共享*
 
 Visual Studio 使得遵循代码风格指南变得容易。格式化就像使用快捷键一样简单。
@@ -961,7 +961,7 @@ Robert C.Martin的《*整洁代码之道*》中，类的第一条规则是它们
 
 其思想是每个模块、类或函数负责一件事。假设您想要构建一款*乒乓*游戏。你可以从球拍、球和墙的类开始。
 
-![](media/image54.png)
+![](./media/image54.png)
 
 *想玩乒乓游戏吗?*
 
@@ -977,7 +977,7 @@ Robert C.Martin的《*整洁代码之道*》中，类的第一条规则是它们
 
 因为游戏设计很简单，你可以把所有这些东西都整合到一个基本的Paddle类中。事实上，完全有可能创建一个Monobehaviour 来完成你需要的一切。
 
-![](media/image55.png)
+![](./media/image55.png)
 
 *一个 Monobehaviour 做所有事*
 
@@ -987,7 +987,7 @@ Robert C.Martin的《*整洁代码之道*》中，类的第一条规则是它们
 
 PaddleLogic 类可以处理来自 PaddleInput 的输入。应用 PaddleData中的速度信息，它可以使用划桨运动。最后，PaddleLogic 可以通知 PaddleAudio 在球与球拍碰撞时播放声音。
 
-![](media/image56.jpeg)
+![](./media/image56.jpeg)
 
 将一个Paddle类重构为单一功能
 
@@ -1152,7 +1152,7 @@ private void PlayFXWithSound(ParticleSystem particle, AudioClip clip, Vector3 hi
 public float Grip;
 ```
 
-![](media/image63.jpeg)
+![](./media/image63.jpeg)
 
 - **你也可以在公共方法或函数前面使用summary [XML标记](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags#summary)：** VisualStudio 可以为许多常见的 XML 样式注释提供 IntelliSense。
 
@@ -1266,7 +1266,7 @@ Guidelines](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/)
 
 在这里找到Unity的预配置脚本模板：
 
-**Windows: C:\\Program Files\\Unity\\Editor\\Data\\Resources\\ScriptTemplates**
+**Windows: C:\\Program?Files\\Unity\\Editor\\Data\\Resources\\ScriptTemplates**
 
 **Mac: /Applications/Unity/Unity.app/Contents/Resources/ScriptTemplates**
 
@@ -1338,7 +1338,7 @@ CustomScript &gt; Misc 菜单下创建菜单项 ScriptableObject。
 
 如果你想将脚本模板应用于特定的 Unity 项目，请将整个 ScriptTemplates文件夹复制并粘贴到项目的 Assets文件夹下。
 
-![](media/image74.png)
+![](./media/image74.png)
 *复制到Unity项目的ScriptTemplates*
 
 接下来，创建新的脚本模板或修改原始文件以符合您的偏好。如果你不打算更改任何脚本模板，请从项目中删除它们。
@@ -1367,7 +1367,7 @@ public class #SCRIPTNAME# : ScriptableObject
 
 保存脚本模板后重新启动编辑器。下次你应该会在 Create 菜单中看到一个额外的选项。
 
-![](media/image77.jpeg)
+![](./media/image77.jpeg)
 
 *自定义脚本模板在 Create 菜单中添加一个新菜单项*
 
@@ -1434,8 +1434,10 @@ Unity 测试框架的一般工作流程是：
 
 - **在编辑器或为独立程序添加 Play 模式测试：** 默认测试程序集工作在 Edit 模式下工作。如果你希望单元测试在运行时工作，请在运行模式下创建一个单独的程序集。也为你的独立版本配置它(测试结果显示在编辑器)。
 
-![](media/image79.jpeg)
+![](./media/image79.jpeg)
 
 测试框架在编辑器中显示独立构建的结果。
 
 请参阅[测试框架](https://docs.unity3d.com/Packages/com.unity.test-framework%401.1/manual/workflow-run-playmode-test-standalone.html?utm_source=demand-gen&utm_medium=pdf&utm_campaign=clean-code&utm_content=clean-code-that-scales-ebook)微站点，了解更多关于启动和运行UTF的信息。
+
+

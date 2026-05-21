@@ -10,7 +10,20 @@ import { lightgalleryPlugin } from "vuepress-plugin-lightgallery";
 import theme from "./theme.js";
 
 export default defineUserConfig({
-  bundler: viteBundler(),
+  bundler: viteBundler({
+    viteOptions: {
+      server: {
+        watch: {
+          ignored: [
+            "**/dist/**",
+            "**/.temp/**",
+            "**/.cache/**",
+            "**/public/games/**",
+          ],
+        },
+      },
+    },
+  }),
 
   base: "/",
 
