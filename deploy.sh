@@ -21,9 +21,11 @@ npm run docs:build
 cd docs/.vuepress/dist
 
 # 初始化临时 Git 仓库并提交构建产物
-git init
+git init -b master
+git config user.name "ci-deploy"
+git config user.email "ci-deploy@local"
 git add -A
-git commit -m 'deploy' || true
+git commit -m 'deploy'
 
 # 推送到配置的服务器仓库（强制覆盖）
 git remote add server "$SERVER_REPO" 2>/dev/null || true
