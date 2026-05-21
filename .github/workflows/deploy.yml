@@ -29,6 +29,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
+      - name: Show SSH key fingerprints
+        run: ssh-add -l -E sha256
+
       - name: Trust deployment host
         run: |
           mkdir -p ~/.ssh
