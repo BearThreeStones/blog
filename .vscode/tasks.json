@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run VuePress Dev Server",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"docs:dev"
+			],
+			"isBackground": true,
+			"group": "build"
+		}
+	]
+}

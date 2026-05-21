@@ -1,7 +1,9 @@
 ---
 title: 算法
-icon: code
+icon: /assets/icon/unity/algorithm.svg
 index: false
+dir:
+  link: true
 ---
 
 # 算法

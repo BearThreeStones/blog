@@ -1,51 +1,56 @@
-// VuePress Theme Hope - GitHub-Inspired Minimalist Color Palette
-// Information-driven design with subtle accents and WCAG AAA contrast ratios
-// Colors verified against GitHub Primer (2026-01) - 95%+ accuracy
-// See: .sisyphus/evidence/color-accuracy-report.txt
+// VuePress Theme Hope - Unity Editor Color Palette
+// Colors sourced from Unity Editor UI Toolkit Library (Community) Figma/SVG export
+// Verified against provided PDF and SVG color palette files
 
 // ============================================================================
 // PRIMARY COLOR MAPS (Light & Dark Mode)
 // ============================================================================
 
-// Brand Primary: GitHub Blue (Subtle, Professional)
-// Light: #0969da (GitHub's brand blue), Dark: #58a6ff (lighter for dark mode)
+// Brand Primary: Unity Selection Blue
+// Sourced from Inspector & Window Colors SVG (#3A72B0 dark, #2C5D87 darker)
+// and Component Colors SVG (#3A79BB highlight)
 $vp-c-brand: (
-  light: #0969da,
-  dark: #58a6ff,
+  light: #2C5D87,
+  dark: #3A72B0,
 );
 
-// Brand Secondary: Subtle Purple (Secondary actions)
-// Light: #8250df (GitHub's purple), Dark: #a371f7
+// Brand Secondary: Lighter Interactive Blue
+// Sourced from Component Colors SVG (#0C6CCB, #96C3FB)
 $vp-c-brand-secondary: (
-  light: #8250df,
-  dark: #a371f7,
+  light: #0C6CCB,
+  dark: #96C3FB,
 );
 
-// Accent: Success Green (Minimal usage)
-// Light: #1a7f37 (GitHub's green), Dark: #3fb950
+// Accent: Unity Highlight Blue (used for links, interactive states)
+// Sourced from Component Colors SVG (#4C7EFF, #81B4FF)
 $vp-c-accent: (
-  light: #1a7f37,
-  dark: #3fb950,
+  light: #003C88,
+  dark: #4C7EFF,
 );
 
 // ============================================================================
 // BACKGROUND COLOR MAPS
 // ============================================================================
 
-// Primary Background
-// Light: #ffffff (pure white, E=21.00), Dark: #0d1117 (true black OLED, E=0.00)
-// Contrast: 21:1 (WCAG AAA with text)
+// Primary Background (Base 1 - Application Bar and Controls)
+// Sourced from Base Layers SVG and Application Bar Colors SVG
 $vp-c-bg: (
-  light: #ffffff,
-  dark: #0d1117,
+  light: #C8C8C8,
+  dark: #383838,
 );
 
-// Alternate Background (for cards, sidebars)
-// Light: #f6f8fa (E=20.20), Dark: #161b22 (E=0.37)
-// Contrast: 19.83:1 (WCAG AAA)
+// Alternate Background (Base 2 - Windows / Inspectors)
+// Sourced from Inspector & Window Colors SVG
 $vp-c-bg-alt: (
-  light: #f6f8fa,
-  dark: #161b22,
+  light: #DFDFDF,
+  dark: #282828,
+);
+
+// Elevation Background (Base 3 - Toolbars)
+// Sourced from Toolbar Colors SVG
+$vp-c-bg-elv: (
+  light: #E4E4E4,
+  dark: #3C3C3C,
 );
 
 // ============================================================================
@@ -53,109 +58,106 @@ $vp-c-bg-alt: (
 // ============================================================================
 
 // Primary Text
-// Light: #24292f (near-black, E=1.10), Dark: #e6edf3 (near-white, E=16.04)
-// Contrast: 14.5:1 (WCAG AAA)
+// Sourced from Text Colors SVG (#090909 light, #D2D2D2 dark)
 $vp-c-text: (
-  light: #24292f,
-  dark: #e6edf3,
+  light: #090909,
+  dark: #D2D2D2,
 );
 
 // Muted Text (secondary content)
-// Light: #6b7280 (gray, E=4.12), Dark: #9ca3af (light gray, E=9.24)
-// Contrast: 7:1 (WCAG AAA)
+// Sourced from Text Colors SVG (#383838 light text labels, #9A9A9A dark)
 $vp-c-text-mute: (
-  light: #6b7280,
-  dark: #9ca3af,
+  light: #383838,
+  dark: #9A9A9A,
 );
 
-// Muted Text (tertiary, even lighter)
-// Light: #959da5 (light gray, E=5.63), Dark: #7d8590 (darker gray, E=3.70)
-// Contrast: 7:1 (WCAG AAA)
+// Muted Text (tertiary / disabled)
+// Sourced from Base Layers SVG (#757575) and Application Bar Colors (#6A6A6A)
 $vp-c-text-mute-2: (
-  light: #959da5,
-  dark: #7d8590,
+  light: #6A6A6A,
+  dark: #757575,
 );
 
 // ============================================================================
 // BORDER COLOR MAPS
 // ============================================================================
 
-// Primary Borders
-// Light: #e5e7eb (light gray, E=17.86), Dark: #374151 (dark gray, E=2.20)
-// Contrast: 8.12:1 (WCAG AAA with text)
+// Primary Borders (Accented borders for inset/outset effects)
+// Sourced from Component Colors SVG (#999999 light, #232323 dark)
 $vp-c-border: (
-  light: #e5e7eb,
-  dark: #374151,
+  light: #999999,
+  dark: #232323,
 );
 
 // Soft Borders (dividers)
-// Light: #f3f4f6 (very light, E=19.60), Dark: #21262d (darker, E=0.96)
-// Contrast: 20.42:1 (WCAG AAA)
+// Sourced from Component Colors SVG (#B6B6B6 light, #303030 dark)
 $vp-c-border-soft: (
-  light: #f3f4f6,
-  dark: #21262d,
+  light: #B6B6B6,
+  dark: #303030,
 );
 
 // ============================================================================
 // SEMANTIC COLORS
 // ============================================================================
 
-// Success (Green)
-// Light: #059669 (E=5.41), Dark: #10b981 (E=5.20) → Contrast: 7:1
+// Success: Unity green accent (play button)
 $vp-c-success: (
-  light: #059669,
-  dark: #10b981,
+  light: #39833D,
+  dark: #58A05C,
 );
 
-// Danger (Red)
-// Light: #dc2626 (E=5.67), Dark: #f87171 (E=8.15) → Contrast: 7:1
+// Danger: Error Red
+// Sourced from Text Colors SVG (#D32222 dark, #FF534A component)
 $vp-c-danger: (
-  light: #dc2626,
-  dark: #f87171,
+  light: #D32222,
+  dark: #FF534A,
 );
 
-// Warning (Amber)
-// Light: #d97706 (E=7.46), Dark: #fbbf24 (E=11.18) → Contrast: 7:1
+// Warning: Caution Yellow
+// Sourced from Text Colors SVG (#F4BC02)
 $vp-c-warning: (
-  light: #d97706,
-  dark: #fbbf24,
+  light: #D98C00,
+  dark: #F4BC02,
 );
 
-// Info (Cyan)
-// Light: #0891b2 (E=5.25), Dark: #06b6d4 (E=5.73) → Contrast: 7:1
+// Info: Selection Blue
+// Sourced from Inspector & Window Colors SVG (#2C5D87, #3A72B0)
 $vp-c-info: (
-  light: #0891b2,
-  dark: #06b6d4,
+  light: #2C5D87,
+  dark: #3A72B0,
 );
 
 // ============================================================================
 // LAYOUT VARIABLES
 // ============================================================================
 
-// Navbar
-$navbar-height: 3.5rem;
-$navbar-padding: 0.875rem 1.5rem;
+// High Density Panel Layout
+$navbar-height: 2.5rem; // Compact like a Unity Toolbar
+$navbar-padding: 0.25rem 1rem;
 
-// Sidebar
-$sidebar-width: 16rem;
-$sidebar-padding: 1.5rem 1rem;
+$sidebar-width: 15rem; // Closer to Unity Hierarchy panel
+$sidebar-padding: 1rem 0.5rem;
 
-// Content
-$content-width: 48rem;
-$content-padding: 2rem 1.5rem;
+$content-width: 50rem;
+$content-padding: 1.5rem 1.5rem;
 
 // ============================================================================
 // TRANSITION VARIABLES
 // ============================================================================
 
-// Color transitions
-$vp-t-color: color 0.3s ease;
+// Modern easing curves (still snappy, but with the polish of native software)
+$ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-// Transform transitions
-$vp-t-transform: transform 0.3s ease;
+// Tiered transition speeds
+$transition-fast: 0.12s $ease-out;     // chrome controls (buttons, inputs)
+$transition-base: 0.2s $ease-out;      // cards, containers
+$transition-slow: 0.32s $ease-in-out;  // hero / large surfaces
 
-// All transitions
-$vp-t-all: all 0.3s ease;
+// Legacy aliases (still used by some component sections)
+$vp-t-color: color $transition-fast;
+$vp-t-transform: transform $transition-fast;
+$vp-t-all: all $transition-fast;
 
 // ============================================================================
 // Z-INDEX SCALE
@@ -167,56 +169,165 @@ $z-index-modal: 2000;
 $z-index-tooltip: 2001;
 
 // ============================================================================
-// SPACING SCALE (Tailwind-inspired)
+// SPACING SCALE
 // ============================================================================
 
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 2rem;
-$spacing-2xl: 3rem;
-$spacing-3xl: 4rem;
+$spacing-xs: 0.125rem; // 2px
+$spacing-sm: 0.25rem;  // 4px
+$spacing-md: 0.5rem;   // 8px
+$spacing-lg: 1rem;     // 16px
+$spacing-xl: 1.5rem;   // 24px
+$spacing-2xl: 2rem;    // 32px
+$spacing-3xl: 3rem;    // 48px
 
 // ============================================================================
-// BORDER RADIUS
+// BORDER RADIUS (Tiered: Unity-sharp on chrome, refined on surfaces)
 // ============================================================================
 
-$border-radius-sm: 0.25rem;
-$border-radius-md: 0.5rem;
-$border-radius-lg: 0.75rem;
-$border-radius-xl: 1rem;
+// Chrome controls (buttons, inputs, selects, checkboxes, tabs)
+$border-radius-control: 3px;
+// Container surfaces (cards, custom containers, code blocks, details, panels)
+$border-radius-surface: 6px;
+// Floating overlays (dropdowns, modals, tooltips)
+$border-radius-overlay: 8px;
+// Pill / circular elements (avatars, badge dots)
 $border-radius-full: 9999px;
 
+// Legacy aliases (mapped to the new scale)
+$border-radius-sm: $border-radius-control;     // 3px
+$border-radius-md: $border-radius-surface;      // 6px
+$border-radius-lg: $border-radius-surface;      // 6px
+$border-radius-xl: $border-radius-overlay;      // 8px
+
 // ============================================================================
-// SHADOW SYSTEM
+// COMPONENT COLOR TOKENS (from Unity UI Toolkit Library PNGs)
 // ============================================================================
 
-$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-$shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-$shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-$shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+// Control Backgrounds (Buttons, Dropdowns)
+$unity-control-bg: (
+  light: #E4E4E4,
+  dark: #585858,
+);
+$unity-control-bg-hover: (
+  light: #EBEBEB,
+  dark: #676767,
+);
+$unity-control-bg-pressed: (
+  light: #DBDBDB,
+  dark: #515151,
+);
+
+// Control Borders
+$unity-control-border: (
+  light: #B2B2B2,
+  dark: #303030,
+);
+
+// Input Backgrounds (Text Fields, Search Fields)
+$unity-input-bg: (
+  light: #F0F0F0,
+  dark: #2A2A2A,
+);
+$unity-input-border: (
+  light: #999999,
+  dark: #232323,
+);
+
+// Selection / Highlight (List View, Tree View selected row)
+$unity-selection-bg: (
+  light: #3A72B0,
+  dark: #2C5D87,
+);
+
+// List/Tree Hover Row
+$unity-row-hover: (
+  light: #CCCCCC,
+  dark: #464646,
+);
+
+// Focus Outline (blue ring on focused controls)
+$unity-focus-outline: (
+  light: #003C88,
+  dark: #4C7EFF,
+);
+
+// Tab active/checked background (darker, pushed-in)
+$unity-tab-active-bg: (
+  light: #C8C8C8,
+  dark: #2D2D2D,
+);
+
+// Tab inactive background
+$unity-tab-inactive-bg: (
+  light: #E4E4E4,
+  dark: #3C3C3C,
+);
+
+// Checkbox/Toggle internals
+$unity-checkbox-bg: (
+  light: #E4E4E4,
+  dark: #585858,
+);
+$unity-checkbox-check-color: (
+  light: #090909,
+  dark: #D2D2D2,
+);
+
+// ============================================================================
+// SHADOW SYSTEM (Tiered Soft Elevation)
+// ============================================================================
+
+// Tooling chrome (navbar, sidebar headers, toolbars) stays flat;
+// content surfaces and overlays use this tiered soft-shadow scale.
+$shadow-xs: 0 1px 2px rgba(15, 23, 35, 0.06);     // subtle separation (cards at rest)
+$shadow-sm: 0 2px 6px rgba(15, 23, 35, 0.08);     // hovered cards
+$shadow-md: 0 4px 14px rgba(15, 23, 35, 0.10);    // dropdown / popover
+$shadow-lg: 0 10px 28px rgba(15, 23, 35, 0.18);   // modal / dialog
+$shadow-xl: 0 18px 48px rgba(15, 23, 35, 0.26);   // full-screen overlay
+
+// Unity-blue focus halo
+$shadow-glow: 0 0 0 3px rgba(58, 114, 176, 0.22);
+
+// ============================================================================
+// UNITY BLUE GRADIENT TOKENS
+// ============================================================================
+
+$unity-blue-gradient: linear-gradient(135deg, #2C5D87 0%, #3A72B0 100%);
+$unity-blue-gradient-hover: linear-gradient(135deg, #346A96 0%, #4683C2 100%);
+$unity-blue-gradient-vertical: linear-gradient(180deg, #2C5D87 0%, #3A72B0 100%);
+$unity-blue-soft-bg: linear-gradient(180deg, rgba(58, 114, 176, 0.06), rgba(58, 114, 176, 0.02));
+$unity-blue-tint: rgba(58, 114, 176, 0.08);
 
 // ============================================================================
 // FONT SYSTEM
 // ============================================================================
 
-// Font families
-$font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$font-family-mono: 'Courier New', Courier, monospace;
+// Inter is Unity's standard, falling back to system
+$font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-mono: "Consolas", "Courier New", monospace;
 
-// Font sizes
-$font-size-xs: 0.75rem;
-$font-size-sm: 0.875rem;
-$font-size-md: 1rem;
-$font-size-lg: 1.125rem;
-$font-size-xl: 1.25rem;
-$font-size-2xl: 1.5rem;
+// Unity Type Scale (globally bumped up +1px for better readability on web)
+$font-size-tiny: 0.6875rem;       // 11px — Smallest UI elements
+$font-size-small: 0.75rem;        // 12px — Metadata, captions, article-info
+$font-size-semi-small: 0.8125rem; // 13px — Secondary text, sidebar items
+$font-size-normal: 0.875rem;      // 14px — Base / body text
+$font-size-big: 1rem;             // 16px — Article titles, h2
+$font-size-very-big: 1.375rem;    // 22px — Page/Hero titles, h1
 
-// Line heights
-$line-height-tight: 1.25;
-$line-height-normal: 1.5;
-$line-height-relaxed: 1.75;
+// Legacy aliases (for backward compatibility)
+$font-size-xs: $font-size-tiny;
+$font-size-sm: $font-size-small;
+$font-size-md: $font-size-normal;
+$font-size-lg: $font-size-big;
+$font-size-xl: $font-size-very-big;
+
+// Unity Line Heights (3-tier system)
+// Unity USS: --unity-metrics-single_line-small_text-height = 16px
+$line-height-tight: 1.23;    // ≈16/13 — Dense UI, labels, metadata
+// Unity USS: --unity-metrics-single_line-text-height = 18px
+$line-height-normal: 1.38;   // ≈18/13 — Default body text
+// Unity USS: --unity-metrics-single_line-big_text-height = 20px
+$line-height-relaxed: 1.54;  // ≈20/13 — Headings, hero text
 
 // ============================================================================
 // BREAKPOINTS

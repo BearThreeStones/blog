@@ -1,7 +1,9 @@
 ---
 title: 游戏开发
-icon: gamepad
+icon: /assets/icon/unity/game-development.svg
 index: false
+dir:
+  link: true
 ---
 
 # 游戏开发

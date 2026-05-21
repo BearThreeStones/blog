@@ -1,388 +1,2481 @@
-/* GitHub Primer-compliant styles - 80ms transitions only */
-// Aligned with GitHub Primer Design System (primer.style)
-// Animation policy: 80ms color transitions only, no decorative motion
+/* Unity Editor Foundations-compliant styles */
+// Aligned with Unity Editor Design System
+// Flat geometry, base layers, sharp corners, dense layout
+
+// Import palette variables for SCSS token usage
+@import 'palette';
 
 /* ========================================
- * NO FONT IMPORTS - Using System Fonts
+ * Global Improvements & Fonts
  * ======================================== */
 
-/* ========================================
- * Global Improvements
- * ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-// Remove excessive spacing and decorations
-* {
-  box-sizing: border-box;
+body {
+  font-family: var(--vp-font);
+  background-color: var(--vp-c-bg);
+  color: var(--vp-c-text);
+  font-size: $font-size-normal;
+  line-height: 1.38; // Unity default line height
+  font-feature-settings: "ss01", "cv11", "calt";
+  letter-spacing: 0.005em;
+  // Removed radial wash per user request, keeping purely solid background
+  background-attachment: fixed;
+}
+
+// Tiered radius defaults (replaces the previous global border-radius:0 hammer).
+// We keep Unity-strict 0 only where the chrome/Unity components explicitly want it.
+:root {
+  --radius-control: #{$border-radius-control};
+  --radius-surface: #{$border-radius-surface};
+  --radius-overlay: #{$border-radius-overlay};
+  --radius-pill: #{$border-radius-full};
+
+  --shadow-xs: #{$shadow-xs};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-glow: #{$shadow-glow};
+
+  --unity-gradient: #{$unity-blue-gradient};
+  --unity-gradient-hover: #{$unity-blue-gradient-hover};
+  --unity-gradient-vertical: #{$unity-blue-gradient-vertical};
+  --unity-gradient-soft: #{$unity-blue-soft-bg};
+  --unity-tint: #{$unity-blue-tint};
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.12s var(--ease-out);
+  --transition-base: 0.2s var(--ease-out);
+  --transition-slow: 0.32s var(--ease-in-out);
+}
+
+// Surface-level elements: refined 6px corners
+.custom-container,
+.article-item,
+div[class*="language-"],
+details,
+.unity-view-group,
+.view-group,
+.unity-panel,
+.vp-blog-main .article-wrapper {
+  border-radius: var(--radius-surface);
+}
+
+// Control-level elements: Unity-sharp 3px
+.vp-button,
+button,
+input,
+select,
+textarea,
+.vp-blog-type-icon-wrapper {
+  border-radius: var(--radius-control);
+}
+
+// Overlays
+.vp-navbar-dropdown,
+.vp-dropdown-wrapper .vp-navbar-dropdown-wrapper {
+  border-radius: var(--radius-overlay);
+}
+
+// Force Unity-strict zero radius only for the structural chrome where it matters
+.vp-navbar,
+.vp-sidebar,
+.vp-footer,
+.vp-toggle-navbar-button,
+.vp-toggle-sidebar-button {
+  border-radius: 0 !important;
+}
+
+// Modern selection color
+::selection {
+  background: rgba(58, 114, 176, 0.28);
+  color: var(--vp-c-text);
 }
 
 /* ========================================
- * Hero Section Styles - Minimalist
+ * Iconography - Unity Editor Style
+ * ======================================== */
+:root {
+  --back-to-top-icon: url('/assets/icon/unity/back-to-top.svg');
+  --code-copy-icon: url('/assets/icon/unity/copy.svg');
+  --code-copied-icon: url('/assets/icon/unity/copy-success.svg');
+}
+
+.icon, .iconfont, svg.icon {
+  font-size: $font-size-normal !important;
+  width: $font-size-normal !important;
+  height: $font-size-normal !important;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.vp-copy-code-button::before,
+.back-to-top-icon {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* ========================================
+ * Hero Section Styles - Polished Unity Aesthetic
+ * Flat geometry preserved, but with a subtle gradient wash,
+ * a Scene-view-like grid pattern, and refined typography.
  * ======================================== */
 
-// Simple, clean hero without animations
 .vp-hero {
-  padding: 3rem 1.5rem;
-  
+  position: relative;
+  padding: 3rem 1.5rem 2.5rem;
+  background:
+    $unity-blue-soft-bg,
+    linear-gradient(180deg, var(--vp-c-bg-alt) 0%, var(--vp-c-bg) 100%);
+  border-bottom: 1px solid var(--vp-c-border);
+  overflow: hidden;
+
+  // Subtle grid overlay (Unity Scene view feel)
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(58, 114, 176, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(58, 114, 176, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    pointer-events: none;
+    opacity: 0.6;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 75%);
+    mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 75%);
+  }
+
+  // Removed soft glow blob per user request
+
+
   .vp-hero-info-wrapper {
+    position: relative;
+    z-index: 1;
     max-width: 960px;
     margin: 0 auto;
   }
 }
 
 .vp-hero-title {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 600; // GitHub uses 600, not 700
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
   color: var(--vp-c-text);
-  margin-bottom: 1rem;
-  line-height: 1.25;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  // Subtle gradient text accent
+  background: linear-gradient(180deg, var(--vp-c-text) 0%, color-mix(in srgb, var(--vp-c-text) 85%, var(--vp-c-brand)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .vp-hero-description {
-  font-size: 1.25rem;
-  color: var(--vp-c-text-2);
+  font-size: $font-size-big;
+  color: var(--vp-c-text-mute);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: $line-height-relaxed;
+  letter-spacing: 0.005em;
+  max-width: 42rem;
+  margin: 0 auto;
 }
 
 .vp-hero-actions {
-  margin-top: 2rem;
-  
+  margin-top: 1.75rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+
   .vp-button {
     font-weight: 500;
-    border-radius: 6px;
+    border-radius: var(--radius-control);
     padding: 0.5rem 1rem;
-    transition: background-color 80ms cubic-bezier(0.33, 1, 0.68, 1), border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
+    font-size: $font-size-normal;
+    transition: background var(--transition-base),
+                border-color var(--transition-base),
+                transform var(--transition-base),
+                box-shadow var(--transition-base);
+    border: 1px solid var(--vp-c-border);
+    box-shadow: var(--shadow-xs);
+
+    &.primary {
+      background: var(--vp-c-brand);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: none;
+
+      &:hover {
+        background: color-mix(in srgb, var(--vp-c-brand) 90%, white);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-xs);
+      }
+    }
+
+    &:not(.primary):hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--vp-c-brand);
+    }
   }
 }
 
 /* ========================================
- * Navigation Styles - GitHub Style
+ * Navigation Styles - Unity Toolbar Base 3
  * ======================================== */
 
-// Clean navigation without blur effects
 .vp-navbar {
-  background: var(--vp-c-bg) !important;
-  border-bottom: 1px solid var(--vp-c-border);
-  backdrop-filter: none; // Remove blur
-  
+  background: var(--vp-c-bg-elv) !important; // Pure solid background like Unity Editor toolbar
+  border-bottom: 1px solid var(--vp-c-border); // Restored solid border
+  box-shadow: none !important; // Removed shadow for flat Unity style
+  height: var(--navbar-height);
+  position: relative;
+
+
+
   .vp-navbar-title {
     font-weight: 600;
+    font-size: $font-size-normal;
+    letter-spacing: -0.005em;
   }
 }
 
 .vp-navbar-item a,
 .vp-nav-link {
   font-weight: 500;
-  transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1);
-  
-  &:hover {
-    color: var(--vp-c-brand) !important;
-  }
-}
+  font-size: $font-size-normal;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-control);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 
-// Simple dropdown with Primer multi-layer shadow
-.vp-navbar-dropdown {
-  background: var(--vp-c-bg-elv);
-  border-radius: 6px;
-  box-shadow: 0px 0px 0px 1px rgba(209, 217, 224, 0.5),
-              0px 6px 12px -3px rgba(37, 41, 46, 0.04),
-              0px 6px 18px rgba(37, 41, 46, 0.12);
-  border: 1px solid var(--vp-c-border);
-  backdrop-filter: none;
+  &:hover {
+    color: var(--vp-c-text) !important;
+    background-color: var(--unity-tint);
+  }
+
+  &.active {
+    color: var(--unity-blue) !important;
+    background-color: var(--unity-tint);
+    border: none;
+    position: relative;
+
+    // Unity-blue solid underline
+    &::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: -2px;
+      height: 2px;
+      background: var(--vp-c-brand);
+      border-radius: 1px;
+    }
+  }
 }
 
 /* ========================================
- * Article Card Styles - Information-Dense
+ * Article Card Styles - Polished Panel
+ * Subtle elevation, soft hover lift, Unity-blue accent bar.
  * ======================================== */
 
-// Clean cards with subtle borders
-.article-item {
-  border-radius: 6px;
-  border: 1px solid var(--vp-c-border);
-  transition: border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
-  box-shadow: none; // No shadows in GitHub style
-  padding: 1rem;
-  
+.vp-blog-main .article-wrapper .article-item,
+.article-list > .article-item {
+  position: relative;
+  background: var(--vp-c-bg-alt);
+  border: 1px solid var(--vp-c-border-soft);
+  border-radius: var(--radius-surface);
+  padding: 0.875rem 1rem 0.875rem 1.125rem;
+  margin-bottom: 0.625rem;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+  overflow: hidden;
+
+  // Left gradient indicator bar (animates from 0 to 3px on hover)
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--vp-c-brand);
+    transition: width var(--transition-base);
+  }
+
   &:hover {
+    background: var(--vp-c-bg-elv);
     border-color: var(--vp-c-brand);
-    transform: none; // No lift effect
-    box-shadow: none;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+
+    &::before {
+      width: 3px;
+    }
   }
-  
+
   .article-title {
-    font-size: 1.125rem;
+    font-size: $font-size-big;
     font-weight: 600;
-    color: var(--vp-c-brand);
-    line-height: 1.5;
+    color: var(--vp-c-text);
+    line-height: $line-height-normal;
+    letter-spacing: -0.005em;
   }
-  
+
   .article-excerpt {
-    font-size: 0.875rem;
-    color: var(--vp-c-text-2);
-    line-height: 1.5;
-    margin-top: 0.5rem;
+    font-size: $font-size-small;
+    color: var(--vp-c-text-mute);
+    line-height: $line-height-normal;
+    margin-top: 0.35rem;
   }
 }
 
-// Subtle category indicators
-.article-item {
-  a[href*="/posts/algorithm"] & {
-    border-left: 3px solid var(--vp-c-brand);
-  }
-  
-  a[href*="/posts/game-dev"] & {
-    border-left: 3px solid var(--vp-c-brand-secondary);
-  }
-}
-
-// Metadata styling
 .article-info {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
+  font-size: $font-size-tiny;
+  color: var(--vp-c-text-mute-2);
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-top: 0.5rem;
-  
+  flex-wrap: wrap;
+
   .category {
-    padding: 0.125rem 0.5rem;
-    border-radius: 12px;
-    background: var(--vp-c-bg-alt);
-    border: 1px solid var(--vp-c-border);
-    color: var(--vp-c-text-2);
+    padding: 0.1rem 0.4rem;
+    background: var(--unity-tint);
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    color: var(--vp-c-brand);
     font-weight: 500;
   }
 }
 
 /* ========================================
- * Footer Styles - Minimal
- * ======================================== */
-
-.vp-footer {
-  background: var(--vp-c-bg);
-  padding: 1.5rem 1.5rem;
-  border-top: 1px solid var(--vp-c-border);
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
-  line-height: 1.5;
-  
-  a {
-    color: var(--vp-c-brand);
-    transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1);
-    text-decoration: none;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  
-  img {
-    vertical-align: middle;
-    margin-right: 4px;
-    display: inline-block;
-  }
-}
-
-/* ========================================
- * Content Typography - GitHub Style
- * ======================================== */
-
-// Headings
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.25;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-  border: none;
-}
-
-// Paragraphs
-p {
-  line-height: 1.6;
-  margin: 1em 0;
-}
-
-// Lists
-ul, ol {
-  padding-left: 2em;
-  
-  li {
-    margin: 0.25em 0;
-  }
-}
-
-// Code blocks
-div[class*="language-"] {
-  border-radius: 6px;
-  border: 1px solid var(--vp-c-border);
-  margin: 1rem 0;
-  box-shadow: none;
-}
-
-// Inline code
-code {
-  padding: 0.2em 0.4em;
-  margin: 0;
-  font-size: 85%;
-  background: var(--vp-c-bg-alt);
-  border-radius: 3px;
-  border: 1px solid var(--vp-c-border);
-}
-
-// Blockquotes
-blockquote {
-  padding: 0 1em;
-  color: var(--vp-c-text-2);
-  border-left: 0.25em solid var(--vp-c-border);
-  margin: 1em 0;
-}
-
-// Tables
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1em 0;
-  
-  th, td {
-    padding: 0.5em 1em;
-    border: 1px solid var(--vp-c-border);
-  }
-  
-  th {
-    font-weight: 600;
-    background: var(--vp-c-bg-alt);
-  }
-  
-  tr:nth-child(even) {
-    background: var(--vp-c-bg-alt);
-  }
-}
-
-/* ========================================
- * Animation Utilities - Minimal
- * ======================================== */
-
-// Only essential transitions, no decorative animations (GitHub Primer: 80ms)
-.transition-colors {
-  transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1), 
-              background-color 80ms cubic-bezier(0.33, 1, 0.68, 1), 
-              border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-/* ========================================
- * Responsive Adjustments
- * Spacing: 8px grid system, hybrid density (tight desktop, comfortable mobile)
- * ======================================== */
-
-// Desktop: Tighter spacing for information density (GitHub style)
-@media (min-width: 960px) {
-  .vp-hero {
-    padding: 2.5rem 1.5rem; // 40px 24px (reduced from 48px)
-  }
-  
-  .vp-footer {
-    padding: 1rem 1.5rem; // 16px 24px (reduced from 24px vertical)
-  }
-}
-
-// Mobile: Comfortable spacing for touch targets
-@media (max-width: 719px) {
-  .vp-hero {
-    padding: 2rem 1rem;
-  }
-  
-  .vp-hero-title {
-    font-size: 1.75rem;
-  }
-  
-  .vp-hero-description {
-    font-size: 1rem;
-  }
-  
-  .article-item {
-    padding: 0.75rem;
-  }
-  
-  .vp-footer {
-    padding: 1rem;
-    font-size: 0.6875rem;
-  }
-}
-
-/* ========================================
- * Reduced Motion Support
- * ======================================== */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ========================================
- * Sidebar - Clean Style
+ * Sidebar Styles - Unity Hierarchy Base 2
  * ======================================== */
 
 .vp-sidebar {
-  background: var(--vp-c-bg);
+  background: var(--vp-c-bg-alt) !important;
   border-right: 1px solid var(--vp-c-border);
-  
+  box-shadow: none;
+
   .vp-sidebar-item {
-    font-weight: 500;
-    
+    font-size: $font-size-semi-small;
+    padding: 0.25rem 0.5rem;
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--unity-tint);
+    }
+
     &.active {
-      font-weight: 600;
-      color: var(--vp-c-brand);
+      background: var(--vp-c-brand); // Solid color instead of gradient
+      color: #fff !important;
+      font-weight: 500;
+      border-radius: var(--radius-control);
+      box-shadow: none;
+
+      .vp-sidebar-link {
+        color: #fff !important;
+      }
     }
   }
 }
 
 /* ========================================
- * Containers & Custom Blocks
+ * Footer Styles
  * ======================================== */
 
-.custom-container {
-  border-radius: 6px;
-  border: 1px solid var(--vp-c-border);
-  padding: 1rem;
-  margin: 1rem 0;
-  
-  &.tip {
-    border-left-width: 4px;
-    border-left-color: var(--vp-c-brand);
-    background: var(--vp-c-bg-alt);
-  }
-  
-  &.warning {
-    border-left-width: 4px;
-    border-left-color: #d29922;
-    background: var(--vp-c-bg-alt);
-  }
-  
-  &.danger {
-    border-left-width: 4px;
-    border-left-color: #cf222e;
-    background: var(--vp-c-bg-alt);
+.vp-footer {
+  position: relative;
+  background: var(--vp-c-bg-alt);
+  padding: 1rem 1rem 0.875rem;
+  border-top: 1px solid var(--vp-c-border);
+  text-align: center;
+  font-size: $font-size-tiny;
+  color: var(--vp-c-text-mute);
+
+  a {
+    color: var(--vp-c-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, var(--vp-c-brand) 50%, transparent);
+    transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+
+    &:hover {
+      color: var(--vp-c-brand);
+      text-decoration-color: var(--vp-c-brand);
+      text-decoration-thickness: 1.5px;
+    }
   }
 }
 
 /* ========================================
- * Links - GitHub Style
+ * Content Typography - Refined Reading Rhythm
+ * ======================================== */
+
+h1, h2, h3, h4, h5, h6,
+.theme-hope-content h1, .theme-hope-content h2, .theme-hope-content h3, .theme-hope-content h4, .theme-hope-content h5, .theme-hope-content h6 {
+  font-weight: 600 !important;
+  line-height: $line-height-relaxed !important;
+  margin-top: 1.75em !important;
+  margin-bottom: 0.6em !important;
+  color: var(--vp-c-text) !important;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 4rem; // Compensate for sticky navbar on anchor jumps
+}
+
+h1, .theme-hope-content h1 {
+  font-size: $font-size-very-big !important;
+  letter-spacing: -0.015em;
+}
+
+h2, .theme-hope-content h2 {
+  font-size: $font-size-big !important;
+  padding-bottom: 0.3em !important;
+  border-bottom: 1px solid var(--vp-c-border-soft) !important;
+  position: relative;
+}
+
+h3, .theme-hope-content h3 { font-size: $font-size-normal !important; }
+
+// Long-form reading rhythm: slightly more line-height for body paragraphs
+.theme-hope-content p,
+.theme-hope-content li {
+  line-height: 1.7;
+}
+
+p {
+  line-height: $line-height-normal;
+  margin: 0.85em 0;
+}
+
+ul, ol {
+  padding-left: 1.5em;
+  li { margin: 0.25em 0; }
+}
+
+div[class*="language-"] {
+  position: relative;
+  border: 1px solid var(--vp-c-border-soft);
+  background: var(--vp-c-bg-alt);
+  margin: 1rem 0;
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+
+  // Copy code button polish
+  .vp-copy-code-button,
+  button.copy {
+    border-radius: var(--radius-control);
+    background: color-mix(in srgb, var(--vp-c-bg-alt) 80%, transparent);
+    border: 1px solid var(--vp-c-border-soft);
+    transition:
+      background var(--transition-fast),
+      border-color var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+
+    &:hover {
+      background: var(--unity-tint);
+      border-color: var(--vp-c-brand);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-xs);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+code {
+  font-family: var(--vp-font-mono);
+  font-size: 0.85em;
+  background: var(--unity-tint);
+  border: none;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-control);
+  color: var(--vp-c-brand);
+  font-weight: 500;
+}
+
+// Inline code inside headings should not steal visual weight
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+  background: transparent;
+  color: inherit;
+  font-weight: inherit;
+  padding: 0;
+}
+
+blockquote {
+  position: relative;
+  color: var(--vp-c-text-mute);
+  background: $unity-blue-soft-bg;
+  border: 1px solid var(--vp-c-border-soft);
+  border-left: none;
+  margin: 1.25em 0;
+  padding: 0.75em 1em 0.75em 1.25em;
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--vp-c-brand);
+  }
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 1.25em 0;
+  font-size: $font-size-normal;
+  border: 1px solid var(--vp-c-border-soft);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+
+  th, td {
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid var(--vp-c-border-soft);
+    border-right: 1px solid var(--vp-c-border-soft);
+  }
+
+  th:last-child, td:last-child {
+    border-right: none;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  th {
+    font-weight: 600;
+    background: var(--vp-c-bg-elv);
+    text-align: left;
+    position: relative;
+
+    border-bottom: 1px solid var(--vp-c-border);
+  }
+
+  tr:nth-child(even) {
+    background: var(--vp-c-bg-alt);
+  }
+
+  tbody tr {
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background: var(--unity-tint);
+    }
+  }
+}
+
+/* ========================================
+ * Custom Containers (Alerts/Tips)
+ * ======================================== */
+
+.custom-container {
+  border: 1px solid var(--vp-c-border);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: var(--vp-c-bg-alt);
+  
+  &.tip {
+    border-left: 4px solid var(--vp-c-success);
+  }
+  
+  &.warning {
+    border-left: 4px solid var(--vp-c-warning);
+  }
+  
+  &.danger {
+    border-left: 4px solid var(--vp-c-danger);
+  }
+  
+  .custom-container-title {
+    font-weight: 600;
+    font-size: $font-size-normal;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* ========================================
+ * Links
  * ======================================== */
 
 a {
   color: var(--vp-c-brand);
   text-decoration: none;
-  
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+
   &:hover {
     text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--vp-c-brand);
+  }
+}
+
+/* ========================================
+ * Focus and Interaction States
+ * Modern halo on content/links, Unity-tight inset on chrome controls.
+ * ======================================== */
+
+*:focus-visible {
+  outline: 2px solid var(--unity-focus-outline);
+  outline-offset: 1px;
+  box-shadow: var(--shadow-glow);
+  transition:
+    box-shadow var(--transition-fast),
+    outline-color var(--transition-fast),
+    outline-offset var(--transition-fast);
+}
+
+// Chrome controls keep the dense Unity inset look (overrides the global halo above)
+button:focus-visible,
+.vp-button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input[type="checkbox"]:focus-visible {
+  outline: 1px solid var(--unity-focus-outline) !important;
+  outline-offset: -1px;
+  box-shadow: var(--shadow-glow);
+}
+
+/* ========================================
+ * Scrollbars — see Section 6 (Unity Scroll View) below
+ * ======================================== */
+
+/* ========================================
+ * Theme UI Icon Overrides
+ * ======================================== */
+
+:root {
+  --unity-theme-ui-appearance: url('/assets/icon/unity/theme-ui/light/appearance.png');
+  --unity-theme-ui-appearance-on: url('/assets/icon/unity/theme-ui/light/appearance-on.png');
+  --unity-theme-ui-article: url('/assets/icon/unity/theme-ui/light/article.png');
+  --unity-theme-ui-article-on: url('/assets/icon/unity/theme-ui/light/article-on.png');
+  --unity-theme-ui-nav-home: url('/assets/icon/unity/theme-ui/light/nav-home.png');
+  --unity-theme-ui-nav-home-on: url('/assets/icon/unity/theme-ui/light/nav-home-on.png');
+  --unity-theme-ui-nav-articles: url('/assets/icon/unity/theme-ui/light/nav-articles.png');
+  --unity-theme-ui-nav-articles-on: url('/assets/icon/unity/theme-ui/light/nav-articles-on.png');
+  --unity-theme-ui-nav-algorithm: url('/assets/icon/unity/theme-ui/light/nav-algorithm.png');
+  --unity-theme-ui-nav-algorithm-on: url('/assets/icon/unity/theme-ui/light/nav-algorithm-on.png');
+  --unity-theme-ui-nav-game-development: url('/assets/icon/unity/theme-ui/light/nav-game-development.png');
+  --unity-theme-ui-nav-game-development-on: url('/assets/icon/unity/theme-ui/light/nav-game-development-on.png');
+  --unity-theme-ui-nav-design-patterns: url('/assets/icon/unity/theme-ui/light/nav-design-patterns.png');
+  --unity-theme-ui-nav-design-patterns-on: url('/assets/icon/unity/theme-ui/light/nav-design-patterns-on.png');
+  --unity-theme-ui-nav-unity-best-practice: url('/assets/icon/unity/theme-ui/light/nav-unity-best-practice.png');
+  --unity-theme-ui-nav-unity-best-practice-on: url('/assets/icon/unity/theme-ui/light/nav-unity-best-practice-on.png');
+  --unity-blue: #2C5D87;
+  --vp-c-brand: var(--unity-blue);
+  --theme-color: var(--unity-blue);
+  --unity-theme-ui-caret-down: url('/assets/icon/unity/theme-ui/light/caret-down.png');
+  --unity-theme-ui-caret-down-on: url('/assets/icon/unity/theme-ui/light/caret-down-on.png');
+  --unity-theme-ui-caret-right: url('/assets/icon/unity/theme-ui/light/caret-right.png');
+  --unity-theme-ui-caret-right-on: url('/assets/icon/unity/theme-ui/light/caret-right-on.png');
+  --unity-theme-ui-category: url('/assets/icon/unity/theme-ui/light/category.png');
+  --unity-theme-ui-category-on: url('/assets/icon/unity/theme-ui/light/category-on.png');
+  --unity-theme-ui-chevron-down: url('/assets/icon/unity/theme-ui/light/chevron-down.png');
+  --unity-theme-ui-chevron-left: url('/assets/icon/unity/theme-ui/light/chevron-left.png');
+  --unity-theme-ui-chevron-right: url('/assets/icon/unity/theme-ui/light/chevron-right.png');
+  --unity-theme-ui-color-auto: url('/assets/icon/unity/theme-ui/light/color-auto.png');
+  --unity-theme-ui-color-auto-on: url('/assets/icon/unity/theme-ui/light/color-auto-on.png');
+  --unity-theme-ui-color-dark: url('/assets/icon/unity/theme-ui/light/color-dark.png');
+  --unity-theme-ui-color-dark-on: url('/assets/icon/unity/theme-ui/light/color-dark-on.png');
+  --unity-theme-ui-color-light: url('/assets/icon/unity/theme-ui/light/color-light.png');
+  --unity-theme-ui-color-light-on: url('/assets/icon/unity/theme-ui/light/color-light-on.png');
+  --unity-theme-ui-date: url('/assets/icon/unity/theme-ui/light/date.png');
+  --unity-theme-ui-edit: url('/assets/icon/unity/theme-ui/light/edit.png');
+  --unity-theme-ui-fullscreen: url('/assets/icon/unity/theme-ui/light/fullscreen.png');
+  --unity-theme-ui-fullscreen-on: url('/assets/icon/unity/theme-ui/light/fullscreen-on.png');
+  --unity-theme-ui-language: url('/assets/icon/unity/theme-ui/light/language.png');
+  --unity-theme-ui-language-on: url('/assets/icon/unity/theme-ui/light/language-on.png');
+  --unity-theme-ui-link: url('/assets/icon/unity/theme-ui/light/link.png');
+  --unity-theme-ui-link-on: url('/assets/icon/unity/theme-ui/light/link-on.png');
+  --unity-theme-ui-menu: url('/assets/icon/unity/theme-ui/light/menu.png');
+  --unity-theme-ui-menu-on: url('/assets/icon/unity/theme-ui/light/menu-on.png');
+  --unity-theme-ui-print: url('/assets/icon/unity/theme-ui/light/print.png');
+  --unity-theme-ui-reading-time: url('/assets/icon/unity/theme-ui/light/reading-time.png');
+  --unity-theme-ui-sidebar-toggle: url('/assets/icon/unity/theme-ui/light/sidebar-toggle.png');
+  --unity-theme-ui-tag: url('/assets/icon/unity/theme-ui/light/tag.png');
+  --unity-theme-ui-tag-on: url('/assets/icon/unity/theme-ui/light/tag-on.png');
+  --unity-theme-ui-timeline: url('/assets/icon/unity/theme-ui/light/timeline.png');
+  --unity-theme-ui-timeline-on: url('/assets/icon/unity/theme-ui/light/timeline-on.png');
+  --unity-theme-ui-visibility: url('/assets/icon/unity/theme-ui/light/visibility.png');
+  --unity-theme-ui-visibility-on: url('/assets/icon/unity/theme-ui/light/visibility-on.png');
+  --unity-theme-ui-word-count: url('/assets/icon/unity/theme-ui/light/word-count.png');
+}
+
+html[data-theme='dark'] {
+  --unity-theme-ui-appearance: url('/assets/icon/unity/theme-ui/dark/appearance.png');
+  --unity-theme-ui-appearance-on: url('/assets/icon/unity/theme-ui/dark/appearance-on.png');
+  --unity-theme-ui-article: url('/assets/icon/unity/theme-ui/dark/article.png');
+  --unity-theme-ui-article-on: url('/assets/icon/unity/theme-ui/dark/article-on.png');
+  --unity-theme-ui-nav-home: url('/assets/icon/unity/theme-ui/dark/nav-home.png');
+  --unity-theme-ui-nav-home-on: url('/assets/icon/unity/theme-ui/dark/nav-home-on.png');
+  --unity-theme-ui-nav-articles: url('/assets/icon/unity/theme-ui/dark/nav-articles.png');
+  --unity-theme-ui-nav-articles-on: url('/assets/icon/unity/theme-ui/dark/nav-articles-on.png');
+  --unity-theme-ui-nav-algorithm: url('/assets/icon/unity/theme-ui/dark/nav-algorithm.png');
+  --unity-theme-ui-nav-algorithm-on: url('/assets/icon/unity/theme-ui/dark/nav-algorithm-on.png');
+  --unity-theme-ui-nav-game-development: url('/assets/icon/unity/theme-ui/dark/nav-game-development.png');
+  --unity-theme-ui-nav-game-development-on: url('/assets/icon/unity/theme-ui/dark/nav-game-development-on.png');
+  --unity-theme-ui-nav-design-patterns: url('/assets/icon/unity/theme-ui/dark/nav-design-patterns.png');
+  --unity-theme-ui-nav-design-patterns-on: url('/assets/icon/unity/theme-ui/dark/nav-design-patterns-on.png');
+  --unity-theme-ui-nav-unity-best-practice: url('/assets/icon/unity/theme-ui/dark/nav-unity-best-practice.png');
+  --unity-theme-ui-nav-unity-best-practice-on: url('/assets/icon/unity/theme-ui/dark/nav-unity-best-practice-on.png');
+  --unity-blue: #3A72B0;
+  --vp-c-brand: var(--unity-blue);
+  --theme-color: var(--unity-blue);
+  --unity-theme-ui-caret-down: url('/assets/icon/unity/theme-ui/dark/caret-down.png');
+  --unity-theme-ui-caret-down-on: url('/assets/icon/unity/theme-ui/dark/caret-down-on.png');
+  --unity-theme-ui-caret-right: url('/assets/icon/unity/theme-ui/dark/caret-right.png');
+  --unity-theme-ui-caret-right-on: url('/assets/icon/unity/theme-ui/dark/caret-right-on.png');
+  --unity-theme-ui-category: url('/assets/icon/unity/theme-ui/dark/category.png');
+  --unity-theme-ui-category-on: url('/assets/icon/unity/theme-ui/dark/category-on.png');
+  --unity-theme-ui-chevron-down: url('/assets/icon/unity/theme-ui/dark/chevron-down.png');
+  --unity-theme-ui-chevron-left: url('/assets/icon/unity/theme-ui/dark/chevron-left.png');
+  --unity-theme-ui-chevron-right: url('/assets/icon/unity/theme-ui/dark/chevron-right.png');
+  --unity-theme-ui-color-auto: url('/assets/icon/unity/theme-ui/dark/color-auto.png');
+  --unity-theme-ui-color-auto-on: url('/assets/icon/unity/theme-ui/dark/color-auto-on.png');
+  --unity-theme-ui-color-dark: url('/assets/icon/unity/theme-ui/dark/color-dark.png');
+  --unity-theme-ui-color-dark-on: url('/assets/icon/unity/theme-ui/dark/color-dark-on.png');
+  --unity-theme-ui-color-light: url('/assets/icon/unity/theme-ui/dark/color-light.png');
+  --unity-theme-ui-color-light-on: url('/assets/icon/unity/theme-ui/dark/color-light-on.png');
+  --unity-theme-ui-date: url('/assets/icon/unity/theme-ui/dark/date.png');
+  --unity-theme-ui-edit: url('/assets/icon/unity/theme-ui/dark/edit.png');
+  --unity-theme-ui-fullscreen: url('/assets/icon/unity/theme-ui/dark/fullscreen.png');
+  --unity-theme-ui-fullscreen-on: url('/assets/icon/unity/theme-ui/dark/fullscreen-on.png');
+  --unity-theme-ui-language: url('/assets/icon/unity/theme-ui/dark/language.png');
+  --unity-theme-ui-language-on: url('/assets/icon/unity/theme-ui/dark/language-on.png');
+  --unity-theme-ui-link: url('/assets/icon/unity/theme-ui/dark/link.png');
+  --unity-theme-ui-link-on: url('/assets/icon/unity/theme-ui/dark/link-on.png');
+  --unity-theme-ui-menu: url('/assets/icon/unity/theme-ui/dark/menu.png');
+  --unity-theme-ui-menu-on: url('/assets/icon/unity/theme-ui/dark/menu-on.png');
+  --unity-theme-ui-print: url('/assets/icon/unity/theme-ui/dark/print.png');
+  --unity-theme-ui-reading-time: url('/assets/icon/unity/theme-ui/dark/reading-time.png');
+  --unity-theme-ui-sidebar-toggle: url('/assets/icon/unity/theme-ui/dark/sidebar-toggle.png');
+  --unity-theme-ui-tag: url('/assets/icon/unity/theme-ui/dark/tag.png');
+  --unity-theme-ui-tag-on: url('/assets/icon/unity/theme-ui/dark/tag-on.png');
+  --unity-theme-ui-timeline: url('/assets/icon/unity/theme-ui/dark/timeline.png');
+  --unity-theme-ui-timeline-on: url('/assets/icon/unity/theme-ui/dark/timeline-on.png');
+  --unity-theme-ui-visibility: url('/assets/icon/unity/theme-ui/dark/visibility.png');
+  --unity-theme-ui-visibility-on: url('/assets/icon/unity/theme-ui/dark/visibility-on.png');
+  --unity-theme-ui-word-count: url('/assets/icon/unity/theme-ui/dark/word-count.png');
+}
+
+@mixin unity-theme-icon($icon, $size: 1rem) {
+  content: '';
+  display: inline-block;
+  width: $size;
+  height: $size;
+  flex: 0 0 $size;
+  background-image: $icon;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.vp-nav-item.vp-action .vp-action-link,
+#color-mode-switch,
+.vp-appearance-button,
+.full-screen,
+.vp-toggle-navbar-button,
+.vp-toggle-sidebar-button,
+.print-button,
+.vp-blog-type-icon-wrapper,
+.vp-social-media,
+.page-author-info,
+.page-date-info,
+.page-reading-time-info,
+.page-category-info,
+.page-tag-info,
+.page-pageview-info,
+.page-word-info,
+.vp-star-article-wrapper > .title,
+.vp-category-wrapper > .title,
+.vp-tag-wrapper > .title,
+.timeline-list-wrapper > .title {
+  position: relative;
+}
+
+.vp-nav-item.vp-action .vp-action-link,
+#color-mode-switch,
+.vp-appearance-button,
+.full-screen,
+.vp-toggle-navbar-button,
+.vp-toggle-sidebar-button,
+.print-button,
+.vp-social-media {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.page-author-info,
+.page-date-info,
+.page-reading-time-info,
+.page-category-info,
+.page-tag-info,
+.page-pageview-info,
+.page-word-info,
+.vp-star-article-wrapper > .title,
+.vp-category-wrapper > .title,
+.vp-tag-wrapper > .title,
+.timeline-list-wrapper > .title {
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.page-author-info,
+.page-date-info,
+.page-reading-time-info,
+.page-category-info,
+.page-tag-info,
+.page-pageview-info,
+.page-word-info {
+  display: inline-flex;
+}
+
+.vp-star-article-wrapper > .title,
+.vp-category-wrapper > .title,
+.vp-tag-wrapper > .title,
+.timeline-list-wrapper > .title {
+  display: flex;
+}
+
+.vp-nav-item.vp-action .vp-action-link img,
+.vp-nav-item.vp-action .vp-action-link svg,
+.vp-appearance-button > img,
+.vp-appearance-button > svg,
+.full-screen img,
+.full-screen svg,
+.vp-blog-type-icon-wrapper img,
+.vp-blog-type-icon-wrapper svg,
+.vp-social-media img,
+.vp-social-media svg,
+.print-button img,
+.print-button svg,
+.page-author-info img,
+.page-author-info svg,
+.page-date-info img,
+.page-date-info svg,
+.page-reading-time-info img,
+.page-reading-time-info svg,
+.page-category-info img,
+.page-category-info svg,
+.page-tag-info img,
+.page-tag-info svg,
+.page-pageview-info img,
+.page-pageview-info svg,
+.page-word-info img,
+.page-word-info svg,
+.vp-star-article-wrapper > .title img,
+.vp-star-article-wrapper > .title svg,
+.vp-category-wrapper > .title img,
+.vp-category-wrapper > .title svg,
+.vp-tag-wrapper > .title img,
+.vp-tag-wrapper > .title svg,
+.timeline-list-wrapper > .title img,
+.timeline-list-wrapper > .title svg {
+  display: none !important;
+}
+
+:is(.vp-navbar, .vp-nav-screen, .vp-sidebar) .vp-icon {
+  display: none !important;
+}
+
+.vp-navbar .route-link:has(> .vp-icon),
+.vp-navbar .vp-dropdown-title:has(> .vp-icon),
+.vp-nav-screen .route-link:has(> .vp-icon),
+.vp-nav-screen .vp-nav-screen-menu-title:has(.vp-icon) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.vp-sidebar .vp-sidebar-link:has(> .vp-icon),
+.vp-sidebar .vp-sidebar-header:has(> .vp-icon) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.vp-navbar .route-link:has(> .vp-icon)::before,
+.vp-navbar .vp-dropdown-title:has(> .vp-icon)::before,
+.vp-nav-screen .route-link:has(> .vp-icon)::before,
+.vp-nav-screen .vp-nav-screen-menu-title:has(.vp-icon)::before,
+.vp-sidebar .vp-sidebar-link:has(> .vp-icon)::before,
+.vp-sidebar .vp-sidebar-header:has(> .vp-icon)::before {
+  @include unity-theme-icon(var(--unity-theme-ui-nav-icon), 0.95rem);
+}
+
+.vp-navbar .route-link:has(> img[src$='/home.svg']),
+.vp-nav-screen .route-link:has(> img[src$='/home.svg']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/home.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-home);
+}
+
+.vp-navbar .route-link.route-link-active:has(> img[src$='/home.svg']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/home.svg']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/home.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-home-on);
+}
+
+.vp-navbar .vp-dropdown-title:has(> img[src$='/articles.svg']),
+.vp-nav-screen .vp-nav-screen-menu-title:has(img[src$='/articles.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-articles);
+}
+
+.vp-navbar .vp-dropdown-wrapper:hover > .vp-dropdown-title:has(> img[src$='/articles.svg']),
+.vp-navbar .vp-dropdown-title:hover:has(> img[src$='/articles.svg']),
+.vp-navbar .vp-dropdown-title:focus-visible:has(> img[src$='/articles.svg']),
+.vp-navbar .vp-dropdown-wrapper:has(.route-link-active) > .vp-dropdown-title:has(> img[src$='/articles.svg']),
+.vp-nav-screen .vp-nav-screen-menu-title:has(.arrow.down):has(img[src$='/articles.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-articles-on);
+}
+
+.vp-navbar .route-link:has(> img[src$='/algorithm.svg']),
+.vp-nav-screen .route-link:has(> img[src$='/algorithm.svg']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/algorithm.svg']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/algorithm.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-algorithm);
+}
+
+.vp-navbar .route-link.route-link-active:has(> img[src$='/algorithm.svg']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/algorithm.svg']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/algorithm.svg']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/algorithm.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-algorithm-on);
+}
+
+.vp-navbar .route-link:has(> img[src$='/game-development.svg']),
+.vp-nav-screen .route-link:has(> img[src$='/game-development.svg']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/game-development.svg']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/game-development.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-game-development);
+}
+
+.vp-navbar .route-link.route-link-active:has(> img[src$='/game-development.svg']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/game-development.svg']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/game-development.svg']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/game-development.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-game-development-on);
+}
+
+.vp-navbar .route-link:has(> img[src$='/design-patterns.svg']),
+.vp-nav-screen .route-link:has(> img[src$='/design-patterns.svg']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/design-patterns.svg']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/design-patterns.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-design-patterns);
+}
+
+.vp-navbar .route-link.route-link-active:has(> img[src$='/design-patterns.svg']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/design-patterns.svg']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/design-patterns.svg']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/design-patterns.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-design-patterns-on);
+}
+
+.vp-navbar .route-link:has(> img[src$='/unity-best-practice.svg']),
+.vp-nav-screen .route-link:has(> img[src$='/unity-best-practice.svg']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/unity-best-practice.svg']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/unity-best-practice.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-unity-best-practice);
+}
+
+.vp-navbar .route-link.route-link-active:has(> img[src$='/unity-best-practice.svg']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/unity-best-practice.svg']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/unity-best-practice.svg']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/unity-best-practice.svg']) {
+  --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-unity-best-practice-on);
+}
+
+#color-mode-switch {
+  min-width: 1.35rem;
+  min-height: 1.35rem;
+}
+
+#color-mode-switch > * {
+  opacity: 0 !important;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+}
+
+#color-mode-switch::before {
+  @include unity-theme-icon(var(--unity-theme-ui-color-auto-on));
+}
+
+#color-mode-switch:has(> :nth-child(2)[style*='block'])::before {
+  background-image: var(--unity-theme-ui-color-dark-on);
+}
+
+#color-mode-switch:has(> :nth-child(3)[style*='block'])::before {
+  background-image: var(--unity-theme-ui-color-light-on);
+}
+
+.vp-appearance-button,
+.full-screen,
+.vp-toggle-navbar-button,
+.vp-toggle-sidebar-button,
+.print-button {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+}
+
+.vp-appearance-button::before {
+  @include unity-theme-icon(var(--unity-theme-ui-appearance), 1.05rem);
+}
+
+.vp-appearance-button.open::before {
+  background-image: var(--unity-theme-ui-appearance-on);
+}
+
+.full-screen::before {
+  @include unity-theme-icon(var(--unity-theme-ui-fullscreen), 1rem);
+}
+
+.full-screen[aria-pressed='true']::before {
+  background-image: var(--unity-theme-ui-fullscreen-on);
+}
+
+.vp-toggle-navbar-button > span {
+  display: none !important;
+}
+
+.vp-toggle-navbar-button::before {
+  @include unity-theme-icon(var(--unity-theme-ui-menu), 1rem);
+}
+
+.vp-toggle-navbar-button.is-active::before {
+  background-image: var(--unity-theme-ui-menu-on);
+}
+
+.vp-toggle-sidebar-button .icon {
+  display: none !important;
+}
+
+.vp-toggle-sidebar-button::before {
+  @include unity-theme-icon(var(--unity-theme-ui-sidebar-toggle), 1rem);
+}
+
+.vp-nav-item.vp-action .vp-action-link::before {
+  @include unity-theme-icon(var(--unity-theme-ui-link), 1.1rem);
+}
+
+.vp-nav-item.vp-action .vp-action-link:hover::before,
+.vp-nav-item.vp-action .vp-action-link:focus-visible::before {
+  background-image: var(--unity-theme-ui-link-on);
+}
+
+.print-button::before {
+  @include unity-theme-icon(var(--unity-theme-ui-print), 1rem);
+}
+
+.page-author-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-edit), 0.95rem);
+}
+
+.page-date-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-date), 0.95rem);
+}
+
+.page-reading-time-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-reading-time), 0.95rem);
+}
+
+.page-category-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-category), 0.95rem);
+}
+
+.page-tag-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-tag), 0.95rem);
+}
+
+.page-pageview-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-visibility), 0.95rem);
+}
+
+.page-word-info::before {
+  @include unity-theme-icon(var(--unity-theme-ui-word-count), 0.95rem);
+}
+
+.vp-star-article-wrapper > .title::before {
+  @include unity-theme-icon(var(--unity-theme-ui-article), 1rem);
+}
+
+.vp-category-wrapper > .title::before {
+  @include unity-theme-icon(var(--unity-theme-ui-category), 1rem);
+}
+
+.vp-tag-wrapper > .title::before {
+  @include unity-theme-icon(var(--unity-theme-ui-tag), 1rem);
+}
+
+.timeline-list-wrapper > .title::before {
+  @include unity-theme-icon(var(--unity-theme-ui-timeline), 1rem);
+}
+
+.vp-blog-type-icon-wrapper {
+  width: 1.1rem;
+  height: 1.1rem;
+  --unity-blog-type-icon: var(--unity-theme-ui-article);
+  background-image: var(--unity-blog-type-icon) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+.vp-blog-type-icon-wrapper.active {
+  background-image: var(--unity-blog-type-icon) !important;
+}
+
+.vp-blog-type-icon-wrapper[aria-label='文章'] {
+  --unity-blog-type-icon: var(--unity-theme-ui-article);
+}
+
+.vp-blog-type-icon-wrapper[aria-label='分类'] {
+  --unity-blog-type-icon: var(--unity-theme-ui-category);
+}
+
+.vp-blog-type-icon-wrapper[aria-label='标签'] {
+  --unity-blog-type-icon: var(--unity-theme-ui-tag);
+}
+
+.vp-blog-type-icon-wrapper[aria-label='时间轴'] {
+  --unity-blog-type-icon: var(--unity-theme-ui-timeline);
+}
+
+.vp-social-media {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.vp-social-media::before {
+  @include unity-theme-icon(var(--unity-theme-ui-link), 1rem);
+}
+
+.vp-social-media[aria-label='Email']::before,
+.vp-social-media[aria-label='Gmail']::before {
+  background-image: var(--unity-theme-ui-edit);
+}
+
+.vp-social-media[aria-label='Steam']::before {
+  background-image: var(--unity-theme-ui-reading-time);
+}
+
+.vp-social-media[aria-label='VuePressThemeHope']::before {
+  background-image: var(--unity-theme-ui-article);
+}
+
+.vp-social-media:hover::before,
+.vp-social-media:focus-visible::before {
+  background-image: var(--unity-theme-ui-link-on);
+}
+
+.vp-dropdown-title .arrow,
+.vp-nav-screen-menu-title .arrow,
+.vp-sidebar-header .vp-arrow,
+.toggle-sidebar-wrapper .arrow,
+.vp-page-nav .hint .arrow {
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none !important;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: none !important;
+}
+
+.vp-dropdown-title .arrow,
+.vp-nav-screen-menu-title .arrow.end,
+.vp-sidebar-header .vp-arrow.end {
+  background-image: var(--unity-theme-ui-caret-right);
+}
+
+.vp-dropdown-wrapper.open > .vp-dropdown-title .arrow,
+.vp-nav-screen-menu-title .arrow.down,
+.vp-sidebar-header .vp-arrow.down {
+  background-image: var(--unity-theme-ui-caret-down-on);
+}
+
+.toggle-sidebar-wrapper .arrow.start,
+.vp-page-nav .hint .arrow.start {
+  background-image: var(--unity-theme-ui-chevron-left);
+}
+
+.toggle-sidebar-wrapper .arrow.end,
+.vp-page-nav .hint .arrow.end {
+  background-image: var(--unity-theme-ui-chevron-right);
+}
+
+/* ========================================
+ * Unity Component Tokens (CSS Custom Properties)
+ * ======================================== */
+
+:root {
+  // Control (Button, Dropdown)
+  --unity-control-bg: #{map-get($unity-control-bg, light)};
+  --unity-control-bg-hover: #{map-get($unity-control-bg-hover, light)};
+  --unity-control-bg-pressed: #{map-get($unity-control-bg-pressed, light)};
+  --unity-control-border: #{map-get($unity-control-border, light)};
+  // Input (TextField, SearchField)
+  --unity-input-bg: #{map-get($unity-input-bg, light)};
+  --unity-input-border: #{map-get($unity-input-border, light)};
+  // Selection
+  --unity-selection-bg: #{map-get($unity-selection-bg, light)};
+  --unity-row-hover: #{map-get($unity-row-hover, light)};
+  --unity-focus-outline: #{map-get($unity-focus-outline, light)};
+  // Tab
+  --unity-tab-active-bg: #{map-get($unity-tab-active-bg, light)};
+  --unity-tab-inactive-bg: #{map-get($unity-tab-inactive-bg, light)};
+  // Checkbox
+  --unity-checkbox-bg: #{map-get($unity-checkbox-bg, light)};
+  --unity-checkbox-check: #{map-get($unity-checkbox-check-color, light)};
+}
+
+html[data-theme='dark'] {
+  --unity-control-bg: #{map-get($unity-control-bg, dark)};
+  --unity-control-bg-hover: #{map-get($unity-control-bg-hover, dark)};
+  --unity-control-bg-pressed: #{map-get($unity-control-bg-pressed, dark)};
+  --unity-control-border: #{map-get($unity-control-border, dark)};
+  --unity-input-bg: #{map-get($unity-input-bg, dark)};
+  --unity-input-border: #{map-get($unity-input-border, dark)};
+  --unity-selection-bg: #{map-get($unity-selection-bg, dark)};
+  --unity-row-hover: #{map-get($unity-row-hover, dark)};
+  --unity-focus-outline: #{map-get($unity-focus-outline, dark)};
+  --unity-tab-active-bg: #{map-get($unity-tab-active-bg, dark)};
+  --unity-tab-inactive-bg: #{map-get($unity-tab-inactive-bg, dark)};
+  --unity-checkbox-bg: #{map-get($unity-checkbox-bg, dark)};
+  --unity-checkbox-check: #{map-get($unity-checkbox-check-color, dark)};
+}
+
+/* ========================================
+ * 1. BUTTON — Unity Basic Button
+ * Ref: Button.png  (Mini / Regular / Large)
+ * ======================================== */
+
+button,
+.vp-button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-family: var(--vp-font);
+  font-size: $font-size-normal;
+  font-weight: 500;
+  line-height: 1;
+  padding: 2px 6px;
+  min-height: 20px;
+  background: var(--unity-control-bg);
+  border: 1px solid var(--unity-control-border);
+  color: var(--vp-c-text);
+  cursor: pointer;
+  transition: background-color 0.08s ease, border-color 0.08s ease;
+  box-shadow: none !important;
+  outline: none;
+
+  &:hover {
+    background: var(--unity-control-bg-hover);
+  }
+
+  &:active {
+    background: var(--unity-control-bg-pressed);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--unity-focus-outline) !important;
+    outline-offset: -1px;
+  }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+// Hero / Primary buttons keep brand styling
+.vp-hero-actions .vp-button.primary {
+  background-color: var(--vp-c-brand);
+  border-color: var(--vp-c-brand);
+  color: #fff;
+
+  &:hover {
+    background-color: #3A72B0;
+    border-color: #3A72B0;
+  }
+
+  &:active {
+    background-color: #265A82;
+    border-color: #265A82;
+  }
+}
+
+/* ========================================
+ * 2. DROPDOWN — Unity Dropdown (Popup)
+ * Ref: Dropdown.png
+ * ======================================== */
+
+select,
+.vp-dropdown-wrapper .vp-dropdown-title {
+  font-family: var(--vp-font);
+  font-size: $font-size-normal;
+  font-weight: 400;
+  background: var(--unity-control-bg);
+  border: 1px solid var(--unity-control-border);
+  color: var(--vp-c-text);
+  padding: 1px 20px 1px 6px;
+  min-height: 20px;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color 0.08s ease;
+
+  &:hover {
+    background: var(--unity-control-bg-hover);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--unity-focus-outline) !important;
+    outline-offset: -1px;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+// Dropdown caret for native <select>
+select {
+  background-image: var(--unity-theme-ui-caret-down);
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  background-size: 12px 12px;
+}
+
+// Dropdown menu (open state)
+@keyframes unity-overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.vp-navbar-dropdown,
+.vp-dropdown-wrapper .vp-navbar-dropdown-wrapper {
+  background: color-mix(in srgb, var(--vp-c-bg-alt) 92%, transparent);
+  border: 1px solid var(--vp-c-border-soft);
+  border-radius: var(--radius-overlay);
+  box-shadow: var(--shadow-md);
+  padding: 4px;
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  backdrop-filter: saturate(160%) blur(14px);
+  animation: unity-overlay-in 0.16s var(--ease-out);
+  transform-origin: top center;
+
+  .route-link,
+  .vp-dropdown-item {
+    font-size: $font-size-normal;
+    padding: 5px 12px;
+    color: var(--vp-c-text);
+    border-radius: var(--radius-control);
+    transition:
+      background var(--transition-fast),
+      color var(--transition-fast);
+
+    &:hover {
+      background: var(--unity-tint);
+    }
+
+    &.route-link-active,
+    &.active {
+      background: var(--unity-gradient);
+      color: #fff;
+      box-shadow: var(--shadow-xs);
+    }
+  }
+}
+
+// Modal-like surfaces (search, popovers)
+.vp-popup,
+.theme-hope-search-result,
+.search-pro-result {
+  border-radius: var(--radius-overlay);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--vp-c-border-soft);
+  background: color-mix(in srgb, var(--vp-c-bg-alt) 94%, transparent);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  backdrop-filter: saturate(160%) blur(14px);
+  animation: unity-overlay-in 0.18s var(--ease-out);
+}
+
+/* ========================================
+ * 3. FOLDOUT — Unity Foldout (Accordion)
+ * Ref: Foldout.png
+ * ======================================== */
+
+// Sidebar collapsible group headers act as foldouts
+.vp-sidebar-header {
+  font-size: $font-size-semi-small;
+  font-weight: 400;
+  padding: 3px 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.06s ease;
+  user-select: none;
+
+  &:hover {
+    background: var(--unity-row-hover);
+  }
+
+  &.active {
+    font-weight: 600;
+  }
+
+  // Arrow for collapsed/expanded
+  .vp-arrow {
+    flex-shrink: 0;
+    transition: transform 0.12s ease;
+  }
+}
+
+// Bold foldout headers (Level 0 / root groups)
+.vp-sidebar > .vp-sidebar-group > .vp-sidebar-header {
+  font-weight: 600;
+}
+
+// Level indentation (15px per level, matching Unity's tree indentation)
+.vp-sidebar-group .vp-sidebar-group {
+  .vp-sidebar-header {
+    padding-left: calc(0.5rem + 15px);
+  }
+
+  .vp-sidebar-group .vp-sidebar-header {
+    padding-left: calc(0.5rem + 30px);
+  }
+}
+
+// Native HTML foldout (<details> / <summary>)
+details {
+  border: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg-alt);
+  margin: 0.5rem 0;
+  padding: 0;
+
+  summary {
+    font-size: $font-size-normal;
+    font-weight: 600;
+    padding: 4px 8px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background-color 0.06s ease;
+
+    &:hover {
+      background: var(--unity-row-hover);
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--unity-focus-outline) !important;
+      outline-offset: -1px;
+    }
+
+    &::before {
+      content: '▶';
+      font-size: 8px;
+      display: inline-block;
+      transition: transform 0.12s ease;
+    }
+
+    // Hide default marker
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &[open] > summary::before {
+    transform: rotate(90deg);
+  }
+
+  > *:not(summary) {
+    padding: 4px 8px 8px 22px;
+  }
+}
+
+/* ========================================
+ * 4. LABEL — Unity Control Label
+ * Ref: Label.png
+ * ======================================== */
+
+label,
+.control-label,
+.vp-sidebar-link {
+  font-size: $font-size-normal;
+  font-weight: 400;
+  color: var(--vp-c-text);
+  line-height: $line-height-tight;
+}
+
+// Focused label state (turns blue)
+label:focus-within,
+.control-label.focused {
+  color: var(--unity-focus-outline);
+}
+
+// Disabled label
+label.disabled,
+.control-label.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+// Article metadata labels (tiny, muted)
+.page-author-info,
+.page-date-info,
+.page-reading-time-info,
+.page-category-info,
+.page-tag-info,
+.page-pageview-info,
+.page-word-info {
+  font-size: $font-size-tiny;
+  color: var(--vp-c-text-mute-2);
+  line-height: $line-height-tight;
+}
+
+/* ========================================
+ * 5. LIST VIEW — Unity List View Item
+ * Ref: List View.png
+ * ======================================== */
+
+// Article list items rendered as dense Unity rows (timeline/category aggregations).
+// We use :where() to keep specificity flat so the polished card style above wins
+// for the main blog/article list, while non-blog list contexts still feel native.
+:where(.timeline-list-wrapper, .vp-category-wrapper, .vp-tag-wrapper) {
+  .article-item {
+    padding: 4px 8px;
+    margin-bottom: 1px;
+    border-radius: var(--radius-control);
+    border: 1px solid transparent;
+    transition: background-color var(--transition-fast);
+
+    &:nth-child(even) {
+      background: var(--vp-c-bg-alt);
+    }
+
+    &:hover {
+      background: var(--unity-tint) !important;
+      border-color: transparent;
+    }
+
+    &.active,
+    &:focus-within {
+      background: var(--unity-gradient) !important;
+      color: #fff;
+      border-color: transparent;
+
+      .article-title,
+      .article-excerpt,
+      .article-info,
+      .article-info .category,
+      a {
+        color: #fff !important;
+      }
+    }
+  }
+}
+
+// Sidebar link list (List View items)
+.vp-sidebar-links {
+  .vp-sidebar-item {
+    padding: 2px 0.5rem;
+    margin: 0;
+    border-radius: var(--radius-control);
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background: var(--unity-tint);
+    }
+
+    &.active {
+      background: var(--unity-gradient);
+      box-shadow: inset 3px 0 0 #4C7EFF;
+
+      .vp-sidebar-link {
+        color: #fff !important;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* ========================================
+ * 6. SCROLL VIEW — Unity Scroll View (Refinement)
+ * Ref: Scroll View.png
+ * ======================================== */
+
+// Vertical scrollbar — slim, rounded thumb that picks up Unity blue on hover
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-text-mute-2);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  min-height: 32px;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background: var(--vp-c-brand);
+    background-clip: padding-box;
+  }
+
+  &:active {
+    background: #4683C2;
+    background-clip: padding-box;
+  }
+}
+
+// Scrollbar corner (intersection of H + V scrollbars)
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+// Firefox scrollbar
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-text-mute-2) transparent;
+}
+
+/* ========================================
+ * 7. SEARCH FIELD — Unity Toolbar Search Field
+ * Ref: Search Field.png
+ * ======================================== */
+
+.search-box input,
+input[type="search"],
+#search-form input,
+.DocSearch-Input {
+  font-family: var(--vp-font);
+  font-size: $font-size-normal;
+  background: var(--unity-input-bg);
+  border: 1px solid var(--unity-input-border);
+  color: var(--vp-c-text);
+  padding: 2px 24px 2px 24px; // space for search icon left + clear right
+  min-height: 20px;
+  transition: border-color 0.08s ease, background-color 0.08s ease;
+
+  &::placeholder {
+    color: var(--vp-c-text-mute-2);
+    font-style: normal;
+  }
+
+  &:hover {
+    background: var(--unity-control-bg-hover);
+    border-color: var(--unity-control-border);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    border-color: var(--unity-focus-outline);
+    background: var(--unity-input-bg);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+// Search icon positioning
+.search-box,
+.DocSearch-Button {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%239A9A9A'%3E%3Cpath d='M11.5 7a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* ========================================
+ * 8. TAB — Unity Primary Tab
+ * Ref: Tab.png
+ * ======================================== */
+
+// Blog type tabs (article / category / tag / timeline)
+.vp-blog-type-switcher,
+.vp-blog-type-wrapper {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--vp-c-border);
+
+  .vp-blog-type-icon-wrapper {
+    position: relative;
+    padding: 4px 10px;
+    font-size: $font-size-semi-small;
+    background: var(--unity-tab-inactive-bg);
+    border: 1px solid var(--vp-c-border);
+    border-bottom: none;
+    color: var(--vp-c-text-mute);
+    cursor: pointer;
+    transition: background-color 0.06s ease;
+
+    &:hover {
+      background: var(--unity-control-bg-hover);
+      color: var(--vp-c-text);
+    }
+
+    &.active {
+      background: var(--unity-tab-active-bg);
+      color: var(--vp-c-text);
+      border-bottom: 2px solid var(--unity-blue);
+      font-weight: 500;
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--unity-focus-outline) !important;
+      outline-offset: -1px;
+    }
+  }
+}
+
+// Navigation tabs (if any tab-like nav exists)
+.vp-navbar .vp-nav-group {
+  display: flex;
+  gap: 0;
+
+  .vp-nav-item {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      transition: background-color 0.1s ease;
+    }
+
+    &:has(.route-link-active)::after {
+      background: var(--unity-blue);
+    }
+  }
+}
+
+/* ========================================
+ * 9. TEXT FIELD — Unity Text Field / Text Area
+ * Ref: Text Field.png
+ * ======================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="number"],
+input[type="tel"],
+textarea {
+  font-family: var(--vp-font);
+  font-size: $font-size-normal;
+  background: var(--unity-input-bg);
+  border: 1px solid var(--unity-input-border);
+  color: var(--vp-c-text);
+  padding: 2px 4px;
+  min-height: 18px;
+  transition: border-color 0.08s ease, background-color 0.08s ease;
+  outline: none;
+
+  &::placeholder {
+    color: var(--vp-c-text-mute-2);
+  }
+
+  &:hover {
+    border-color: var(--unity-control-border);
+  }
+
+  &:focus,
+  &:focus-visible {
+    border-color: var(--unity-focus-outline) !important;
+    outline: none !important;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    background: var(--vp-c-bg-alt);
+    pointer-events: none;
+  }
+}
+
+textarea {
+  min-height: 60px;
+  resize: vertical;
+  line-height: $line-height-normal;
+}
+
+/* ========================================
+ * 10. TOGGLE / CHECKBOX — Unity Toggle (Checkbox)
+ * Ref: Toggle (Checkbox).png
+ * ======================================== */
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  background: var(--unity-checkbox-bg);
+  border: 1px solid var(--unity-input-border);
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+  transition: border-color 0.08s ease;
+  border-radius: 0 !important;
+
+  &:hover {
+    border-color: var(--unity-control-border);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--unity-focus-outline) !important;
+    outline-offset: -1px;
+  }
+
+  // Checked state: checkmark
+  &:checked {
+    background: var(--unity-checkbox-bg);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 1px;
+      left: 3px;
+      width: 5px;
+      height: 9px;
+      border: solid var(--unity-checkbox-check);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  // Indeterminate state: dash
+  &:indeterminate {
+    background: var(--unity-checkbox-bg);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 2px;
+      right: 2px;
+      height: 2px;
+      background: var(--unity-checkbox-check);
+      transform: translateY(-50%);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+}
+
+// Checkbox + label pair
+input[type="checkbox"] + label {
+  font-size: $font-size-normal;
+  padding-left: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ========================================
+ * 11. TREE VIEW — Unity Tree View
+ * Ref: Tree View.png
+ * ======================================== */
+
+// The sidebar IS the tree view in VuePress
+.vp-sidebar {
+  // Tree View item base
+  .vp-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 0.5rem;
+    font-size: $font-size-semi-small;
+    color: var(--vp-c-text);
+    border-radius: var(--radius-control);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    text-decoration: none !important;
+
+    &:hover {
+      background: var(--unity-tint);
+      text-decoration: none !important;
+    }
+
+    // Selected tree item
+    &.route-link-active,
+    &.active {
+      background: var(--unity-gradient);
+      color: #fff !important;
+      font-weight: 500;
+      box-shadow: inset 3px 0 0 #4C7EFF;
+    }
+
+    // Focused tree item
+    &:focus-visible {
+      outline: 1px solid var(--unity-focus-outline) !important;
+      outline-offset: -1px;
+    }
+  }
+
+  // Tree indentation levels (15px per level, matching Unity)
+  .vp-sidebar-group {
+    .vp-sidebar-links {
+      .vp-sidebar-link {
+        padding-left: calc(0.5rem + 15px);
+      }
+    }
+
+    // Level 2
+    .vp-sidebar-group .vp-sidebar-links {
+      .vp-sidebar-link {
+        padding-left: calc(0.5rem + 30px);
+      }
+    }
+
+    // Level 3
+    .vp-sidebar-group .vp-sidebar-group .vp-sidebar-links {
+      .vp-sidebar-link {
+        padding-left: calc(0.5rem + 45px);
+      }
+    }
+
+    // Level 4
+    .vp-sidebar-group .vp-sidebar-group .vp-sidebar-group .vp-sidebar-links {
+      .vp-sidebar-link {
+        padding-left: calc(0.5rem + 60px);
+      }
+    }
+
+    // Level 5
+    .vp-sidebar-group .vp-sidebar-group .vp-sidebar-group .vp-sidebar-group .vp-sidebar-links {
+      .vp-sidebar-link {
+        padding-left: calc(0.5rem + 75px);
+      }
+    }
+  }
+
+  // Disabled tree item
+  .vp-sidebar-link.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+/* ========================================
+ * 12. BUTTON GROUP — Unity Button Group (Toolbar Strips)
+ * Ref: Button Groups.svg
+ * Sizes: Mini (17px), Regular (20px), Large (24px)
+ * Layout: Left/Middle/Right with shared edges, no gap
+ * Active: #96C3FB bg with gradient border
+ * Inactive: #E4E4E4 bg with gradient border
+ * ======================================== */
+
+// Button group container
+.unity-btn-group,
+.btn-group,
+.vp-button-group {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  vertical-align: middle;
+
+  // Reset child button styles for group context
+  > button,
+  > .vp-button,
+  > input[type="button"],
+  > a.btn {
+    border-radius: 0 !important;
+    margin: 0;
+    position: relative;
+
+    // Collapse adjacent borders (remove double borders)
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+
+    // Left button: left rounded corners
+    &:first-child {
+      border-radius: 3px 0 0 3px !important;
+    }
+
+    // Right button: right rounded corners
+    &:last-child {
+      border-radius: 0 3px 3px 0 !important;
+    }
+
+    // Single button in group: full radius
+    &:first-child:last-child {
+      border-radius: 3px !important;
+    }
+
+    // Ensure active/selected button appears above neighbors
+    &:hover,
+    &:focus-visible {
+      z-index: 1;
+    }
+
+    // Active / Selected state in group
+    &.active,
+    &[aria-pressed="true"],
+    &.selected {
+      background: #96C3FB;
+      border-color: #7EB3E8;
+      color: var(--vp-c-text);
+      z-index: 2;
+
+      &:hover {
+        background: #A8CFF7;
+      }
+
+      &:active {
+        background: #82B8F0;
+      }
+    }
+  }
+}
+
+// Dark mode active button group colors
+html[data-theme='dark'] {
+  .unity-btn-group,
+  .btn-group,
+  .vp-button-group {
+    > button,
+    > .vp-button,
+    > input[type="button"],
+    > a.btn {
+      &.active,
+      &[aria-pressed="true"],
+      &.selected {
+        background: #2C5D87;
+        border-color: #1E4F76;
+        color: #fff;
+
+        &:hover {
+          background: #346A96;
+        }
+
+        &:active {
+          background: #245478;
+        }
+      }
+    }
+  }
+}
+
+// Size variants
+.unity-btn-group--mini,
+.btn-group--mini {
+  > button,
+  > .vp-button,
+  > a.btn {
+    min-height: 17px;
+    padding: 1px 4px;
+    font-size: $font-size-small;
+  }
+}
+
+.unity-btn-group--regular,
+.btn-group--regular {
+  > button,
+  > .vp-button,
+  > a.btn {
+    min-height: 20px;
+    padding: 2px 6px;
+    font-size: $font-size-normal;
+  }
+}
+
+.unity-btn-group--large,
+.btn-group--large {
+  > button,
+  > .vp-button,
+  > a.btn {
+    min-height: 24px;
+    padding: 3px 8px;
+    font-size: $font-size-normal;
+  }
+}
+
+// VuePress navigation groups that behave like button groups
+.vp-navbar .vp-nav-group,
+.vp-blog-type-switcher {
+  > .vp-nav-item,
+  > .vp-blog-type-icon-wrapper {
+    &:first-child {
+      border-radius: 3px 0 0 3px !important;
+    }
+
+    &:last-child {
+      border-radius: 0 3px 3px 0 !important;
+    }
+
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0 !important;
+    }
+
+    &:first-child:last-child {
+      border-radius: 3px !important;
+    }
+  }
+}
+
+/* ========================================
+ * 13. VIEW GROUP — Unity View Container (Panel Layout)
+ * Ref: View Groups.svg
+ * Layout: Panel container with header bar, content area, scroll
+ * Background: #C8C8C8 (light) / #383838 (dark)
+ * Inner content: Bordered scroll area with list items
+ * Scrollbar: 12px track, #9A9A9A thumb with rx:5
+ * Text: #090909 (light) / #C4C4C4 (dark)
+ * ======================================== */
+
+// View Group / Panel container
+.unity-view-group,
+.view-group,
+.unity-panel {
+  background: var(--vp-c-bg);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  // Panel header (title bar)
+  .unity-view-header,
+  .view-header,
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    min-height: 22px;
+    background: var(--vp-c-bg-elv);
+    border-bottom: 1px solid var(--vp-c-border);
+    font-size: $font-size-semi-small;
+    font-weight: 600;
+    color: var(--vp-c-text);
+    user-select: none;
+
+    // Collapse/expand toggle icon
+    .toggle-icon,
+    .collapse-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--vp-c-text-mute);
+
+      &:hover {
+        color: var(--vp-c-text);
+      }
+    }
+
+    // Foldout triangle in header
+    .foldout-arrow {
+      width: 0;
+      height: 0;
+      border-left: 5px solid var(--vp-c-text-mute);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      transition: transform 0.12s ease;
+      flex-shrink: 0;
+
+      &.open {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  // Panel content area (scrollable)
+  .unity-view-content,
+  .view-content,
+  .panel-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    background: var(--vp-c-bg);
+
+    // Numbered list items inside view
+    .view-item,
+    .list-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      min-height: 20px;
+      font-size: $font-size-normal;
+      color: var(--vp-c-text);
+      transition: background-color 0.06s ease;
+      border-bottom: 1px solid transparent;
+
+      // Zebra striping
+      &:nth-child(even) {
+        background: var(--vp-c-bg-alt);
+      }
+
+      &:hover {
+        background: var(--unity-row-hover) !important;
+      }
+
+      // Selected row
+      &.selected,
+      &.active,
+      &:focus-within {
+        background: var(--unity-selection-bg) !important;
+        color: #fff;
+
+        * {
+          color: #fff !important;
+        }
+      }
+
+      // Item number / index
+      .item-index {
+        min-width: 24px;
+        text-align: right;
+        font-size: $font-size-small;
+        color: var(--vp-c-text-mute-2);
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  // Inner bordered scroll area (for embedded list views)
+  .unity-scroll-area,
+  .scroll-area {
+    border: 1px solid var(--vp-c-border);
+    background: var(--vp-c-bg);
+    overflow: auto;
+
+    // Refined scrollbar for embedded scroll areas (matches SVG spec)
+    &::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--vp-c-bg);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #9A9A9A;
+      border-radius: 5px !important;
+      border: 2px solid var(--vp-c-bg);
+      min-height: 40px;
+
+      &:hover {
+        background: #888;
+      }
+
+      &:active {
+        background: #777;
+      }
+    }
+
+    // Scroll arrows (top/bottom) matching SVG design
+    &::-webkit-scrollbar-button:single-button {
+      height: 12px;
+      background: var(--vp-c-bg);
+    }
+  }
+
+  // Panel footer / status bar
+  .unity-view-footer,
+  .view-footer,
+  .panel-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 8px;
+    min-height: 20px;
+    background: var(--vp-c-bg-elv);
+    border-top: 1px solid var(--vp-c-border);
+    font-size: $font-size-tiny;
+    color: var(--vp-c-text-mute-2);
+  }
+}
+
+// Dark mode scrollbar overrides for view groups
+html[data-theme='dark'] {
+  .unity-scroll-area,
+  .scroll-area {
+    &::-webkit-scrollbar-thumb {
+      background: #666;
+
+      &:hover {
+        background: #777;
+      }
+
+      &:active {
+        background: #888;
+      }
+    }
+  }
+}
+
+// Apply View Group styling to existing VuePress containers
+// Sidebar acts as a View Group panel
+.vp-sidebar {
+  border-radius: 0 !important; // Sidebar is flush, no panel radius
+
+  .vp-sidebar-group {
+    border-bottom: 1px solid var(--vp-c-border-soft);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// Sidebar directory labels: show full text on all pages (no single-line truncation)
+.vp-sidebar {
+  .vp-sidebar-link,
+  .vp-sidebar-header {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    align-items: flex-start;
+    line-height: 1.35;
+  }
+
+  .vp-sidebar-link > span,
+  .vp-sidebar-header > span {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+
+// Blog article list: let cards float instead of being framed in a single panel.
+// The polished card styles above own the visual rhythm.
+.vp-blog-main .article-wrapper {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ========================================
+ * Global TOC (On This Page) Right Dock
+ * ======================================== */
+@media (min-width: 1200px) {
+  .vp-page {
+    padding-right: 18rem;
+  }
+
+  // Keep "On this page" visible on the right for all pages.
+  .vp-toc-placeholder,
+  .vp-toc-wrapper,
+  .vp-catalog {
+    display: block !important;
+    position: fixed;
+    top: calc(#{$navbar-height} + 1rem);
+    right: 1rem;
+    width: 16rem;
+    max-height: calc(100vh - #{$navbar-height} - 2rem);
+    overflow: auto;
+    z-index: 20;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  // Force-expand details-based toc blocks.
+  .vp-toc-placeholder details > *:not(summary),
+  .vp-toc-wrapper details > *:not(summary),
+  .vp-catalog details > *:not(summary) {
+    display: block !important;
+  }
+
+  // Hide collapse affordances so toc appears permanently expanded.
+  .vp-toc-placeholder summary::marker,
+  .vp-toc-wrapper summary::marker,
+  .vp-catalog summary::marker,
+  .vp-toc-placeholder .vp-toc-toggle,
+  .vp-toc-wrapper .vp-toc-toggle,
+  .vp-catalog .vp-toc-toggle,
+  .vp-toc-placeholder .catalog-button,
+  .vp-toc-wrapper .catalog-button,
+  .vp-catalog .catalog-button {
+    display: none !important;
   }
 }

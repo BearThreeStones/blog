@@ -3,6 +3,8 @@ import { hopeTheme } from "vuepress-theme-hope";
 import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
 
+const blogMediaLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"><path d="M32 4 8 18v28l24 14 24-14V18z" fill="#2B3542"/><path d="M32 4 8 18l24 14 24-14z" fill="#5FA8F5"/><path d="M8 18v28l24 14V32z" fill="#3A79BB"/><path d="M56 18v28L32 60V32z" fill="#D7E0E8"/><path d="M32 14.5 18 22.6v16.8L32 47.5l14-8.1V22.6z" stroke="#F4F7FA" stroke-width="2.5" opacity=".45"/></svg>`;
+
 export default hopeTheme({
   hostname: "https://www.stonybear.com",
 
@@ -11,7 +13,7 @@ export default hopeTheme({
     url: "https://www.stonybear.com",
   },
 
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  logo: "/logo.svg",
 
   repo: "vuepress-theme-hope/vuepress-theme-hope",
 
@@ -24,12 +26,13 @@ export default hopeTheme({
   sidebar,
 
   // 页脚
-  footer: "默认页脚",
+  footer: 'ICP备案/许可证号：<a href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备2026003062号-1</a> | <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=川公网安备51200002001146号" target="_blank"><img src="/beian.png" style="vertical-align: middle; margin-right: 2px;" alt="公安备案图标" />川公网安备51200002001146号</a>',
   displayFooter: true,
+
 
   // 博客相关
   blog: {
-    avatar: "https://theme-hope-assets.vuejs.press/logo.svg",
+    avatar: "/logo.png",
     name: "StonyBear",
     description: "分享游戏开发和算法知识",
     intro: "/intro.html",
@@ -41,7 +44,7 @@ export default hopeTheme({
       Gmail: "leixiong517@gmail.com",
       Steam: "https://steamcommunity.com/profiles/76561198848310312/",
       VuePressThemeHope: {
-        icon: "https://theme-hope-assets.vuejs.press/logo.svg",
+        icon: blogMediaLogo,
         link: "https://theme-hope.vuejs.press",
       },
     },
@@ -161,7 +164,7 @@ export default hopeTheme({
     },
 
     icon: {
-      prefix: "fa6-solid:",
+      assets: [],
     },
 
     // 如果你需要 PWA。安装 @vuepress/plugin-pwa 并取消下方注释

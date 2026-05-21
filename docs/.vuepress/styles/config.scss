@@ -1,2 +1,42 @@
-// you can change config here
-$theme-color: #096dd9;
+// VuePress Theme Hope Configuration - Unity Editor Minimalist Style
+// Follows Unity Editor Foundations: Flat geometry, dense layouts, Inter typography
+
+// ============================================================================
+// THEME COLOR
+// ============================================================================
+$theme-color: #3A79BB; // Unity Blue
+
+// ============================================================================
+// TYPOGRAPHY - Unity Inter / System Stack
+// ============================================================================
+
+// Body font: Inter is preferred, fallback to system
+$vp-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+// Heading font: Same as body for consistency
+$vp-font-heading: $vp-font;
+
+// Monospace font: Unity style console/code font
+$vp-font-mono: "Consolas", "Courier New", monospace;
+
+// ============================================================================
+// RESPONSIVE BREAKPOINTS
+// ============================================================================
+$mobile: 419px;
+$tablet: 719px;
+$pad: 959px;
+$laptop: 1280px;
+$pc: 1920px;
+
+// ============================================================================
+// CODE BLOCKS - Unity Dark/Light Console Style
+// ============================================================================
+$code-bg-color: (
+  light: #F0F0F0,
+  dark: #1E1E1E,
+);
+
+$code-color: (
+  light: #2B2B2B,
+  dark: #D4D4D4,
+);
