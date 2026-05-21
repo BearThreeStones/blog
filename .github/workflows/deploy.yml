@@ -29,9 +29,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Show SSH key fingerprints
-        run: ssh-add -l -E sha256
-
       - name: Trust deployment host
         run: |
           mkdir -p ~/.ssh
@@ -40,4 +37,6 @@ jobs:
       - name: Deploy site
         run: sh ./deploy.sh
         env:
-          SERVER_REPO: git@43.138.57.136:/srv/git/blog.git
+          DEPLOY_HOST: 43.138.57.136
+          DEPLOY_USER: ubuntu
+          DEPLOY_PATH: /home/www/website
