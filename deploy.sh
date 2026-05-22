@@ -33,6 +33,11 @@ if [ -d "$GAMES_PUBLIC" ]; then
 	trap _restore_games_public EXIT INT TERM
 fi
 
+if [ ! -f "docs/.vuepress/docsearch.config.ts" ]; then
+	echo "ERROR: docs/.vuepress/docsearch.config.ts is missing (required for docs:build). Commit this file or copy from docsearch.config.example.ts."
+	exit 1
+fi
+
 # 生成静态文件
 npm run docs:build
 

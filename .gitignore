@@ -1,5 +1,4 @@
 node_modules/
-docs/.vuepress/docsearch.config.ts
 *.pem
 docs/.vuepress/.cache/
 docs/.vuepress/.temp/
