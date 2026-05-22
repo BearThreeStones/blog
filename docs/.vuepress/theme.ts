@@ -15,9 +15,13 @@ export default hopeTheme({
 
   logo: "/logo.svg",
 
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
+  repo: "BearThreeStones/blog",
 
-  docsDir: "src",
+  docsDir: "docs",
+  docsBranch: "clean-main",
+
+  lastUpdated: true,
+  contributors: "meta",
 
   // 导航栏
   navbar,
@@ -63,6 +67,8 @@ export default hopeTheme({
   // 多语言配置
   metaLocales: {
     editLink: "在 GitHub 上编辑此页",
+    lastUpdated: "上次更新",
+    contributors: "贡献者",
   },
 
   // 如果想要实时查看任何改变，启用它。注: 这对更新性能有很大负面影响
@@ -141,6 +147,8 @@ export default hopeTheme({
 
   // 在这里配置主题提供的插件
   plugins: {
+    git: true,
+
     blog: true,
 
     // Giscus 评论插件
