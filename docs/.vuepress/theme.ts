@@ -30,7 +30,7 @@ export default hopeTheme({
   sidebar,
 
   // 页脚
-  footer: 'ICP备案/许可证号：<a href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备2026003062号-1</a> | <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=川公网安备51200002001146号" target="_blank"><img src="/beian.png" style="vertical-align: middle; margin-right: 2px;" alt="公安备案图标" />川公网安备51200002001146号</a>',
+  footer: 'ICP备案/许可证号：<a href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备2026003062号-1</a> | <a href="http://beian.gov.cn/portal/registerSystemInfo?recordcode=川公网安备51200002001146号" target="_blank"><img src="/beian.png" style="vertical-align: middle; margin-right: 2px;" alt="公安备案图标" />川公网安备51200002001146号</a>',
   displayFooter: true,
 
 

@@ -1909,4 +1909,4 @@ Unity.(2023).[《Level up your code with design patterns and SOLID》](https://u
 
 ## 文章
 舍是境界.(2021).[设计模式：为什么说要多用组合少用继承？如何决定该用组合还是继承？](https://www.jianshu.com/p/c7cd5c49302f). 简书
-[Seba's Lab](http://www.sebaslab.com/).(2015).[The truth behind Inversion of Control – Part IV – Dependency Inversion Principle](http://www.sebaslab.com/the-truth-behind-inversion-of-control-part-iv-dependency-inversion-principle/)
+[Seba's Lab](https://www.sebaslab.com/).(2015).[The truth behind Inversion of Control – Part IV – Dependency Inversion Principle](http://www.sebaslab.com/the-truth-behind-inversion-of-control-part-iv-dependency-inversion-principle/)
