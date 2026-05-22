@@ -46,6 +46,16 @@ export default defineUserConfig({
   title: "StonyBear 程序开发分享",
   description: "StonyBear 程序开发分享",
 
+  head: [
+    [
+      "meta",
+      {
+        name: "algolia-site-verification",
+        content: "62EA9FE1881E1FD2",
+      },
+    ],
+  ],
+
   theme,
 
   // 注册自定义插件

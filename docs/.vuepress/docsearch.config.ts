@@ -1,8 +1,23 @@
-/** Algolia Application ID */
-export const docsearchAppId = "P9L9HZGQAK";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { loadEnv } from "vite";
 
-/** DocSearch Search-Only API Key */
-export const docsearchApiKey = "0cbb0182de541ca71cff1f4d2e35ae2a";
+const __dir = dirname(fileURLToPath(import.meta.url));
+const envMode =
+  process.env.NODE_ENV === "production" ? "production" : "development";
+for (const [key, value] of Object.entries(
+  loadEnv(envMode, resolve(__dir, ".."), ""),
+)) {
+  if (process.env[key] === undefined) process.env[key] = value;
+}
 
-/** 索引名称，须与 Algolia 控制台 / Crawler 中 indexName 完全一致 */
-export const docsearchIndexName = "Game Dev Document";
+/**
+ * DocSearch 凭证从环境变量读取，勿在此文件写入密钥。
+ * - CI：GitHub Actions Secrets → deploy.yml 的 env
+ * - 本地：复制 docs/.env.example 为 docs/.env 并填写
+ */
+export const docsearchAppId = process.env.DOCSEARCH_APP_ID ?? "";
+
+export const docsearchApiKey = process.env.DOCSEARCH_API_KEY ?? "";
+
+export const docsearchIndexName = process.env.DOCSEARCH_INDEX_NAME ?? "";

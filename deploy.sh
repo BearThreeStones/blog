@@ -33,9 +33,11 @@ if [ -d "$GAMES_PUBLIC" ]; then
 	trap _restore_games_public EXIT INT TERM
 fi
 
-if [ ! -f "docs/.vuepress/docsearch.config.ts" ]; then
-	echo "ERROR: docs/.vuepress/docsearch.config.ts is missing (required for docs:build). Commit this file or copy from docsearch.config.example.ts."
-	exit 1
+if [ -n "${GITHUB_ACTIONS:-}" ]; then
+	if [ -z "${DOCSEARCH_APP_ID:-}" ] || [ -z "${DOCSEARCH_API_KEY:-}" ] || [ -z "${DOCSEARCH_INDEX_NAME:-}" ]; then
+		echo "ERROR: Configure DOCSEARCH_APP_ID, DOCSEARCH_API_KEY, DOCSEARCH_INDEX_NAME in GitHub repository Secrets."
+		exit 1
+	fi
 fi
 
 # 生成静态文件

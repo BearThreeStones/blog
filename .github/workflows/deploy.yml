@@ -38,3 +38,8 @@ jobs:
           DEPLOY_HOST: 43.138.57.136
           DEPLOY_USER: ubuntu
           DEPLOY_PATH: /home/www/website
+          DOCSEARCH_APP_ID: ${{ secrets.DOCSEARCH_APP_ID }}
+          DOCSEARCH_API_KEY: ${{ secrets.DOCSEARCH_API_KEY }}
+          DOCSEARCH_INDEX_NAME: ${{ secrets.DOCSEARCH_INDEX_NAME }}
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+          BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
