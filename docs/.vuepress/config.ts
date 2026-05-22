@@ -25,6 +25,9 @@ export default defineUserConfig({
   bundler: viteBundler({
     viteOptions: {
       server: {
+        // 本地 PWA 安装测试（需 mkcert 证书，勿提交 *.pem）：
+        // https: true
+        // https: { key: fs.readFileSync("path/to/key.pem"), cert: fs.readFileSync("path/to/cert.pem") },
         watch: {
           ignored: [
             "**/dist/**",
@@ -53,6 +56,6 @@ export default defineUserConfig({
     ...analyticsPlugins,
   ],
 
-  // 和 PWA 一起启用
-  // shouldPrefetch: false,
+  // 与 PWA 一起启用，避免预抓取与 Service Worker 缓存冲突
+  shouldPrefetch: false,
 });
