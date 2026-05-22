@@ -1,0 +1,39 @@
+name: Deploy Games (batch)
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: "Games batch (1–3)"
+        required: true
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
+
+jobs:
+  deploy-games:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust deployment host
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 43.138.57.136 >> ~/.ssh/known_hosts
+
+      - name: Deploy games batch
+        run: sh ./deploy-games.sh "${{ inputs.batch }}"
+        env:
+          DEPLOY_HOST: 43.138.57.136
+          DEPLOY_USER: ubuntu
+          DEPLOY_PATH: /home/www/website
