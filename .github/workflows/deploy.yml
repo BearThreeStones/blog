@@ -1,7 +1,17 @@
 name: Deploy Blog
 
 on:
+  push:
+    branches:
+      - main
+      - clean-main
   workflow_dispatch:
+    inputs:
+      deploy_games:
+        description: Force deploy all Unity games (ignore change detection)
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   deploy:
@@ -32,6 +42,13 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 43.138.57.136 >> ~/.ssh/known_hosts
 
+      - name: Detect Unity games changes
+        id: games
+        env:
+          FORCE_DEPLOY_GAMES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_games == 'true' && 'true' || '' }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        run: sh ./scripts/detect-games-changed.sh
+
       - name: Deploy site
         run: sh ./deploy.sh
         env:
@@ -43,3 +60,17 @@ jobs:
           DOCSEARCH_INDEX_NAME: ${{ secrets.DOCSEARCH_INDEX_NAME }}
           GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
           BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
+
+      - name: Deploy Unity games
+        if: steps.games.outputs.changed == 'true'
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.deploy_games }}" = "true" ]; then
+            sh ./deploy-games.sh all
+          else
+            sh ./deploy-games.sh changed
+          fi
+        env:
+          DEPLOY_HOST: 43.138.57.136
+          DEPLOY_USER: ubuntu
+          DEPLOY_PATH: /home/www/website
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}

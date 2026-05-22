@@ -1,0 +1,32 @@
+# Unity WebGL：/games/ 下的 *.gz 必须带 Content-Encoding，否则浏览器会把压缩数据当 JS 解析并报
+# SyntaxError: Invalid or unexpected token
+#
+# 用法（Ubuntu + 站点配置在 /etc/nginx/sites-available/）：
+#   sudo cp server/nginx-games-gzip.conf.example /etc/nginx/snippets/blog-games-gzip.conf
+#   在 server { ... } 内、location / 之前添加：include snippets/blog-games-gzip.conf;
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# 验证：
+#   curl -sI https://www.stonybear.com/games/single-responsibility/Build/build.framework.js.gz | grep -i content-encoding
+#   应看到：Content-Encoding: gzip
+
+location ~ ^/games/.+\.js\.gz$ {
+    gzip off;
+    types { application/javascript gz; }
+    default_type application/javascript;
+    add_header Content-Encoding gzip;
+}
+
+location ~ ^/games/.+\.wasm\.gz$ {
+    gzip off;
+    types { application/wasm gz; }
+    default_type application/wasm;
+    add_header Content-Encoding gzip;
+}
+
+location ~ ^/games/.+\.data\.gz$ {
+    gzip off;
+    types { application/octet-stream gz; }
+    default_type application/octet-stream;
+    add_header Content-Encoding gzip;
+}

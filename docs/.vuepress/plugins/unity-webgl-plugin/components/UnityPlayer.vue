@@ -92,6 +92,21 @@ function isValidUnityLoaderSource(source: string): boolean {
   return source.includes('createUnityInstance');
 }
 
+function isCompressedUnityAsset(assetUrl: string): boolean {
+  return /\.(gz|br)(\?|#|$)/i.test(assetUrl);
+}
+
+function hasValidCompressionHeaders(
+  assetUrl: string,
+  contentEncoding: string | null,
+): boolean {
+  const encoding = (contentEncoding ?? '').toLowerCase();
+  if (assetUrl.endsWith('.br') || assetUrl.includes('.br?')) {
+    return encoding === 'br';
+  }
+  return encoding === 'gzip';
+}
+
 function getBuildBaseNameCandidates(): string[] {
   return [...new Set([gameDisplayName.value, ...DEFAULT_BUILD_BASENAMES])];
 }
@@ -103,7 +118,22 @@ async function canLoadUnityAsset(assetUrl: string): Promise<boolean> {
   }
 
   const contentType = response.headers.get('content-type') ?? '';
-  return !contentType.includes('text/html');
+  const contentEncoding = response.headers.get('content-encoding');
+  const isHtml = contentType.includes('text/html');
+
+  // #region agent log
+  fetch('http://127.0.0.1:7889/ingest/9708213b-c12e-4952-8fc5-32be90bf0cbf',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'b440c1'},body:JSON.stringify({sessionId:'b440c1',hypothesisId:'H1',location:'UnityPlayer.vue:canLoadUnityAsset',message:'asset HEAD probe',data:{assetUrl,ok:response.ok,contentType,contentEncoding,isCompressed:isCompressedUnityAsset(assetUrl),isHtml},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+
+  if (isHtml) {
+    return false;
+  }
+
+  if (isCompressedUnityAsset(assetUrl)) {
+    return hasValidCompressionHeaders(assetUrl, contentEncoding);
+  }
+
+  return true;
 }
 
 async function resolveUnityAssetUrl(
@@ -155,6 +185,38 @@ onMounted(() => {
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth < 768;
 });
+
+async function detectGzipWithoutEncoding(gamePath: string): Promise<string | null> {
+  const sampleUrl = `/games/${gamePath}/Build/build.framework.js.gz`;
+
+  try {
+    const response = await fetch(sampleUrl, { method: 'HEAD', cache: 'no-store' });
+    if (!response.ok) {
+      return null;
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    const contentEncoding = response.headers.get('content-encoding');
+    if (contentType.includes('text/html')) {
+      return null;
+    }
+
+    if (
+      isCompressedUnityAsset(sampleUrl) &&
+      !hasValidCompressionHeaders(sampleUrl, contentEncoding)
+    ) {
+      return (
+        'Unity .gz assets are reachable but nginx is not sending Content-Encoding: gzip. ' +
+        'Apply server/nginx-games-gzip.conf.example on the host, then reload nginx. ' +
+        'See docs in that file or redeploy games after fixing the server.'
+      );
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
 
 // Detect build files (try Build/ subdirectory first, then flat structure)
 async function detectBuildFiles(): Promise<UnityBuildInfo | null> {
@@ -266,6 +328,11 @@ async function handleLoadClick() {
     // Detect build files
     const buildInfo = await detectBuildFiles();
     if (!buildInfo) {
+      const gzipMisconfig = await detectGzipWithoutEncoding(props.gamePath);
+      if (gzipMisconfig) {
+        throw new Error(gzipMisconfig);
+      }
+
       throw new Error(
         `Game build not found at /games/${props.gamePath}/. ` +
         `Please ensure the Unity WebGL build is placed in the correct directory with the loader script.`
