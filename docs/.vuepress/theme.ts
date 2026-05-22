@@ -1,7 +1,18 @@
 import { hopeTheme } from "vuepress-theme-hope";
 
+import {
+  docsearchApiKey,
+  docsearchAppId,
+  docsearchIndexName,
+} from "./docsearch.config.ts";
 import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
+
+const hasDocSearch =
+  Boolean(docsearchAppId) &&
+  Boolean(docsearchApiKey) &&
+  Boolean(docsearchIndexName) &&
+  !docsearchAppId.startsWith("YOUR_");
 
 const blogMediaLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"><path d="M32 4 8 18v28l24 14 24-14V18z" fill="#2B3542"/><path d="M32 4 8 18l24 14 24-14z" fill="#5FA8F5"/><path d="M8 18v28l24 14V32z" fill="#3A79BB"/><path d="M56 18v28L32 60V32z" fill="#D7E0E8"/><path d="M32 14.5 18 22.6v16.8L32 47.5l14-8.1V22.6z" stroke="#F4F7FA" stroke-width="2.5" opacity=".45"/></svg>`;
 
@@ -170,6 +181,25 @@ export default hopeTheme({
     components: {
       components: ["Badge", "VPCard"],
     },
+
+    ...(hasDocSearch
+      ? {
+          docsearch: {
+            appId: docsearchAppId,
+            apiKey: docsearchApiKey,
+            indexName: docsearchIndexName,
+            placeholder: "搜索文档",
+            locales: {
+              "/": {
+                placeholder: "搜索文档",
+                translations: {
+                  button: { buttonText: "搜索" },
+                },
+              },
+            },
+          },
+        }
+      : {}),
 
     icon: {
       assets: [],
