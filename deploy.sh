@@ -44,42 +44,10 @@ if [ -d "docs/.vuepress/dist/games" ]; then
 	rm -rf docs/.vuepress/dist/games
 fi
 
-# #region agent log
-_debug_log() {
-	_hid="$1"
-	_msg="$2"
-	_data="$3"
-	_ts=$(date +%s 2>/dev/null || echo 0)
-	_line="{\"sessionId\":\"f61c0e\",\"hypothesisId\":\"${_hid}\",\"location\":\"deploy.sh\",\"message\":\"${_msg}\",\"data\":${_data},\"timestamp\":$((_ts * 1000))}"
-	echo "$_line" >> "${DEBUG_LOG:-debug-f61c0e.log}" 2>/dev/null || true
-	echo "DEBUG $_line" >&2
-}
-# #endregion
-
-RSYNC_FLAGS="-rvz --delete --no-times --omit-dir-times --no-perms --no-owner --no-group --exclude=/games/"
-RSYNC_SRC="docs/.vuepress/dist/"
-RSYNC_DEST="${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
-
-# #region agent log
-_debug_log "A" "rsync preflight" "{\"flags\":\"${RSYNC_FLAGS}\",\"excludes\":[\"/games/\"],\"src\":\"${RSYNC_SRC}\",\"dest_host\":\"${DEPLOY_HOST}\",\"dest_path\":\"${DEPLOY_PATH}\",\"rsync_version\":\"$(rsync --version 2>/dev/null | head -n1 | sed 's/\"/\\\\\"/g')\"}"
-# #endregion
-
-# 部署静态站点（不尝试设置目标端目录/文件时间戳与属主，避免 www 目录权限导致失败）
+# 部署静态站点（不设置目标端时间戳/属主；不上传 games/）
 # shellcheck disable=SC2086
-set +e
-rsync $RSYNC_FLAGS "${RSYNC_SRC}" "${RSYNC_DEST}"
-RSYNC_EXIT=$?
-set -e
-
-# #region agent log
-_debug_log "B" "rsync finished" "{\"exit_code\":${RSYNC_EXIT}}"
-_debug_log "D" "set -e behavior" "{\"will_abort\":$([ "${RSYNC_EXIT}" -ne 0 ] && echo true || echo false)}"
-# #endregion
-
-if [ "${RSYNC_EXIT}" -ne 0 ]; then
-	echo "rsync failed with exit code ${RSYNC_EXIT}" >&2
-	exit "${RSYNC_EXIT}"
-fi
+rsync -rvz --delete --no-times --omit-dir-times --no-perms --no-owner --no-group --exclude=/games/ \
+	"docs/.vuepress/dist/" "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
 
 # 可选：推送到 GitHub Pages（仅在显式请求时）
 if [ "$PUSH_GITHUB" -eq 1 ]; then
