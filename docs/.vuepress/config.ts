@@ -1,3 +1,4 @@
+import "./load-docs-env.js";
 import { defineUserConfig } from "vuepress";
 import { viteBundler } from "@vuepress/bundler-vite";
 import { echartsTabsPlugin } from "./plugins/echarts-tabs-plugin/index.js";
