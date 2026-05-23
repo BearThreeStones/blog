@@ -1,6 +1,6 @@
 import type { Plugin } from 'vuepress';
 import { getDirname, path } from 'vuepress/utils';
-import { unityInlineRule, renderUnityPlayer } from './markdown/unityRule.js';
+import { unityBlockRule, unityInlineRule, renderUnityPlayer } from './markdown/unityRule.js';
 
 const __dirname = getDirname(import.meta.url);
 
@@ -18,10 +18,11 @@ export const unityWebGLPlugin = (options: UnityWebGLPluginOptions = {}): Plugin 
     
     // Extend markdown-it parser
     extendsMarkdown: (md) => {
-      // Register inline rule BEFORE default image rule
-      md.inline.ruler.before('image', 'unity_player', unityInlineRule);
-      
-      // Register renderer
+      // Block rule: standalone `![game](path)` lines (not wrapped in <p>)
+      md.block.ruler.before('paragraph', 'unity_player', unityBlockRule);
+      // Inline rule: only when the syntax appears inside a paragraph
+      md.inline.ruler.before('image', 'unity_player_inline', unityInlineRule);
+
       renderUnityPlayer(md);
     },
   };

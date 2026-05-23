@@ -121,10 +121,6 @@ async function canLoadUnityAsset(assetUrl: string): Promise<boolean> {
   const contentEncoding = response.headers.get('content-encoding');
   const isHtml = contentType.includes('text/html');
 
-  // #region agent log
-  fetch('http://127.0.0.1:7889/ingest/9708213b-c12e-4952-8fc5-32be90bf0cbf',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'b440c1'},body:JSON.stringify({sessionId:'b440c1',hypothesisId:'H1',location:'UnityPlayer.vue:canLoadUnityAsset',message:'asset HEAD probe',data:{assetUrl,ok:response.ok,contentType,contentEncoding,isCompressed:isCompressedUnityAsset(assetUrl),isHtml},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-
   if (isHtml) {
     return false;
   }
