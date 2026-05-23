@@ -33,11 +33,18 @@ type UnityAssetKey = 'dataUrl' | 'frameworkUrl' | 'codeUrl';
 
 const DEFAULT_BUILD_BASENAMES = ['build'];
 
+/** Prefer compressed assets first — server often has both .gz and raw; raw wasm/data are tens of MB. */
 const UNITY_ASSET_SUFFIXES: Record<UnityAssetKey, string[]> = {
-  dataUrl: ['.data', '.data.gz', '.data.br'],
-  frameworkUrl: ['.framework.js', '.framework.js.gz', '.framework.js.br'],
-  codeUrl: ['.wasm', '.wasm.gz', '.wasm.br'],
+  dataUrl: ['.data.gz', '.data.br', '.data'],
+  frameworkUrl: ['.framework.js.gz', '.framework.js.br', '.framework.js'],
+  codeUrl: ['.wasm.gz', '.wasm.br', '.wasm'],
 };
+
+const UNITY_LOADER_SCRIPT_ID = 'unity-webgl-shared-loader';
+const buildInfoCache = new Map<string, Promise<UnityBuildInfo | null>>();
+const loaderAvailabilityCache = new Map<string, Promise<boolean>>();
+let sharedLoaderUrl: string | null = null;
+let sharedLoaderPromise: Promise<void> | null = null;
 
 // State
 const state = ref<UnityPlayerState>('INITIAL');
@@ -88,10 +95,6 @@ function getErrorMessage(error: unknown): string {
   return 'Unknown error occurred';
 }
 
-function isValidUnityLoaderSource(source: string): boolean {
-  return source.includes('createUnityInstance');
-}
-
 function isCompressedUnityAsset(assetUrl: string): boolean {
   return /\.(gz|br)(\?|#|$)/i.test(assetUrl);
 }
@@ -108,7 +111,7 @@ function hasValidCompressionHeaders(
 }
 
 function getBuildBaseNameCandidates(): string[] {
-  return [...new Set([gameDisplayName.value, ...DEFAULT_BUILD_BASENAMES])];
+  return [...new Set([...DEFAULT_BUILD_BASENAMES, gameDisplayName.value])];
 }
 
 async function canLoadUnityAsset(assetUrl: string): Promise<boolean> {
@@ -137,14 +140,21 @@ async function resolveUnityAssetUrl(
   buildBaseName: string,
   assetKey: UnityAssetKey,
 ): Promise<string | null> {
-  for (const suffix of UNITY_ASSET_SUFFIXES[assetKey]) {
-    const assetUrl = `${buildPath}/${buildBaseName}${suffix}`;
-    try {
-      if (await canLoadUnityAsset(assetUrl)) {
-        return assetUrl;
+  const suffixes = UNITY_ASSET_SUFFIXES[assetKey];
+  const results = await Promise.all(
+    suffixes.map(async (suffix) => {
+      const assetUrl = `${buildPath}/${buildBaseName}${suffix}`;
+      try {
+        return (await canLoadUnityAsset(assetUrl)) ? assetUrl : null;
+      } catch {
+        return null;
       }
-    } catch (error) {
-      // Asset not available, try the next candidate.
+    }),
+  );
+
+  for (let i = 0; i < suffixes.length; i += 1) {
+    if (results[i]) {
+      return results[i];
     }
   }
 
@@ -214,10 +224,32 @@ async function detectGzipWithoutEncoding(gamePath: string): Promise<string | nul
   return null;
 }
 
-// Detect build files (try Build/ subdirectory first, then flat structure)
-async function detectBuildFiles(): Promise<UnityBuildInfo | null> {
-  const basePath = `/games/${props.gamePath}`;
+async function isLoaderAvailable(loaderUrl: string): Promise<boolean> {
+  const cached = loaderAvailabilityCache.get(loaderUrl);
+  if (cached) {
+    return cached;
+  }
 
+  const probe = (async () => {
+    const response = await fetch(loaderUrl, { method: 'HEAD', cache: 'force-cache' });
+    if (!response.ok) {
+      return false;
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (contentType.includes('text/html')) {
+      return false;
+    }
+
+    return true;
+  })();
+
+  loaderAvailabilityCache.set(loaderUrl, probe);
+  return probe;
+}
+
+async function detectBuildFilesUncached(): Promise<UnityBuildInfo | null> {
+  const basePath = `/games/${props.gamePath}`;
   const buildPaths = [`${basePath}/Build`, basePath];
 
   for (const buildPath of buildPaths) {
@@ -225,13 +257,7 @@ async function detectBuildFiles(): Promise<UnityBuildInfo | null> {
       const loaderUrl = `${buildPath}/${buildBaseName}.loader.js`;
 
       try {
-        const response = await fetch(loaderUrl, { cache: 'no-store' });
-        if (!response.ok) {
-          continue;
-        }
-
-        const source = await response.text();
-        if (!isValidUnityLoaderSource(source)) {
+        if (!(await isLoaderAvailable(loaderUrl))) {
           continue;
         }
 
@@ -239,44 +265,67 @@ async function detectBuildFiles(): Promise<UnityBuildInfo | null> {
         if (buildInfo) {
           return buildInfo;
         }
-      } catch (error) {
+      } catch {
         // Loader not available, try the next candidate.
       }
     }
   }
-  
+
   return null;
 }
 
-// Load Unity loader script dynamically
-function loadUnityLoader(loaderUrl: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    // Check if script already loaded
-    const existingScript = document.getElementById(`unity-loader-${componentId.value}`);
-    if (existingScript) {
-      if (typeof (window as any).createUnityInstance === 'function') {
-        resolve();
-        return;
-      }
+function detectBuildFiles(): Promise<UnityBuildInfo | null> {
+  const cacheKey = props.gamePath;
+  let pending = buildInfoCache.get(cacheKey);
+  if (!pending) {
+    pending = detectBuildFilesUncached();
+    buildInfoCache.set(cacheKey, pending);
+  }
+  return pending;
+}
 
-      existingScript.remove();
+function loadUnityLoader(loaderUrl: string): Promise<void> {
+  if (typeof (window as any).createUnityInstance === 'function') {
+    if (!sharedLoaderUrl || sharedLoaderUrl === loaderUrl) {
+      return Promise.resolve();
     }
-    
+
+    const existingScript = document.getElementById(UNITY_LOADER_SCRIPT_ID);
+    existingScript?.remove();
+    sharedLoaderUrl = null;
+    sharedLoaderPromise = null;
+    delete (window as any).createUnityInstance;
+  }
+
+  if (sharedLoaderPromise && sharedLoaderUrl === loaderUrl) {
+    return sharedLoaderPromise;
+  }
+
+  sharedLoaderUrl = loaderUrl;
+  sharedLoaderPromise = new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.id = `unity-loader-${componentId.value}`;
+    script.id = UNITY_LOADER_SCRIPT_ID;
     script.src = loaderUrl;
     script.onload = () => {
       if (typeof (window as any).createUnityInstance !== 'function') {
         script.remove();
+        sharedLoaderUrl = null;
+        sharedLoaderPromise = null;
         reject(new Error(`Unity loader script did not expose createUnityInstance: ${loaderUrl}`));
         return;
       }
 
       resolve();
     };
-    script.onerror = () => reject(new Error(`Failed to load Unity loader script: ${loaderUrl}`));
+    script.onerror = () => {
+      sharedLoaderUrl = null;
+      sharedLoaderPromise = null;
+      reject(new Error(`Failed to load Unity loader script: ${loaderUrl}`));
+    };
     document.head.appendChild(script);
   });
+
+  return sharedLoaderPromise;
 }
 
 // Initialize Unity instance
@@ -314,14 +363,13 @@ async function initUnityInstance(buildInfo: UnityBuildInfo): Promise<void> {
 // Handle load button click
 async function handleLoadClick() {
   if (state.value !== 'INITIAL') return;
-  
+
   state.value = 'LOADING';
   loadingProgress.value = 0;
   errorMessage.value = '';
   await nextTick();
   
   try {
-    // Detect build files
     const buildInfo = await detectBuildFiles();
     if (!buildInfo) {
       const gzipMisconfig = await detectGzipWithoutEncoding(props.gamePath);
@@ -334,13 +382,10 @@ async function handleLoadClick() {
         `Please ensure the Unity WebGL build is placed in the correct directory with the loader script.`
       );
     }
-    
-    // Load Unity loader script
+
     await loadUnityLoader(buildInfo.loaderUrl);
-    
-    // Initialize Unity instance
     await initUnityInstance(buildInfo);
-    
+
     state.value = 'LOADED';
   } catch (error) {
     state.value = 'ERROR';
