@@ -33,11 +33,11 @@ type UnityAssetKey = 'dataUrl' | 'frameworkUrl' | 'codeUrl';
 
 const DEFAULT_BUILD_BASENAMES = ['build'];
 
-/** Prefer compressed assets first — server often has both .gz and raw; raw wasm/data are tens of MB. */
+/** Prefer precompressed .gz; skip .br when host has no Brotli build (SPA fallback returns HTML). */
 const UNITY_ASSET_SUFFIXES: Record<UnityAssetKey, string[]> = {
-  dataUrl: ['.data.gz', '.data.br', '.data'],
-  frameworkUrl: ['.framework.js.gz', '.framework.js.br', '.framework.js'],
-  codeUrl: ['.wasm.gz', '.wasm.br', '.wasm'],
+  dataUrl: ['.data.gz', '.data'],
+  frameworkUrl: ['.framework.js.gz', '.framework.js'],
+  codeUrl: ['.wasm.gz', '.wasm'],
 };
 
 const UNITY_LOADER_SCRIPT_ID = 'unity-webgl-shared-loader';
@@ -328,6 +328,23 @@ function loadUnityLoader(loaderUrl: string): Promise<void> {
   return sharedLoaderPromise;
 }
 
+async function resetUnityRuntime(): Promise<void> {
+  if (unityInstance.value) {
+    try {
+      await unityInstance.value.Quit();
+    } catch {
+      // Instance may not have finished starting.
+    }
+    unityInstance.value = null;
+  }
+
+  document.getElementById(UNITY_LOADER_SCRIPT_ID)?.remove();
+  sharedLoaderUrl = null;
+  sharedLoaderPromise = null;
+  delete (window as any).createUnityInstance;
+  delete (window as any).unityFramework;
+}
+
 // Initialize Unity instance
 async function initUnityInstance(buildInfo: UnityBuildInfo): Promise<void> {
   if (!canvasRef.value) {
@@ -364,6 +381,8 @@ async function initUnityInstance(buildInfo: UnityBuildInfo): Promise<void> {
 async function handleLoadClick() {
   if (state.value !== 'INITIAL') return;
 
+  await resetUnityRuntime();
+
   state.value = 'LOADING';
   loadingProgress.value = 0;
   errorMessage.value = '';
@@ -388,6 +407,7 @@ async function handleLoadClick() {
 
     state.value = 'LOADED';
   } catch (error) {
+    await resetUnityRuntime();
     state.value = 'ERROR';
     errorMessage.value = getErrorMessage(error);
     console.error('[UnityPlayer] Load failed:', error);
@@ -395,7 +415,8 @@ async function handleLoadClick() {
 }
 
 // Handle retry button click
-function handleRetry() {
+async function handleRetry() {
+  await resetUnityRuntime();
   state.value = 'INITIAL';
   loadingProgress.value = 0;
   errorMessage.value = '';
@@ -427,20 +448,7 @@ onMounted(() => {
 // Cleanup on unmount
 onBeforeUnmount(async () => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  
-  if (unityInstance.value) {
-    try {
-      await unityInstance.value.Quit();
-    } catch (e) {
-      console.error('[UnityPlayer] Failed to quit Unity instance:', e);
-    }
-  }
-  
-  // Remove loader script
-  const script = document.getElementById(`unity-loader-${componentId.value}`);
-  if (script) {
-    script.remove();
-  }
+  await resetUnityRuntime();
 });
 </script>
 

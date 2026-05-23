@@ -24,9 +24,10 @@ location ~ ^/games/.+\.wasm\.gz$ {
     add_header Content-Encoding gzip;
 }
 
+# Unity loader expects application/gzip (not octet-stream) so Safari decompresses .data.gz correctly.
 location ~ ^/games/.+\.data\.gz$ {
     gzip off;
-    types { application/octet-stream gz; }
-    default_type application/octet-stream;
+    types { application/gzip gz; }
+    default_type application/gzip;
     add_header Content-Encoding gzip;
 }
