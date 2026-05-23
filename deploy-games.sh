@@ -8,9 +8,14 @@
 #   sh deploy-games.sh changed           # 仅部署 git 变更涉及的游戏（CI 推荐）
 #   sh deploy-games.sh <game-slug>       # 部署单个游戏，如 strategy
 #   sh deploy-games.sh batch <N>         # 部署动态计算的第 N 批
-#   sh deploy-games.sh <N>             # 同 batch N
+#   sh deploy-games.sh <N>               # 同 batch N
+#   sh deploy-games.sh batch-count       # 输出批次数（数字）
+#   sh deploy-games.sh batch-matrix      # 输出 JSON 数组，供 Actions matrix 使用
 #
-# 环境变量: DEPLOY_HOST, DEPLOY_USER, DEPLOY_PATH, GAMES_BATCH_MAX_MB（默认 150）
+# 环境变量:
+#   DEPLOY_HOST, DEPLOY_USER, DEPLOY_PATH
+#   GAMES_BATCH_MAX_MB（默认 150）
+#   GAMES_SKIP_EXPAND=true  跳过 gunzip（需 nginx 已配置 Content-Encoding: gzip）
 
 set -e
 
@@ -83,9 +88,15 @@ _deploy_one_game() {
 	fi
 
 	_staging="$(mktemp -d 2>/dev/null || echo "/tmp/blog-game-staging-$$-${_game}")"
-	echo "---- 准备（复制并解压 .gz）"
+	if [ "${GAMES_SKIP_EXPAND:-}" = "true" ]; then
+		echo "---- 准备（复制，跳过解压；依赖 nginx gzip 头）"
+	else
+		echo "---- 准备（复制并解压 .gz）"
+	fi
 	cp -a "$src/." "$_staging/"
-	_expand_gzip_in_tree "$_staging"
+	if [ "${GAMES_SKIP_EXPAND:-}" != "true" ]; then
+		_expand_gzip_in_tree "$_staging"
+	fi
 	echo "---- rsync -> ${DEPLOY_PATH}/games/${_game}/"
 	# shellcheck disable=SC2086
 	rsync $RSYNC_OPTS "$_staging/" "$dest"
@@ -127,12 +138,28 @@ _print_plan() {
 	done
 }
 
+_batch_count() {
+	_build_batch_plan
+}
+
+_batch_matrix_json() {
+	_total=$(_batch_count)
+	_out=""
+	_i=1
+	while [ "$_i" -le "$_total" ]; do
+		[ -n "$_out" ] && _out="${_out},"
+		_out="${_out}${_i}"
+		_i=$((_i + 1))
+	done
+	printf '[%s]\n' "$_out"
+}
+
 _deploy_batch() {
 	_n="$1"
 	_total_batches=$(_build_batch_plan)
 	if [ "$_n" -lt 1 ] || [ "$_n" -gt "$_total_batches" ]; then
-		echo "无效批次 ${_n}，当前共 ${_total_batches} 批。运行: sh deploy-games.sh plan" >&2
-		exit 1
+		echo "跳过无效批次 ${_n}（当前共 ${_total_batches} 批）"
+		return 0
 	fi
 	_games=$(cat "${_PLAN_DIR}/batch-${_n}")
 	_count=$(echo "$_games" | grep -c . || true)
@@ -189,6 +216,8 @@ _print_usage() {
 	echo "  changed           仅部署 git 变更的游戏（CI）" >&2
 	echo "  <game-slug>       部署单个游戏" >&2
 	echo "  batch <N> | <N>   部署动态第 N 批" >&2
+	echo "  batch-count       输出批次数" >&2
+	echo "  batch-matrix      输出批次 JSON 数组（CI matrix）" >&2
 }
 
 _cmd="${1:-}"
@@ -217,6 +246,12 @@ case "$_cmd" in
 		;;
 	plan)
 		_print_plan
+		;;
+	batch-count)
+		_batch_count
+		;;
+	batch-matrix)
+		_batch_matrix_json
 		;;
 	all)
 		_all=$(_list_games)

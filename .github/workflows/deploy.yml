@@ -8,15 +8,40 @@ on:
   workflow_dispatch:
     inputs:
       deploy_games:
-        description: Force deploy all Unity games (ignore change detection)
+        description: Force deploy all Unity games (multi-job batches)
         required: false
         default: false
         type: boolean
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+env:
+  DEPLOY_HOST: 43.138.57.136
+  DEPLOY_USER: ubuntu
+  DEPLOY_PATH: /home/www/website
 
+jobs:
+  detect-games:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      changed: ${{ steps.detect.outputs.changed }}
+      mode: ${{ steps.detect.outputs.mode }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect games deploy mode
+        id: detect
+        env:
+          FORCE_DEPLOY_GAMES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_games == 'true' && 'true' || '' }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        run: sh ./scripts/detect-games-changed.sh
+
+  deploy-site:
+    runs-on: ubuntu-latest
+    needs: detect-games
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,37 +65,109 @@ jobs:
       - name: Trust deployment host
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H 43.138.57.136 >> ~/.ssh/known_hosts
-
-      - name: Detect Unity games changes
-        id: games
-        env:
-          FORCE_DEPLOY_GAMES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_games == 'true' && 'true' || '' }}
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-        run: sh ./scripts/detect-games-changed.sh
+          ssh-keyscan -H ${{ env.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy site
         run: sh ./deploy.sh
         env:
-          DEPLOY_HOST: 43.138.57.136
-          DEPLOY_USER: ubuntu
-          DEPLOY_PATH: /home/www/website
+          DEPLOY_HOST: ${{ env.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ env.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ env.DEPLOY_PATH }}
           DOCSEARCH_APP_ID: ${{ secrets.DOCSEARCH_APP_ID }}
           DOCSEARCH_API_KEY: ${{ secrets.DOCSEARCH_API_KEY }}
           DOCSEARCH_INDEX_NAME: ${{ secrets.DOCSEARCH_INDEX_NAME }}
           GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
           BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
 
-      - name: Deploy Unity games
-        if: steps.games.outputs.changed == 'true'
+  games-plan:
+    runs-on: ubuntu-latest
+    needs: detect-games
+    if: needs.detect-games.outputs.mode == 'all'
+    timeout-minutes: 15
+    outputs:
+      batches: ${{ steps.plan.outputs.batches }}
+    steps:
+      - name: Checkout games
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            deploy-games.sh
+            docs/.vuepress/public/games
+
+      - name: Compute batch matrix
+        id: plan
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.deploy_games }}" = "true" ]; then
-            sh ./deploy-games.sh all
-          else
-            sh ./deploy-games.sh changed
-          fi
+          batches=$(sh deploy-games.sh batch-matrix)
+          echo "批次 matrix: ${batches}"
+          echo "batches=${batches}" >> "$GITHUB_OUTPUT"
+
+  deploy-games-changed:
+    runs-on: ubuntu-latest
+    needs: detect-games
+    if: needs.detect-games.outputs.mode == 'changed'
+    timeout-minutes: 120
+    steps:
+      - name: Checkout games
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            deploy-games.sh
+            docs/.vuepress/public/games
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust deployment host
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ env.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy changed games
+        run: sh ./deploy-games.sh changed
         env:
-          DEPLOY_HOST: 43.138.57.136
-          DEPLOY_USER: ubuntu
-          DEPLOY_PATH: /home/www/website
+          DEPLOY_HOST: ${{ env.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ env.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ env.DEPLOY_PATH }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GAMES_SKIP_EXPAND: "true"
+
+  deploy-games-batch:
+    runs-on: ubuntu-latest
+    needs:
+      - detect-games
+      - games-plan
+    if: needs.detect-games.outputs.mode == 'all'
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        batch: ${{ fromJson(needs.games-plan.outputs.batches) }}
+    steps:
+      - name: Checkout games
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            deploy-games.sh
+            docs/.vuepress/public/games
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust deployment host
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ env.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy games batch ${{ matrix.batch }}
+        run: sh ./deploy-games.sh batch ${{ matrix.batch }}
+        env:
+          DEPLOY_HOST: ${{ env.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ env.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ env.DEPLOY_PATH }}
+          GAMES_SKIP_EXPAND: "true"
