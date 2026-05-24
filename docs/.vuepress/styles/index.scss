@@ -1742,9 +1742,8 @@ input[type="search"],
   }
 }
 
-// Search icon positioning
-.search-box,
-.DocSearch-Button {
+// Search icon positioning (legacy search-box only; DocSearch has its own icon)
+.search-box {
   position: relative;
 
   &::before {
@@ -1761,6 +1760,26 @@ input[type="search"],
     pointer-events: none;
     z-index: 1;
   }
+}
+
+// DocSearch: click handler is on .docsearch-placeholder; inner button must not steal clicks.
+.docsearch-placeholder {
+  cursor: pointer;
+  position: relative;
+  z-index: 25;
+
+  .DocSearch-Button {
+    pointer-events: none;
+  }
+}
+
+#docsearch-container {
+  position: relative;
+  z-index: 25;
+}
+
+.vp-navbar {
+  z-index: 30;
 }
 
 /* ========================================

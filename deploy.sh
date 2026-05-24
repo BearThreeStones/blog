@@ -40,6 +40,11 @@ if [ -n "${GITHUB_ACTIONS:-}" ]; then
 	fi
 fi
 
+if [ -z "${DOCSEARCH_APP_ID:-}" ] || [ -z "${DOCSEARCH_API_KEY:-}" ] || [ -z "${DOCSEARCH_INDEX_NAME:-}" ]; then
+	echo "ERROR: Set DOCSEARCH_APP_ID, DOCSEARCH_API_KEY, DOCSEARCH_INDEX_NAME (docs/.env locally or CI Secrets)."
+	exit 1
+fi
+
 # 生成静态文件
 npm run docs:build
 
