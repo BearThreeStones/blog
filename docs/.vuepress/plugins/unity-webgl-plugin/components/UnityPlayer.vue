@@ -422,32 +422,149 @@ async function handleRetry() {
   errorMessage.value = '';
 }
 
+const FULLSCREEN_EVENTS = [
+  'fullscreenchange',
+  'webkitfullscreenchange',
+  'mozfullscreenchange',
+  'MSFullscreenChange',
+] as const;
+
+function getCanvasHost(): HTMLElement | null {
+  return (
+    document
+      .getElementById(componentId.value)
+      ?.querySelector<HTMLElement>('.unity-runtime-state') ?? null
+  );
+}
+
+function restoreCanvasToPlayer(): boolean {
+  const canvas = canvasRef.value;
+  const host = getCanvasHost();
+  if (!canvas || !host) {
+    return false;
+  }
+
+  if (host.contains(canvas)) {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    return true;
+  }
+
+  const wrapper = canvas.parentElement;
+  host.appendChild(canvas);
+  if (wrapper && wrapper !== host && wrapper.childElementCount === 0) {
+    wrapper.remove();
+  }
+
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+  return true;
+}
+
+function resetCanvasLayout(): void {
+  const canvas = canvasRef.value;
+  if (!canvas) {
+    return;
+  }
+
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.display = 'block';
+  window.dispatchEvent(new Event('resize'));
+}
+
+function finalizeUnityExit(): void {
+  if (!unityInstance.value) {
+    return;
+  }
+
+  unityInstance.value.SetFullscreen(0);
+  isFullscreen.value = false;
+  restoreCanvasToPlayer();
+  resetCanvasLayout();
+
+  void nextTick(() => {
+    requestAnimationFrame(() => {
+      restoreCanvasToPlayer();
+      resetCanvasLayout();
+    });
+  });
+}
+
+function requestHostFullscreen(host: HTMLElement): void {
+  const request =
+    host.requestFullscreen ??
+    (host as HTMLElement & { webkitRequestFullscreen?: () => Promise<void> })
+      .webkitRequestFullscreen;
+
+  request?.call(host)?.catch(() => {});
+}
+
+function exitUnityFullscreen(): void {
+  if (!unityInstance.value) {
+    return;
+  }
+
+  // Must run synchronously in the click handler to keep the user-gesture context.
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+    return;
+  }
+
+  finalizeUnityExit();
+}
+
 // Toggle fullscreen
 function toggleFullscreen() {
   if (!unityInstance.value) return;
-  
-  if (!isFullscreen.value) {
-    // Enter fullscreen
-    unityInstance.value.SetFullscreen(1);
-    isFullscreen.value = true;
+
+  const host = getCanvasHost();
+  if (!host) return;
+
+  if (!document.fullscreenElement) {
+    requestHostFullscreen(host);
   } else {
-    // Exit fullscreen
-    document.exitFullscreen();
+    exitUnityFullscreen();
   }
 }
 
 // Listen to fullscreen change events
 function handleFullscreenChange() {
-  isFullscreen.value = !!document.fullscreenElement;
+  const browserFullscreen = !!document.fullscreenElement;
+
+  if (!browserFullscreen) {
+    if (unityInstance.value) {
+      finalizeUnityExit();
+    } else {
+      isFullscreen.value = false;
+    }
+    return;
+  }
+
+  isFullscreen.value = true;
+  resetCanvasLayout();
+}
+
+function bindFullscreenListeners(): void {
+  for (const event of FULLSCREEN_EVENTS) {
+    document.addEventListener(event, handleFullscreenChange);
+  }
+}
+
+function unbindFullscreenListeners(): void {
+  for (const event of FULLSCREEN_EVENTS) {
+    document.removeEventListener(event, handleFullscreenChange);
+  }
 }
 
 onMounted(() => {
-  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  bindFullscreenListeners();
 });
 
 // Cleanup on unmount
 onBeforeUnmount(async () => {
-  document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  unbindFullscreenListeners();
+  restoreCanvasToPlayer();
   await resetUnityRuntime();
 });
 </script>
@@ -575,6 +692,14 @@ onBeforeUnmount(async () => {
   position: relative;
   width: 100%;
   height: 100%;
+  background-color: #231f20;
+}
+
+.unity-runtime-state:fullscreen,
+.unity-runtime-state:-webkit-full-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .unity-loading-overlay {
@@ -622,6 +747,7 @@ onBeforeUnmount(async () => {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
+  z-index: 2;
   width: 40px;
   height: 40px;
   background-color: rgba(0, 0, 0, 0.6);
