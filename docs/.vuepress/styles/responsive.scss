@@ -1,0 +1,162 @@
+/* ========================================
+ * Responsive / Mobile Adaptation
+ * Breakpoints from config.scss: $tablet (719px), $pad (959px)
+ * ======================================== */
+
+@import 'config';
+@import 'palette';
+
+/* --- Global: prevent page-level horizontal scroll --- */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+/* --- Content media: scale to viewport --- */
+.theme-hope-content {
+  img,
+  video,
+  iframe,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* --- Mermaid / markmap --- */
+.theme-hope-content .mermaid,
+.theme-hope-content .markmap,
+.mermaid,
+.markmap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Giscus comment container --- */
+.giscus,
+.giscus-container,
+iframe.giscus-frame {
+  max-width: 100%;
+}
+
+/* ========================================
+ * Tablet and below (≤959px)
+ * ======================================== */
+@media (max-width: $pad) {
+  .vp-page,
+  .vp-content,
+  .theme-hope-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .vp-hero {
+    padding: 2rem 1rem 1.75rem;
+  }
+
+  // Code blocks: allow horizontal scroll instead of clipping
+  div[class*="language-"] {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    pre,
+    code {
+      overflow-x: auto;
+    }
+  }
+
+  .vp-code-tabs,
+  .vp-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  // Wide tables scroll inside the content area
+  .theme-hope-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  blockquote,
+  .custom-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* ========================================
+ * Phone (≤719px)
+ * ======================================== */
+@media (max-width: $tablet) {
+  .vp-page,
+  .vp-content,
+  .theme-hope-content {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  // Navbar title truncation
+  .vp-navbar .vp-navbar-title {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Footer: wrap long备案 text
+  .vp-footer {
+    padding: 0.75rem 0.5rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    font-size: $font-size-tiny;
+    line-height: 1.5;
+    word-break: break-word;
+
+    a,
+    img {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  // Blog article cards
+  .vp-blog-main .article-wrapper .article-item,
+  .article-list > .article-item {
+    padding: 0.75rem 0.875rem 0.75rem 1rem;
+  }
+
+  .vp-blog-type-icon-wrapper {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Prev/next page nav stacks vertically
+  .vp-page-nav {
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .prev,
+    .next {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  // Sidebar drawer: slightly smaller link text
+  .vp-sidebar .vp-sidebar-link,
+  .vp-sidebar .vp-sidebar-header {
+    font-size: $font-size-tiny;
+  }
+
+  // DocSearch: icon-only feel on narrow navbar
+  .docsearch-placeholder .DocSearch-Button-Keys,
+  .docsearch-placeholder .DocSearch-Button-Placeholder {
+    display: none;
+  }
+}

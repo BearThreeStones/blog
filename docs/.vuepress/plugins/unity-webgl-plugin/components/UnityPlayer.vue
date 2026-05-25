@@ -718,7 +718,7 @@ onBeforeUnmount(async () => {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 719px) {
   
   .unity-load-button {
     padding: 0.5rem 1rem;

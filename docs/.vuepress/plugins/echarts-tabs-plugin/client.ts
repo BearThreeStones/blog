@@ -27,6 +27,28 @@ export default defineClientConfig({
   ],
 });
 
+let resizeListenersBound = false;
+let resizeDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+function debouncedResizeAllECharts() {
+  if (resizeDebounceTimer) {
+    clearTimeout(resizeDebounceTimer);
+  }
+  resizeDebounceTimer = setTimeout(() => {
+    resizeAllECharts();
+  }, 150);
+}
+
+function setupViewportResizeListeners() {
+  if (typeof window === "undefined" || resizeListenersBound) {
+    return;
+  }
+
+  window.addEventListener("resize", debouncedResizeAllECharts);
+  window.addEventListener("orientationchange", debouncedResizeAllECharts);
+  resizeListenersBound = true;
+}
+
 // 页面加载后初始化
 if (typeof window !== "undefined") {
   window.addEventListener("load", () => {
@@ -46,6 +68,7 @@ function initEChartsTabsFix() {
   console.log("ECharts Tabs Fix: Initializing...");
 
   setupTabsListeners();
+  setupViewportResizeListeners();
   setTimeout(resizeAllECharts, 200);
   setupDOMObserver();
 }
