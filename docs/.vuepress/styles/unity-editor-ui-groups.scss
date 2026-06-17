@@ -1,0 +1,180 @@
+// Unity Editor UI Groups — editor mode only.
+// Reference: e:\Dev\UnityEditor UI\Unity UI Groups\*.svg
+// (View Groups, Toolbars, Tabs and Navigation, Inspector Header and Panels,
+//  Control Rows, Button Groups)
+
+@import 'palette';
+
+html.unity-editor-active {
+  // -------------------------------------------------------------------------
+  // View Groups — docked workspace chrome (View Groups.svg: Base 1 gutters)
+  // -------------------------------------------------------------------------
+  .unity-editor-home .unity-workspace {
+    background: var(--ue-chrome-bg);
+  }
+
+  .unity-workspace-hierarchy,
+  .unity-workspace-inspector,
+  .unity-workspace-scene,
+  .unity-workspace-project {
+    background: var(--ue-chrome-bg);
+  }
+
+  .unity-panel {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .unity-splitter {
+    background: var(--ue-border);
+
+    &:hover,
+    &:active {
+      background: var(--ue-selection);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Tabs and Navigation (Tabs and Navigation.svg)
+  // -------------------------------------------------------------------------
+  .unity-tab-bar {
+    min-height: 20px;
+    padding: 1px 2px 0;
+    border-bottom: 1px solid var(--ue-border);
+  }
+
+  .unity-tab {
+    margin-top: 1px;
+    padding: 0.1rem 0.55rem 0.15rem;
+    min-height: 18px;
+
+    &:not(.active):not(.muted):not(:disabled) {
+      background: var(--ue-tab-bg);
+      border-color: transparent;
+      border-bottom: none;
+    }
+
+    &.active::before {
+      height: 2px;
+      background: var(--ue-tab-focus-line);
+    }
+
+    &.muted {
+      background: color-mix(in srgb, var(--ue-tab-bg) 60%, var(--ue-tab-strip-bg));
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Inspector Header and Panels + Control Rows
+  // (Inspector Header and Panels.svg, Control Rows.svg)
+  // -------------------------------------------------------------------------
+  .unity-inspector .unity-panel-header {
+    background: var(--ue-tab-bg);
+    min-height: 20px;
+    box-shadow: none;
+    border-bottom: 1px solid var(--ue-border);
+
+    .unity-panel-title {
+      font-weight: 400;
+      color: var(--ue-text);
+    }
+  }
+
+  .unity-inspector-table {
+    tr {
+      border-bottom: 1px solid color-mix(in srgb, var(--ue-border) 50%, var(--ue-text-hint));
+    }
+
+    th.unity-inspector-label,
+    td.unity-inspector-value {
+      padding: 1px 6px;
+      vertical-align: middle;
+      line-height: 17px;
+    }
+
+    td.unity-inspector-value {
+      background: var(--ue-input-bg);
+      border-left: 1px solid var(--ue-border);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Toolbars (Toolbars.svg — 20px strips, #CBCBCB segments)
+  // -------------------------------------------------------------------------
+  .unity-toolbar {
+    min-height: 20px;
+    padding: 2px 4px;
+    gap: 0.5rem;
+  }
+
+  .unity-scene-toolbar,
+  .unity-project-toolbar {
+    min-height: 20px;
+    padding: 1px 4px;
+    background: var(--ue-toolbar-bg);
+  }
+
+  .unity-project-toolbar {
+    background: var(--ue-tab-bg);
+    border-bottom-color: var(--ue-border);
+  }
+
+  .unity-panel-header {
+    min-height: 20px;
+  }
+
+  // -------------------------------------------------------------------------
+  // Button Groups (Button Groups.svg — shared edges, #E4E4E4 / #96C3FB active)
+  // -------------------------------------------------------------------------
+  .unity-toolbar .unity-btn-group {
+    flex-shrink: 0;
+    box-shadow: var(--ue-outset-shadow);
+
+    > * {
+      position: relative;
+
+      &:not(:first-child) {
+        margin-left: -1px;
+      }
+
+      &:hover,
+      &:focus-within {
+        z-index: 1;
+      }
+    }
+
+    > *:first-child {
+      border-radius: 3px 0 0 3px !important;
+    }
+
+    > *:last-child {
+      border-radius: 0 3px 3px 0 !important;
+    }
+
+    > .unity-toolbar-search-btn,
+    > .unity-toolbar-view-btn {
+      width: 24px;
+      height: 20px;
+      box-shadow: none;
+    }
+
+    > .unity-color-mode {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 20px;
+      padding: 0 2px;
+      margin: 0;
+      background: var(--ue-control-bg);
+      border: 1px solid var(--ue-control-border);
+      border-radius: 0 !important;
+
+      #color-mode-switch {
+        min-width: 1.1rem;
+        min-height: 1.1rem;
+      }
+    }
+  }
+}

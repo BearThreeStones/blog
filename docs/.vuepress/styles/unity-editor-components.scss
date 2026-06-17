@@ -1,0 +1,204 @@
+// Unity Editor UI Toolkit components — editor mode only.
+// Reference: e:\Dev\UnityEditor UI\Unity Components\*.svg
+// (Button, Search Field, Tree View, Tab, Slider, Scroll View, Toolbar)
+
+@import 'palette';
+
+@mixin ue-basic-button {
+  background: var(--ue-control-bg);
+  border: 1px solid var(--ue-control-border);
+  border-radius: $border-radius-control;
+  color: var(--ue-text);
+  box-shadow: var(--ue-outset-shadow);
+
+  &:hover:not(:disabled) {
+    background: var(--ue-control-bg-hover);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--ue-control-bg-pressed);
+  }
+}
+
+@mixin ue-search-field {
+  background: var(--ue-input-bg);
+  border: 1px solid var(--ue-border);
+  box-shadow: none;
+  min-height: 17px;
+}
+
+@mixin ue-scroll-view {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ue-text-mute) var(--ue-panel-bg);
+
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--ue-panel-bg);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--ue-text-mute);
+    border: 2px solid var(--ue-panel-bg);
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: var(--ue-panel-bg);
+  }
+}
+
+html.unity-editor-active {
+  // Button — toolbar icon buttons (mini)
+  .unity-toolbar .unity-btn-group > .unity-toolbar-search-btn,
+  .unity-toolbar .unity-btn-group > .unity-toolbar-view-btn {
+    @include ue-basic-button;
+    width: 24px;
+    height: 20px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Search Field
+  .unity-search-wrap,
+  .unity-project-search {
+    @include ue-search-field;
+  }
+
+  .unity-search-wrap {
+    height: 17px;
+    padding: 0 0.35rem;
+  }
+
+  .unity-project-search {
+    height: 17px;
+    padding: 0 0.35rem;
+  }
+
+  .unity-search-input,
+  .unity-project-search-input {
+    font-size: 0.75rem;
+    line-height: 17px;
+  }
+
+  // Text Field / Object Field — dropdown in scene toolbar
+  .unity-scene-demo-select {
+    @include ue-search-field;
+    min-height: 17px;
+    padding: 0 0.35rem;
+    font-size: 0.75rem;
+    box-shadow: none;
+  }
+
+  // Tree View — 18px row, selection #3A72B0 / #2C5D87
+  .unity-tree-row {
+    min-height: 18px;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 18px;
+    font-size: 0.75rem;
+  }
+
+  .unity-tree-row.unity-hierarchy-outline-row.is-selected {
+    background: var(--ue-selection);
+    color: var(--ue-selection-fg);
+  }
+
+  .unity-foldout-icon {
+    opacity: 0.72;
+  }
+
+  // Tab — strip Base 3; inactive hover #CBCBCB (light) per Tab.svg
+  .unity-tab:not(.active):not(.muted):not(:disabled):hover {
+    background: color-mix(in srgb, var(--ue-tab-strip-bg) 55%, var(--ue-panel-bg));
+    border-color: var(--ue-border-light);
+  }
+
+  .unity-tab.muted {
+    opacity: 1;
+    color: var(--ue-text-hint);
+    background: color-mix(in srgb, var(--ue-tab-strip-bg) 92%, var(--ue-border));
+  }
+
+  // Toolbar / panel header — flat Base 3 strip
+  .unity-panel-header {
+    background: var(--ue-toolbar-bg);
+    box-shadow: none;
+    border-bottom: 1px solid var(--ue-border);
+    min-height: 20px;
+  }
+
+  .unity-scene-toolbar,
+  .unity-project-toolbar {
+    background: var(--ue-toolbar-bg);
+    min-height: 20px;
+  }
+
+  // Slider
+  .unity-thumbnail-slider {
+    @include ue-search-field;
+    min-height: 20px;
+    padding: 0.15rem 0.5rem;
+    margin: 0.35rem;
+  }
+
+  .unity-slider-input {
+    height: 4px;
+    accent-color: var(--ue-selection);
+  }
+
+  .unity-slider-label {
+    color: var(--ue-text-muted);
+    font-size: 0.6875rem;
+    line-height: 1;
+  }
+
+  // Scroll View
+  .unity-panel-body,
+  .unity-tree-scroll,
+  .unity-project-tree,
+  .unity-asset-browser,
+  .unity-hierarchy-outline {
+    @include ue-scroll-view;
+  }
+
+  // List / asset grid selection matches Tree View
+  .unity-asset-item {
+    border-radius: 0;
+
+    &.is-selected {
+      outline: 1px solid color-mix(in srgb, var(--ue-selection) 65%, transparent);
+    }
+  }
+
+  .unity-project-sidebar-entry {
+    min-height: 18px;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 18px;
+  }
+
+  // Splitter — subtle chrome divider
+  .unity-splitter {
+    background: var(--ue-border);
+
+    &:hover {
+      background: var(--ue-selection);
+    }
+  }
+
+  // Inspector label column (Label + field rows)
+  .unity-inspector-label {
+    color: var(--ue-text-muted);
+    font-size: 0.75rem;
+  }
+
+  .unity-inspector-value {
+    font-size: 0.75rem;
+  }
+}

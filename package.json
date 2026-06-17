@@ -5,9 +5,11 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "docs:build": "cross-env NODE_ENV=production vuepress-vite build docs",
-    "docs:clean-dev": "vuepress-vite dev docs --clean-cache",
-    "docs:dev": "vuepress-vite dev docs",
+    "build:glossary": "node docs/.vuepress/scripts/build-unity-glossary.mjs",
+    "build:icons": "node docs/.vuepress/scripts/sync-unity-icons.mjs",
+    "docs:build": "npm run build:glossary && npm run build:icons && cross-env NODE_ENV=production vuepress-vite build docs",
+    "docs:clean-dev": "npm run build:glossary && npm run build:icons && vuepress-vite dev docs --clean-cache",
+    "docs:dev": "npm run build:glossary && npm run build:icons && vuepress-vite dev docs",
     "docs:update-package": "npx vp-update"
   },
   "devDependencies": {

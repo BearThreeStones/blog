@@ -1,0 +1,102 @@
+// Unity Editor homepage tokens — aliases to Hope (--vp-c-*) and shared Unity component tokens.
+// Single source: palette.scss maps. Article pages and homepage read the same CSS variables.
+
+@import 'palette';
+
+@mixin emit-unity-editor-palette($mode) {
+  --unity-editor-surface: #{map-get($unity-editor-surface, $mode)};
+  --unity-editor-surface-hover: #{map-get($unity-editor-surface-hover, $mode)};
+  --unity-editor-inset-bg: #{map-get($unity-editor-inset-bg, $mode)};
+  --unity-editor-game-bg: #{map-get($unity-editor-game-bg, $mode)};
+  --unity-editor-text-secondary: #{map-get($unity-editor-text-secondary, $mode)};
+  --unity-editor-preview-overlay: #{map-get($unity-editor-preview-overlay, $mode)};
+  --unity-editor-row-border: #{map-get($unity-editor-row-border, $mode)};
+
+  @if $mode == 'dark' {
+    --unity-editor-inset-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.35);
+    --unity-editor-outset-shadow: 1px 1px 0 rgba(255, 255, 255, 0.04);
+  } @else {
+    --unity-editor-inset-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.12);
+    --unity-editor-outset-shadow: 1px 1px 0 rgba(255, 255, 255, 0.85);
+  }
+  --unity-editor-scene-gradient: #{if($mode == 'dark', $unity-editor-scene-gradient-dark, $unity-editor-scene-gradient-light)};
+}
+
+// Hope / palette component tokens (light defaults on :root)
+:root {
+  @include emit-unity-editor-palette('light');
+}
+
+html[data-theme='dark'] {
+  @include emit-unity-editor-palette('dark');
+}
+
+// Homepage layout aliases — track Hope theme when user toggles light / dark / auto
+html {
+  --ue-chrome-bg: var(--vp-c-bg);
+  --ue-panel-bg: var(--vp-c-bg-alt);
+  --ue-toolbar-bg: var(--vp-c-bg-elv);
+  --ue-text: var(--vp-c-text);
+  --ue-text-secondary: var(--unity-editor-text-secondary);
+  --ue-text-muted: var(--vp-c-text-mute);
+  --ue-text-hint: var(--vp-c-text-mute-2);
+  --ue-text-title: var(--vp-c-text);
+  --ue-selection: var(--unity-selection-bg);
+  --ue-selection-fg: #fff;
+  --ue-control-bg: var(--unity-control-bg);
+  --ue-control-bg-hover: var(--unity-control-bg-hover);
+  --ue-control-bg-pressed: var(--unity-control-bg-pressed);
+  --ue-control-border: var(--unity-control-border);
+  --ue-input-bg: var(--unity-input-bg);
+  --ue-border: var(--vp-c-border);
+  --ue-border-light: var(--vp-c-border-soft);
+  --ue-surface: var(--unity-editor-surface);
+  --ue-surface-hover: var(--unity-editor-surface-hover);
+  --ue-inset-bg: var(--unity-editor-inset-bg);
+  --ue-tab-bg: var(--unity-tab-inactive-bg);
+  --ue-tab-strip-bg: var(--vp-c-bg-elv);
+  --ue-tab-focus-line: var(--unity-focus-outline);
+  --ue-tree-hover: var(--unity-row-hover);
+  --ue-accent-hint: var(--vp-c-brand-secondary);
+  --ue-preview-overlay: var(--unity-editor-preview-overlay);
+  --ue-game-bg: var(--unity-editor-game-bg);
+  --ue-row-border: var(--unity-editor-row-border);
+  --ue-inset-shadow: var(--unity-editor-inset-shadow);
+  --ue-outset-shadow: var(--unity-editor-outset-shadow);
+  --ue-scene-gradient: var(--unity-editor-scene-gradient);
+}
+
+html.unity-editor-active {
+  // Override Hope variables to keep Unity styles for the editor layout
+  --vp-c-bg: #C8C8C8;
+  --vp-c-bg-alt: #DFDFDF;
+  --vp-c-bg-elv: #E4E4E4;
+  --vp-c-text: #090909;
+  --vp-c-text-mute: #383838;
+  --vp-c-text-mute-2: #6A6A6A;
+  --vp-c-border: #999999;
+  --vp-c-border-soft: #B6B6B6;
+  --vp-c-brand: #2C5D87;
+  --theme-color: #2C5D87;
+  --vp-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --unity-tint: rgba(58, 114, 176, 0.12);
+  --unity-selection-bg: #3A72B0;
+  --unity-row-hover: #CCCCCC;
+}
+
+html.unity-editor-active[data-theme='dark'] {
+  // Restore dark mode Unity colors for the editor layout
+  --vp-c-bg: #383838;
+  --vp-c-bg-alt: #282828;
+  --vp-c-bg-elv: #3C3C3C;
+  --vp-c-text: #D2D2D2;
+  --vp-c-text-mute: #9A9A9A;
+  --vp-c-text-mute-2: #757575;
+  --vp-c-border: #232323;
+  --vp-c-border-soft: #303030;
+  --vp-c-brand: #3A72B0;
+  --theme-color: #3A72B0;
+  --unity-tint: rgba(58, 114, 176, 0.12);
+  --unity-selection-bg: #2C5D87;
+  --unity-row-hover: #464646;
+}

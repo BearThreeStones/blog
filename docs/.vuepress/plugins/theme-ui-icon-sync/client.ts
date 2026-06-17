@@ -1,23 +1,41 @@
 import { defineClientConfig } from 'vuepress/client';
 
-const BLOG_TYPE_ICON_MAP: Record<string, { active: string; inactive: string }> = {
-  文章: {
+const BLOG_TYPE_ICON_ENTRIES: Array<{
+  labels: string[];
+  active: string;
+  inactive: string;
+}> = [
+  {
+    labels: ['文章', 'Articles'],
     active: '--unity-theme-ui-article-on',
     inactive: '--unity-theme-ui-article',
   },
-  分类: {
+  {
+    labels: ['分类', 'Categories'],
     active: '--unity-theme-ui-category-on',
     inactive: '--unity-theme-ui-category',
   },
-  标签: {
+  {
+    labels: ['标签', 'Tags'],
     active: '--unity-theme-ui-tag-on',
     inactive: '--unity-theme-ui-tag',
   },
-  时间轴: {
+  {
+    labels: ['时间轴', 'Timeline'],
     active: '--unity-theme-ui-timeline-on',
     inactive: '--unity-theme-ui-timeline',
   },
-};
+];
+
+const BLOG_TYPE_ICON_MAP: Record<string, { active: string; inactive: string }> =
+  Object.fromEntries(
+    BLOG_TYPE_ICON_ENTRIES.flatMap((entry) =>
+      entry.labels.map((label) => [
+        label,
+        { active: entry.active, inactive: entry.inactive },
+      ]),
+    ),
+  );
 
 let observerStarted = false;
 let listenerStarted = false;

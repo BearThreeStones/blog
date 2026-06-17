@@ -1,5 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-  <path d="M8 4h10v12H8z" fill="#D7E0E8"/>
-  <path d="M5 8h10v12H5z" fill="#2B3542"/>
-  <path d="M8 11h4v1.6H8zm0 3.2h4v1.6H8z" fill="#8EC7FF"/>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="16" height="16" fill="url(#pattern0_30_4843)"/>
+<defs>
+<pattern id="pattern0_30_4843" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_30_4843" transform="scale(0.03125)"/>
+</pattern>
+<image id="image0_30_4843" width="32" height="32" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADASURBVHgB7ZTBDYMwDEUdxACM0A6VXDtDN6AbdIVek0tGygjcc0gTCW4NcVLcgvCTQEi28I95AoA5OyJXUErdQgjP+DhAHU4IMWqtX5jmLleIw8eG4YnLHBxFv/aidPPeX621DojoSg2UwxM9tpHKieIGFqicQAeA2YlGhi0CkIB2YMEYI2r6pZRhrX68DZROVAs7wA7segMTfPiD/dKBe7wcEIM+zbffPre5vztQE2CCdhxsEKDViRT8AQzDZHgDbIlEzvRRRYwAAAAASUVORK5CYII="/>
+</defs>
 </svg>

@@ -573,14 +573,14 @@ onBeforeUnmount(async () => {
   <div :id="componentId" class="unity-player-container" :style="containerStyle">
     <!-- Mobile Warning (shown in INITIAL state on mobile) -->
     <div v-if="state === 'INITIAL' && isMobile" class="unity-mobile-warning">
-      <img class="unity-inline-icon" :src="uiIcons.warning" alt="" aria-hidden="true">
+      <img class="unity-inline-icon" :src="uiIcons.warning" alt="" aria-hidden="true" no-view>
       <span>This game may not work well on mobile devices</span>
     </div>
     
     <!-- INITIAL State: Click-to-Play Button -->
     <div v-if="state === 'INITIAL'" class="unity-initial-state">
-      <button class="unity-load-button" @click="handleLoadClick">
-        <img class="unity-button-icon" :src="uiIcons.load" alt="" aria-hidden="true">
+      <button type="button" class="unity-load-button" @click.stop="handleLoadClick">
+        <img class="unity-button-icon" :src="uiIcons.load" alt="" aria-hidden="true" no-view>
         <span>Load Game</span>
       </button>
       <p class="unity-game-name">{{ gameDisplayName }}</p>
@@ -597,24 +597,21 @@ onBeforeUnmount(async () => {
       </div>
       <button
         v-if="state === 'LOADED' && fullscreen"
+        type="button"
         class="unity-fullscreen-button"
-        @click="toggleFullscreen"
+        :class="{ 'is-active': isFullscreen }"
+        @click.stop="toggleFullscreen"
         :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
         :aria-label="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
       >
-        <img
-          class="unity-button-icon"
-          :src="isFullscreen ? uiIcons.fullscreenExit : uiIcons.fullscreenEnter"
-          alt=""
-          aria-hidden="true"
-        >
+        <span class="unity-fullscreen-button-icon" aria-hidden="true"></span>
       </button>
     </div>
     
     <!-- ERROR State: Error Message -->
     <div v-else-if="state === 'ERROR'" class="unity-error-state">
       <div class="unity-error-icon">
-        <img :src="uiIcons.warning" alt="" aria-hidden="true">
+        <img :src="uiIcons.warning" alt="" aria-hidden="true" no-view>
       </div>
       <h3 class="unity-error-title">Failed to Load Game</h3>
       <p class="unity-error-message">{{ errorMessage }}</p>
@@ -697,9 +694,14 @@ onBeforeUnmount(async () => {
 
 .unity-runtime-state:fullscreen,
 .unity-runtime-state:-webkit-full-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.unity-runtime-state:fullscreen .unity-canvas,
+.unity-runtime-state:-webkit-full-screen .unity-canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .unity-loading-overlay {
@@ -764,6 +766,21 @@ onBeforeUnmount(async () => {
 
 .unity-fullscreen-button:hover {
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+.unity-fullscreen-button-icon {
+  display: block;
+  width: 1.125rem;
+  height: 1.125rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url('/assets/icon/unity/fullscreen-enter.svg');
+  pointer-events: none;
+}
+
+.unity-fullscreen-button.is-active .unity-fullscreen-button-icon {
+  background-image: url('/assets/icon/unity/fullscreen-exit.svg');
 }
 
 /* ERROR State */

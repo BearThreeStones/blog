@@ -1,130 +1,126 @@
 // VuePress Theme Hope - Unity Editor Color Palette
 // Colors sourced from Unity Editor UI Toolkit Library (Community) Figma/SVG export
-// Verified against provided PDF and SVG color palette files
+// Reference folder: Unity Color Palette (Application Bar, Inspector & Window,
+// Toolbar, Component, Text Colors, Base Layers SVGs)
+//
+// Token → reference file (quick map):
+//   $vp-c-bg / $unity-tab-active-bg (light)     → Application Bar Colors.svg (Base 1)
+//   $vp-c-bg-alt                                 → Inspector & Window Colors.svg (Base 2)
+//   $vp-c-bg-elv / $unity-tab-inactive-bg        → Toolbar Colors.svg (Base 3)
+//   $vp-c-text, $vp-c-text-mute*                → Text Colors.svg
+//   $vp-c-border*, $unity-control-*, $unity-input-*,
+//   $unity-selection-bg, $unity-row-hover        → Component Colors.svg
+//   $unity-editor-surface*                       → Component Colors.svg (Project cards)
+//   $unity-editor-game-bg (dark)                → Application Bar Colors.svg (#191919)
 
 // ============================================================================
 // PRIMARY COLOR MAPS (Light & Dark Mode)
 // ============================================================================
 
-// Brand Primary: Unity Selection Blue
-// Sourced from Inspector & Window Colors SVG (#3A72B0 dark, #2C5D87 darker)
-// and Component Colors SVG (#3A79BB highlight)
+// Brand Primary: Notion Blue
 $vp-c-brand: (
-  light: #2C5D87,
-  dark: #3A72B0,
+  light: #0075de,
+  dark: #0075de,
 );
 
-// Brand Secondary: Lighter Interactive Blue
-// Sourced from Component Colors SVG (#0C6CCB, #96C3FB)
+// Brand Secondary: Deep Indigo
 $vp-c-brand-secondary: (
-  light: #0C6CCB,
-  dark: #96C3FB,
+  light: #213183,
+  dark: #213183,
 );
 
-// Accent: Unity Highlight Blue (used for links, interactive states)
-// Sourced from Component Colors SVG (#4C7EFF, #81B4FF)
+// Accent: Notion Blue
 $vp-c-accent: (
-  light: #003C88,
-  dark: #4C7EFF,
+  light: #0075de,
+  dark: #0075de,
 );
 
 // ============================================================================
 // BACKGROUND COLOR MAPS
 // ============================================================================
 
-// Primary Background (Base 1 - Application Bar and Controls)
-// Sourced from Base Layers SVG and Application Bar Colors SVG
+// Primary Background (Notion Canvas)
 $vp-c-bg: (
-  light: #C8C8C8,
-  dark: #383838,
+  light: #ffffff,
+  dark: #191919,
 );
 
-// Alternate Background (Base 2 - Windows / Inspectors)
-// Sourced from Inspector & Window Colors SVG
+// Alternate Background (Notion Canvas Soft)
 $vp-c-bg-alt: (
-  light: #DFDFDF,
-  dark: #282828,
+  light: #f6f5f4,
+  dark: #202020,
 );
 
-// Elevation Background (Base 3 - Toolbars)
-// Sourced from Toolbar Colors SVG
+// Elevation Background (Notion Surface)
 $vp-c-bg-elv: (
-  light: #E4E4E4,
-  dark: #3C3C3C,
+  light: #ffffff,
+  dark: #252525,
 );
 
 // ============================================================================
 // TEXT COLOR MAPS
 // ============================================================================
 
-// Primary Text
-// Sourced from Text Colors SVG (#090909 light, #D2D2D2 dark)
+// Primary Text (Notion Ink)
 $vp-c-text: (
-  light: #090909,
-  dark: #D2D2D2,
+  light: #000000,
+  dark: #e3e2e0,
 );
 
-// Muted Text (secondary content)
-// Sourced from Text Colors SVG (#383838 light text labels, #9A9A9A dark)
+// Muted Text (Notion Ink Secondary)
 $vp-c-text-mute: (
-  light: #383838,
-  dark: #9A9A9A,
+  light: #31302e,
+  dark: #9b9a97,
 );
 
-// Muted Text (tertiary / disabled)
-// Sourced from Base Layers SVG (#757575) and Application Bar Colors (#6A6A6A)
+// Muted Text (Notion Ink Muted)
 $vp-c-text-mute-2: (
-  light: #6A6A6A,
-  dark: #757575,
+  light: #615d59,
+  dark: #7c7b77,
 );
 
 // ============================================================================
 // BORDER COLOR MAPS
 // ============================================================================
 
-// Primary Borders (Accented borders for inset/outset effects)
-// Sourced from Component Colors SVG (#999999 light, #232323 dark)
+// Primary Borders (Notion Hairline)
 $vp-c-border: (
-  light: #999999,
-  dark: #232323,
+  light: #e6e6e6,
+  dark: #2f2f2f,
 );
 
-// Soft Borders (dividers)
-// Sourced from Component Colors SVG (#B6B6B6 light, #303030 dark)
+// Soft Borders (Notion Hairline)
 $vp-c-border-soft: (
-  light: #B6B6B6,
-  dark: #303030,
+  light: #e6e6e6,
+  dark: #252525,
 );
 
 // ============================================================================
 // SEMANTIC COLORS
 // ============================================================================
 
-// Success: Unity green accent (play button)
+// Success: Notion Green
 $vp-c-success: (
-  light: #39833D,
-  dark: #58A05C,
+  light: #1aae39,
+  dark: #1aae39,
 );
 
-// Danger: Error Red
-// Sourced from Text Colors SVG (#D32222 dark, #FF534A component)
+// Danger: Notion Red/Pink
 $vp-c-danger: (
-  light: #D32222,
-  dark: #FF534A,
+  light: #e03131,
+  dark: #e03131,
 );
 
-// Warning: Caution Yellow
-// Sourced from Text Colors SVG (#F4BC02)
+// Warning: Notion Orange
 $vp-c-warning: (
-  light: #D98C00,
-  dark: #F4BC02,
+  light: #dd5b00,
+  dark: #dd5b00,
 );
 
-// Info: Selection Blue
-// Sourced from Inspector & Window Colors SVG (#2C5D87, #3A72B0)
+// Info: Notion Sky
 $vp-c-info: (
-  light: #2C5D87,
-  dark: #3A72B0,
+  light: #62aef0,
+  dark: #62aef0,
 );
 
 // ============================================================================
@@ -254,7 +250,7 @@ $unity-focus-outline: (
 // Tab active/checked background (darker, pushed-in)
 $unity-tab-active-bg: (
   light: #C8C8C8,
-  dark: #2D2D2D,
+  dark: #282828,
 );
 
 // Tab inactive background
@@ -271,6 +267,66 @@ $unity-checkbox-bg: (
 $unity-checkbox-check-color: (
   light: #090909,
   dark: #D2D2D2,
+);
+
+// ============================================================================
+// UNITY EDITOR HOMEPAGE LAYOUT (shared with article chrome via --ue-* aliases)
+// ============================================================================
+
+// Asset grid / card surfaces (Project browser)
+$unity-editor-surface: (
+  light: #ECECEC,
+  dark: #323232,
+);
+$unity-editor-surface-hover: (
+  light: #E0E0E0,
+  dark: #424242,
+);
+
+// Inset fields (search, sliders) — aligns with $unity-input-bg
+$unity-editor-inset-bg: (
+  light: #F0F0F0,
+  dark: #2A2A2A,
+);
+
+// Game view backdrop
+$unity-editor-game-bg: (
+  light: #F0F0F0,
+  dark: #191919,
+);
+
+// Breadcrumb / menu secondary labels
+$unity-editor-text-secondary: (
+  light: #383838,
+  dark: #C4C4C4,
+);
+
+// Scene preview panel tint
+$unity-editor-preview-overlay: (
+  light: rgba(255, 255, 255, 0.82),
+  dark: rgba(30, 30, 30, 0.72),
+);
+
+// Table / inspector row dividers
+$unity-editor-row-border: (
+  light: rgba(0, 0, 0, 0.06),
+  dark: rgba(255, 255, 255, 0.04),
+);
+
+// Scene viewport skybox fallback (behind scene-skybox.svg)
+$unity-editor-scene-gradient-light: linear-gradient(
+  180deg,
+  #9ed4ff 0%,
+  #d4e4f4 42%,
+  #e8dcc8 58%,
+  #a8a8a4 100%
+);
+$unity-editor-scene-gradient-dark: linear-gradient(
+  180deg,
+  #7ec8f5 0%,
+  #a8c8e8 42%,
+  #c9b89a 58%,
+  #5c5c58 100%
 );
 
 // ============================================================================
@@ -296,7 +352,7 @@ $unity-blue-gradient: linear-gradient(135deg, #2C5D87 0%, #3A72B0 100%);
 $unity-blue-gradient-hover: linear-gradient(135deg, #346A96 0%, #4683C2 100%);
 $unity-blue-gradient-vertical: linear-gradient(180deg, #2C5D87 0%, #3A72B0 100%);
 $unity-blue-soft-bg: linear-gradient(180deg, rgba(58, 114, 176, 0.06), rgba(58, 114, 176, 0.02));
-$unity-blue-tint: rgba(58, 114, 176, 0.08);
+$unity-blue-tint: rgba(58, 114, 176, 0.12);
 
 // ============================================================================
 // FONT SYSTEM

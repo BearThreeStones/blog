@@ -159,4 +159,45 @@ iframe.giscus-frame {
   .docsearch-placeholder .DocSearch-Button-Placeholder {
     display: none;
   }
+
+  // Blog info panel: compact horizontal layout on phone
+  .vp-blog-infos {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+
+    .vp-blogger-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      flex-shrink: 0;
+    }
+  }
+
+  // Blog type tabs: horizontal scroll on narrow screens
+  .vp-blog-type-switcher,
+  .vp-blog-type-wrapper {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Navbar height bump for better touch targets
+  .vp-navbar {
+    min-height: 3rem;
+  }
+
+  // FAB: ensure 44x44 minimum touch target
+  .home-view-switch-fab {
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+    min-width: 44px;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
 }

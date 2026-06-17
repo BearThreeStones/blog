@@ -9,7 +9,7 @@
  * Global Improvements & Fonts
  * ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+// Google Fonts now loaded via <link> in config.ts head[] for non-blocking performance
 
 html {
   scroll-behavior: smooth;
@@ -23,32 +23,35 @@ body {
   background-color: var(--vp-c-bg);
   color: var(--vp-c-text);
   font-size: $font-size-normal;
-  line-height: 1.38; // Unity default line height
+  line-height: 1.5; // Notion default line height
   font-feature-settings: "ss01", "cv11", "calt";
-  letter-spacing: 0.005em;
-  // Removed radial wash per user request, keeping purely solid background
+  letter-spacing: 0;
   background-attachment: fixed;
 }
 
-// Tiered radius defaults (replaces the previous global border-radius:0 hammer).
-// We keep Unity-strict 0 only where the chrome/Unity components explicitly want it.
+html.unity-editor-active body {
+  line-height: 1.38 !important;
+  letter-spacing: 0.005em !important;
+}
+
 :root {
-  --radius-control: #{$border-radius-control};
-  --radius-surface: #{$border-radius-surface};
-  --radius-overlay: #{$border-radius-overlay};
-  --radius-pill: #{$border-radius-full};
+  --radius-control: 8px; // Notion button/utility/nav
+  --radius-surface: 12px; // Notion card/feature rounded.lg
+  --radius-overlay: 12px;
+  --radius-pill: 9999px;
+  --radius-xs: 4px;
 
-  --shadow-xs: #{$shadow-xs};
-  --shadow-sm: #{$shadow-sm};
-  --shadow-md: #{$shadow-md};
-  --shadow-lg: #{$shadow-lg};
-  --shadow-glow: #{$shadow-glow};
+  --shadow-xs: none; // Level 0 flat
+  --shadow-sm: 0 0.175px 1.041px rgba(0,0,0,0.01), 0 0.8px 2.925px rgba(0,0,0,0.02), 0 2.025px 7.847px rgba(0,0,0,0.027), 0 4px 18px rgba(0,0,0,0.04); // Level 1 soft shadow
+  --shadow-md: 0 4px 14px rgba(15, 23, 35, 0.10);
+  --shadow-lg: 0 23px 52px rgba(0, 0, 0, 0.05); // Level 2 elevated shadow
+  --shadow-glow: 0 0 0 3px rgba(0, 117, 222, 0.22); // Notion focus blue ring
 
-  --unity-gradient: #{$unity-blue-gradient};
-  --unity-gradient-hover: #{$unity-blue-gradient-hover};
-  --unity-gradient-vertical: #{$unity-blue-gradient-vertical};
-  --unity-gradient-soft: #{$unity-blue-soft-bg};
-  --unity-tint: #{$unity-blue-tint};
+  --unity-gradient: linear-gradient(135deg, #0075de 0%, #005bab 100%);
+  --unity-gradient-hover: linear-gradient(135deg, #005bab 0%, #0075de 100%);
+  --unity-gradient-vertical: linear-gradient(180deg, #0075de 0%, #005bab 100%);
+  --unity-gradient-soft: rgba(0, 117, 222, 0.04);
+  --unity-tint: rgba(0, 117, 222, 0.08);
 
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -57,7 +60,26 @@ body {
   --transition-slow: 0.32s var(--ease-in-out);
 }
 
-// Surface-level elements: refined 6px corners
+html.unity-editor-active {
+  --radius-control: 3px;
+  --radius-surface: 6px;
+  --radius-overlay: 8px;
+  --radius-pill: 9999px;
+
+  --shadow-xs: 0 1px 2px rgba(15, 23, 35, 0.06);
+  --shadow-sm: 0 2px 6px rgba(15, 23, 35, 0.08);
+  --shadow-md: 0 4px 14px rgba(15, 23, 35, 0.10);
+  --shadow-lg: 0 10px 28px rgba(15, 23, 35, 0.18);
+  --shadow-glow: 0 0 0 3px rgba(58, 114, 176, 0.22);
+
+  --unity-gradient: #{$unity-blue-gradient};
+  --unity-gradient-hover: #{$unity-blue-gradient-hover};
+  --unity-gradient-vertical: #{$unity-blue-gradient-vertical};
+  --unity-gradient-soft: #{$unity-blue-soft-bg};
+  --unity-tint: #{$unity-blue-tint};
+}
+
+// Surface-level elements: refined corners
 .custom-container,
 .article-item,
 div[class*="language-"],
@@ -69,7 +91,7 @@ details,
   border-radius: var(--radius-surface);
 }
 
-// Control-level elements: Unity-sharp 3px
+// Control-level elements
 .vp-button,
 button,
 input,
@@ -96,8 +118,13 @@ textarea,
 
 // Modern selection color
 ::selection {
-  background: rgba(58, 114, 176, 0.28);
-  color: var(--vp-c-text);
+  background: rgba(0, 117, 222, 0.2);
+  color: inherit;
+}
+
+html.unity-editor-active ::selection {
+  background: rgba(58, 114, 176, 0.28) !important;
+  color: var(--vp-c-text) !important;
 }
 
 /* ========================================
@@ -131,31 +158,26 @@ textarea,
 
 .vp-hero {
   position: relative;
-  padding: 3rem 1.5rem 2.5rem;
-  background:
-    $unity-blue-soft-bg,
-    linear-gradient(180deg, var(--vp-c-bg-alt) 0%, var(--vp-c-bg) 100%);
+  padding: 5rem 1.5rem 4.5rem;
+  background-color: #213183; // Notion deep indigo
   border-bottom: 1px solid var(--vp-c-border);
   overflow: hidden;
+  text-align: center;
 
-  // Subtle grid overlay (Unity Scene view feel)
+  // Glowing sticker constellation background
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image:
-      linear-gradient(to right, rgba(58, 114, 176, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(58, 114, 176, 0.05) 1px, transparent 1px);
-    background-size: 32px 32px;
-    background-position: -1px -1px;
+    background-image: 
+      radial-gradient(circle at 12% 25%, #ff64c8 8px, transparent 8px),
+      radial-gradient(circle at 86% 22%, #62aef0 12px, transparent 12px),
+      radial-gradient(circle at 73% 78%, #d6b6f6 10px, transparent 10px),
+      radial-gradient(circle at 22% 76%, #1aae39 6px, transparent 6px),
+      radial-gradient(circle at 45% 85%, #dd5b00 7px, transparent 7px);
     pointer-events: none;
-    opacity: 0.6;
-    -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 75%);
-    mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 75%);
+    opacity: 0.85;
   }
-
-  // Removed soft glow blob per user request
-
 
   .vp-hero-info-wrapper {
     position: relative;
@@ -166,69 +188,86 @@ textarea,
 }
 
 .vp-hero-title {
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  font-weight: 700;
-  color: var(--vp-c-text);
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-  // Subtle gradient text accent
-  background: linear-gradient(180deg, var(--vp-c-text) 0%, color-mix(in srgb, var(--vp-c-text) 85%, var(--vp-c-brand)) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  font-size: clamp(2rem, 4.5vw, 3.5rem) !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 0.75rem;
+  line-height: 1.15 !important;
+  letter-spacing: -1.5px !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .vp-hero-description {
-  font-size: $font-size-big;
-  color: var(--vp-c-text-mute);
-  font-weight: 400;
-  line-height: $line-height-relaxed;
-  letter-spacing: 0.005em;
-  max-width: 42rem;
+  font-size: 1.15rem !important;
+  color: #f6f5f4 !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+  max-width: 44rem;
   margin: 0 auto;
+  opacity: 0.95;
+  animation: hero-fade-in 0.6s var(--ease-out) both;
+  animation-delay: 0.15s;
 }
 
 .vp-hero-actions {
-  margin-top: 1.75rem;
+  margin-top: 2rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
 
   .vp-button {
     font-weight: 500;
-    border-radius: var(--radius-control);
-    padding: 0.5rem 1rem;
-    font-size: $font-size-normal;
+    border-radius: var(--radius-pill) !important;
+    padding: 0.65rem 1.5rem;
+    font-size: 1rem;
     transition: background var(--transition-base),
                 border-color var(--transition-base),
                 transform var(--transition-base),
                 box-shadow var(--transition-base);
-    border: 1px solid var(--vp-c-border);
-    box-shadow: var(--shadow-xs);
+    border: 1px solid transparent;
+    box-shadow: none;
 
     &.primary {
-      background: var(--vp-c-brand);
-      border-color: transparent;
-      color: #fff;
-      box-shadow: none;
+      background: #0075de !important;
+      color: #ffffff !important;
 
       &:hover {
-        background: color-mix(in srgb, var(--vp-c-brand) 90%, white);
+        background: #005bab !important;
         transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 4px 12px rgba(0, 117, 222, 0.3);
       }
 
       &:active {
         transform: translateY(0);
-        box-shadow: var(--shadow-xs);
       }
     }
 
-    &:not(.primary):hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-      border-color: var(--vp-c-brand);
+    &:not(.primary) {
+      background: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+      color: #ffffff !important;
+
+      &:hover {
+        border-color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        transform: translateY(-1px);
+      }
     }
   }
 }
@@ -238,18 +277,16 @@ textarea,
  * ======================================== */
 
 .vp-navbar {
-  background: var(--vp-c-bg-elv) !important; // Pure solid background like Unity Editor toolbar
-  border-bottom: 1px solid var(--vp-c-border); // Restored solid border
-  box-shadow: none !important; // Removed shadow for flat Unity style
+  background: var(--vp-c-bg) !important; // Clean Canvas color
+  border-bottom: 1px solid var(--vp-c-border);
+  box-shadow: none !important;
   height: var(--navbar-height);
   position: relative;
 
-
-
   .vp-navbar-title {
     font-weight: 600;
-    font-size: $font-size-normal;
-    letter-spacing: -0.005em;
+    font-size: 1rem;
+    letter-spacing: -0.5px;
   }
 }
 
@@ -257,28 +294,27 @@ textarea,
 .vp-nav-link {
   font-weight: 500;
   font-size: $font-size-normal;
-  padding: 0.25rem 0.5rem;
+  padding: 0.35rem 0.65rem;
   border-radius: var(--radius-control);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 
   &:hover {
-    color: var(--vp-c-text) !important;
-    background-color: var(--unity-tint);
+    color: var(--vp-c-brand) !important;
+    background-color: var(--vp-c-bg-alt);
   }
 
   &.active {
-    color: var(--unity-blue) !important;
-    background-color: var(--unity-tint);
+    color: var(--vp-c-brand) !important;
+    background-color: transparent;
     border: none;
     position: relative;
 
-    // Unity-blue solid underline
     &::after {
       content: '';
       position: absolute;
-      left: 6px;
-      right: 6px;
-      bottom: -2px;
+      left: 8px;
+      right: 8px;
+      bottom: -4px;
       height: 2px;
       background: var(--vp-c-brand);
       border-radius: 1px;
@@ -294,11 +330,11 @@ textarea,
 .vp-blog-main .article-wrapper .article-item,
 .article-list > .article-item {
   position: relative;
-  background: var(--vp-c-bg-alt);
-  border: 1px solid var(--vp-c-border-soft);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
   border-radius: var(--radius-surface);
-  padding: 0.875rem 1rem 0.875rem 1.125rem;
-  margin-bottom: 0.625rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
   box-shadow: var(--shadow-xs);
   transition:
     background-color var(--transition-base),
@@ -307,60 +343,63 @@ textarea,
     box-shadow var(--transition-base);
   overflow: hidden;
 
-  // Left gradient indicator bar (animates from 0 to 3px on hover)
   &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: var(--vp-c-brand);
-    transition: width var(--transition-base);
+    display: none !important; // Remove left border bar for Notion style
   }
 
   &:hover {
-    background: var(--vp-c-bg-elv);
     border-color: var(--vp-c-brand);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
-
-    &::before {
-      width: 3px;
-    }
   }
 
   .article-title {
-    font-size: $font-size-big;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 700;
     color: var(--vp-c-text);
-    line-height: $line-height-normal;
-    letter-spacing: -0.005em;
+    line-height: 1.35;
+    letter-spacing: -0.25px;
   }
 
   .article-excerpt {
-    font-size: $font-size-small;
+    font-size: 0.875rem;
     color: var(--vp-c-text-mute);
-    line-height: $line-height-normal;
-    margin-top: 0.35rem;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
 .article-info {
-  font-size: $font-size-tiny;
+  font-size: 0.75rem;
   color: var(--vp-c-text-mute-2);
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   flex-wrap: wrap;
+  align-items: center;
 
-  .category {
-    padding: 0.1rem 0.4rem;
-    background: var(--unity-tint);
-    border: 1px solid transparent;
-    border-radius: var(--radius-control);
-    color: var(--vp-c-brand);
-    font-weight: 500;
+  .category,
+  .tag,
+  .vp-blog-type-icon-wrapper {
+    padding: 0.2rem 0.5rem !important;
+    background: rgba(0, 117, 222, 0.08) !important; // default Notion soft blue tint
+    border: none !important;
+    border-radius: var(--radius-xs) !important;
+    color: var(--vp-c-brand) !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: background var(--transition-fast), color var(--transition-fast);
+
+    &:hover {
+      background: rgba(0, 117, 222, 0.15) !important;
+    }
   }
 }
 
@@ -374,23 +413,25 @@ textarea,
   box-shadow: none;
 
   .vp-sidebar-item {
-    font-size: $font-size-semi-small;
-    padding: 0.25rem 0.5rem;
-    transition: background-color var(--transition-fast);
+    font-size: 0.875rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-control);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
 
     &:hover {
-      background-color: var(--unity-tint);
+      background-color: var(--vp-c-bg-elv);
     }
 
     &.active {
-      background: var(--vp-c-brand); // Solid color instead of gradient
-      color: #fff !important;
-      font-weight: 500;
+      background: rgba(0, 117, 222, 0.08) !important;
+      color: var(--vp-c-brand) !important;
+      font-weight: 600;
       border-radius: var(--radius-control);
       box-shadow: none;
 
       .vp-sidebar-link {
-        color: #fff !important;
+        color: var(--vp-c-brand) !important;
+        font-weight: 600;
       }
     }
   }
@@ -431,28 +472,32 @@ textarea,
 
 h1, h2, h3, h4, h5, h6,
 .theme-hope-content h1, .theme-hope-content h2, .theme-hope-content h3, .theme-hope-content h4, .theme-hope-content h5, .theme-hope-content h6 {
-  font-weight: 600 !important;
-  line-height: $line-height-relaxed !important;
-  margin-top: 1.75em !important;
-  margin-bottom: 0.6em !important;
+  font-weight: 700 !important; // Notion headings are heavy
   color: var(--vp-c-text) !important;
-  letter-spacing: -0.01em;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
   scroll-margin-top: 4rem; // Compensate for sticky navbar on anchor jumps
 }
 
 h1, .theme-hope-content h1 {
-  font-size: $font-size-very-big !important;
-  letter-spacing: -0.015em;
+  font-size: 2.2rem !important; // close to 40px
+  line-height: 1.1 !important;
+  letter-spacing: -1px !important;
 }
 
 h2, .theme-hope-content h2 {
-  font-size: $font-size-big !important;
+  font-size: 1.625rem !important; // 26px
+  line-height: 1.23 !important;
+  letter-spacing: -0.625px !important;
   padding-bottom: 0.3em !important;
-  border-bottom: 1px solid var(--vp-c-border-soft) !important;
-  position: relative;
+  border-bottom: 1px solid var(--vp-c-border) !important;
 }
 
-h3, .theme-hope-content h3 { font-size: $font-size-normal !important; }
+h3, .theme-hope-content h3 {
+  font-size: 1.375rem !important; // 22px
+  line-height: 1.27 !important;
+  letter-spacing: -0.25px !important;
+}
 
 // Long-form reading rhythm: slightly more line-height for body paragraphs
 .theme-hope-content p,
@@ -513,87 +558,83 @@ div[class*="language-"] {
 code {
   font-family: var(--vp-font-mono);
   font-size: 0.85em;
-  background: var(--unity-tint);
-  border: none;
-  padding: 0.15em 0.4em;
-  border-radius: var(--radius-control);
-  color: var(--vp-c-brand);
+  background: rgba(0, 117, 222, 0.06) !important; // soft Notion blue tint
+  border: 1px solid var(--vp-c-border) !important;
+  padding: 0.12em 0.3em !important;
+  border-radius: var(--radius-xs) !important;
+  color: #dd5b00 !important; // Notion pink/red or orange text for code inline
   font-weight: 500;
+}
+
+html[data-theme='dark'] code {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #ff64c8 !important;
 }
 
 // Inline code inside headings should not steal visual weight
 h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
-  background: transparent;
-  color: inherit;
-  font-weight: inherit;
-  padding: 0;
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  font-weight: inherit !important;
+  padding: 0 !important;
 }
 
 blockquote {
   position: relative;
   color: var(--vp-c-text-mute);
-  background: $unity-blue-soft-bg;
-  border: 1px solid var(--vp-c-border-soft);
-  border-left: none;
+  background: transparent !important;
+  border: none !important;
+  border-left: 3px solid var(--vp-c-brand) !important;
   margin: 1.25em 0;
-  padding: 0.75em 1em 0.75em 1.25em;
-  border-radius: var(--radius-surface);
-  overflow: hidden;
+  padding: 0.25em 0 0.25em 1em !important;
+  border-radius: 0 !important;
+  overflow: visible;
 
   &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--vp-c-brand);
+    display: none !important;
   }
 }
 
 table {
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse !important;
   width: 100%;
   margin: 1.25em 0;
   font-size: $font-size-normal;
-  border: 1px solid var(--vp-c-border-soft);
-  border-radius: var(--radius-surface);
-  overflow: hidden;
-  box-shadow: var(--shadow-xs);
+  border: 1px solid var(--vp-c-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 
   th, td {
     padding: 0.5em 0.75em;
-    border-bottom: 1px solid var(--vp-c-border-soft);
-    border-right: 1px solid var(--vp-c-border-soft);
+    border-bottom: 1px solid var(--vp-c-border) !important;
+    border-right: 1px solid var(--vp-c-border) !important;
   }
 
   th:last-child, td:last-child {
-    border-right: none;
+    border-right: none !important;
   }
 
   tr:last-child td {
-    border-bottom: none;
+    border-bottom: none !important;
   }
 
   th {
     font-weight: 600;
-    background: var(--vp-c-bg-elv);
+    background: var(--vp-c-bg-alt) !important;
     text-align: left;
-    position: relative;
-
-    border-bottom: 1px solid var(--vp-c-border);
+    border-bottom: 1px solid var(--vp-c-border) !important;
   }
 
   tr:nth-child(even) {
-    background: var(--vp-c-bg-alt);
+    background: transparent !important;
   }
 
   tbody tr {
     transition: background-color var(--transition-fast);
 
     &:hover {
-      background: var(--unity-tint);
+      background: var(--vp-c-bg-alt) !important;
     }
   }
 }
@@ -603,27 +644,35 @@ table {
  * ======================================== */
 
 .custom-container {
-  border: 1px solid var(--vp-c-border);
-  padding: 0.75rem 1rem;
-  margin: 1rem 0;
-  background: var(--vp-c-bg-alt);
+  border: 1px solid var(--vp-c-border) !important;
+  padding: 1rem 1.25rem !important;
+  margin: 1.25rem 0 !important;
+  background: var(--vp-c-bg-alt) !important;
+  border-radius: var(--radius-surface) !important;
+  box-shadow: none !important;
   
   &.tip {
-    border-left: 4px solid var(--vp-c-success);
+    background: rgba(26, 174, 57, 0.06) !important;
+    border-color: rgba(26, 174, 57, 0.15) !important;
+    border-left: 4px solid var(--vp-c-success) !important;
   }
   
   &.warning {
-    border-left: 4px solid var(--vp-c-warning);
+    background: rgba(221, 91, 0, 0.06) !important;
+    border-color: rgba(221, 91, 0, 0.15) !important;
+    border-left: 4px solid var(--vp-c-warning) !important;
   }
   
   &.danger {
-    border-left: 4px solid var(--vp-c-danger);
+    background: rgba(224, 49, 49, 0.06) !important;
+    border-color: rgba(224, 49, 49, 0.15) !important;
+    border-left: 4px solid var(--vp-c-danger) !important;
   }
   
   .custom-container-title {
-    font-weight: 600;
-    font-size: $font-size-normal;
-    margin-bottom: 0.25rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
   }
 }
 
@@ -681,117 +730,117 @@ input[type="checkbox"]:focus-visible {
  * ======================================== */
 
 :root {
-  --unity-theme-ui-appearance: url('/assets/icon/unity/theme-ui/light/appearance.png');
-  --unity-theme-ui-appearance-on: url('/assets/icon/unity/theme-ui/light/appearance-on.png');
-  --unity-theme-ui-article: url('/assets/icon/unity/theme-ui/light/article.png');
-  --unity-theme-ui-article-on: url('/assets/icon/unity/theme-ui/light/article-on.png');
-  --unity-theme-ui-nav-home: url('/assets/icon/unity/theme-ui/light/nav-home.png');
-  --unity-theme-ui-nav-home-on: url('/assets/icon/unity/theme-ui/light/nav-home-on.png');
-  --unity-theme-ui-nav-articles: url('/assets/icon/unity/theme-ui/light/nav-articles.png');
-  --unity-theme-ui-nav-articles-on: url('/assets/icon/unity/theme-ui/light/nav-articles-on.png');
-  --unity-theme-ui-nav-algorithm: url('/assets/icon/unity/theme-ui/light/nav-algorithm.png');
-  --unity-theme-ui-nav-algorithm-on: url('/assets/icon/unity/theme-ui/light/nav-algorithm-on.png');
-  --unity-theme-ui-nav-game-development: url('/assets/icon/unity/theme-ui/light/nav-game-development.png');
-  --unity-theme-ui-nav-game-development-on: url('/assets/icon/unity/theme-ui/light/nav-game-development-on.png');
-  --unity-theme-ui-nav-design-patterns: url('/assets/icon/unity/theme-ui/light/nav-design-patterns.png');
-  --unity-theme-ui-nav-design-patterns-on: url('/assets/icon/unity/theme-ui/light/nav-design-patterns-on.png');
-  --unity-theme-ui-nav-unity-best-practice: url('/assets/icon/unity/theme-ui/light/nav-unity-best-practice.png');
-  --unity-theme-ui-nav-unity-best-practice-on: url('/assets/icon/unity/theme-ui/light/nav-unity-best-practice-on.png');
+  --unity-theme-ui-appearance: url('/assets/icon/unity/theme-ui/light/appearance.svg');
+  --unity-theme-ui-appearance-on: url('/assets/icon/unity/theme-ui/light/appearance-on.svg');
+  --unity-theme-ui-article: url('/assets/icon/unity/theme-ui/light/article.svg');
+  --unity-theme-ui-article-on: url('/assets/icon/unity/theme-ui/light/article-on.svg');
+  --unity-theme-ui-nav-home: url('/assets/icon/unity/theme-ui/light/nav-home.svg');
+  --unity-theme-ui-nav-home-on: url('/assets/icon/unity/theme-ui/light/nav-home-on.svg');
+  --unity-theme-ui-nav-articles: url('/assets/icon/unity/theme-ui/light/nav-articles.svg');
+  --unity-theme-ui-nav-articles-on: url('/assets/icon/unity/theme-ui/light/nav-articles-on.svg');
+  --unity-theme-ui-nav-algorithm: url('/assets/icon/unity/theme-ui/light/nav-algorithm.svg');
+  --unity-theme-ui-nav-algorithm-on: url('/assets/icon/unity/theme-ui/light/nav-algorithm-on.svg');
+  --unity-theme-ui-nav-game-development: url('/assets/icon/unity/theme-ui/light/nav-game-development.svg');
+  --unity-theme-ui-nav-game-development-on: url('/assets/icon/unity/theme-ui/light/nav-game-development-on.svg');
+  --unity-theme-ui-nav-design-patterns: url('/assets/icon/unity/theme-ui/light/nav-design-patterns.svg');
+  --unity-theme-ui-nav-design-patterns-on: url('/assets/icon/unity/theme-ui/light/nav-design-patterns-on.svg');
+  --unity-theme-ui-nav-unity-best-practice: url('/assets/icon/unity/theme-ui/light/nav-unity-best-practice.svg');
+  --unity-theme-ui-nav-unity-best-practice-on: url('/assets/icon/unity/theme-ui/light/nav-unity-best-practice-on.svg');
   --unity-blue: #2C5D87;
   --vp-c-brand: var(--unity-blue);
   --theme-color: var(--unity-blue);
-  --unity-theme-ui-caret-down: url('/assets/icon/unity/theme-ui/light/caret-down.png');
-  --unity-theme-ui-caret-down-on: url('/assets/icon/unity/theme-ui/light/caret-down-on.png');
-  --unity-theme-ui-caret-right: url('/assets/icon/unity/theme-ui/light/caret-right.png');
-  --unity-theme-ui-caret-right-on: url('/assets/icon/unity/theme-ui/light/caret-right-on.png');
-  --unity-theme-ui-category: url('/assets/icon/unity/theme-ui/light/category.png');
-  --unity-theme-ui-category-on: url('/assets/icon/unity/theme-ui/light/category-on.png');
-  --unity-theme-ui-chevron-down: url('/assets/icon/unity/theme-ui/light/chevron-down.png');
-  --unity-theme-ui-chevron-left: url('/assets/icon/unity/theme-ui/light/chevron-left.png');
-  --unity-theme-ui-chevron-right: url('/assets/icon/unity/theme-ui/light/chevron-right.png');
-  --unity-theme-ui-color-auto: url('/assets/icon/unity/theme-ui/light/color-auto.png');
-  --unity-theme-ui-color-auto-on: url('/assets/icon/unity/theme-ui/light/color-auto-on.png');
-  --unity-theme-ui-color-dark: url('/assets/icon/unity/theme-ui/light/color-dark.png');
-  --unity-theme-ui-color-dark-on: url('/assets/icon/unity/theme-ui/light/color-dark-on.png');
-  --unity-theme-ui-color-light: url('/assets/icon/unity/theme-ui/light/color-light.png');
-  --unity-theme-ui-color-light-on: url('/assets/icon/unity/theme-ui/light/color-light-on.png');
-  --unity-theme-ui-date: url('/assets/icon/unity/theme-ui/light/date.png');
-  --unity-theme-ui-edit: url('/assets/icon/unity/theme-ui/light/edit.png');
-  --unity-theme-ui-fullscreen: url('/assets/icon/unity/theme-ui/light/fullscreen.png');
-  --unity-theme-ui-fullscreen-on: url('/assets/icon/unity/theme-ui/light/fullscreen-on.png');
-  --unity-theme-ui-language: url('/assets/icon/unity/theme-ui/light/language.png');
-  --unity-theme-ui-language-on: url('/assets/icon/unity/theme-ui/light/language-on.png');
-  --unity-theme-ui-link: url('/assets/icon/unity/theme-ui/light/link.png');
-  --unity-theme-ui-link-on: url('/assets/icon/unity/theme-ui/light/link-on.png');
-  --unity-theme-ui-menu: url('/assets/icon/unity/theme-ui/light/menu.png');
-  --unity-theme-ui-menu-on: url('/assets/icon/unity/theme-ui/light/menu-on.png');
-  --unity-theme-ui-print: url('/assets/icon/unity/theme-ui/light/print.png');
-  --unity-theme-ui-reading-time: url('/assets/icon/unity/theme-ui/light/reading-time.png');
-  --unity-theme-ui-sidebar-toggle: url('/assets/icon/unity/theme-ui/light/sidebar-toggle.png');
-  --unity-theme-ui-tag: url('/assets/icon/unity/theme-ui/light/tag.png');
-  --unity-theme-ui-tag-on: url('/assets/icon/unity/theme-ui/light/tag-on.png');
-  --unity-theme-ui-timeline: url('/assets/icon/unity/theme-ui/light/timeline.png');
-  --unity-theme-ui-timeline-on: url('/assets/icon/unity/theme-ui/light/timeline-on.png');
-  --unity-theme-ui-visibility: url('/assets/icon/unity/theme-ui/light/visibility.png');
-  --unity-theme-ui-visibility-on: url('/assets/icon/unity/theme-ui/light/visibility-on.png');
-  --unity-theme-ui-word-count: url('/assets/icon/unity/theme-ui/light/word-count.png');
+  --unity-theme-ui-caret-down: url('/assets/icon/unity/theme-ui/light/caret-down.svg');
+  --unity-theme-ui-caret-down-on: url('/assets/icon/unity/theme-ui/light/caret-down-on.svg');
+  --unity-theme-ui-caret-right: url('/assets/icon/unity/theme-ui/light/caret-right.svg');
+  --unity-theme-ui-caret-right-on: url('/assets/icon/unity/theme-ui/light/caret-right-on.svg');
+  --unity-theme-ui-category: url('/assets/icon/unity/theme-ui/light/category.svg');
+  --unity-theme-ui-category-on: url('/assets/icon/unity/theme-ui/light/category-on.svg');
+  --unity-theme-ui-chevron-down: url('/assets/icon/unity/theme-ui/light/chevron-down.svg');
+  --unity-theme-ui-chevron-left: url('/assets/icon/unity/theme-ui/light/chevron-left.svg');
+  --unity-theme-ui-chevron-right: url('/assets/icon/unity/theme-ui/light/chevron-right.svg');
+  --unity-theme-ui-color-auto: url('/assets/icon/unity/theme-ui/light/color-auto.svg');
+  --unity-theme-ui-color-auto-on: url('/assets/icon/unity/theme-ui/light/color-auto-on.svg');
+  --unity-theme-ui-color-dark: url('/assets/icon/unity/theme-ui/light/color-dark.svg');
+  --unity-theme-ui-color-dark-on: url('/assets/icon/unity/theme-ui/light/color-dark-on.svg');
+  --unity-theme-ui-color-light: url('/assets/icon/unity/theme-ui/light/color-light.svg');
+  --unity-theme-ui-color-light-on: url('/assets/icon/unity/theme-ui/light/color-light-on.svg');
+  --unity-theme-ui-date: url('/assets/icon/unity/theme-ui/light/date.svg');
+  --unity-theme-ui-edit: url('/assets/icon/unity/theme-ui/light/edit.svg');
+  --unity-theme-ui-fullscreen: url('/assets/icon/unity/theme-ui/light/fullscreen.svg');
+  --unity-theme-ui-fullscreen-on: url('/assets/icon/unity/theme-ui/light/fullscreen-on.svg');
+  --unity-theme-ui-language: url('/assets/icon/unity/theme-ui/light/language.svg');
+  --unity-theme-ui-language-on: url('/assets/icon/unity/theme-ui/light/language-on.svg');
+  --unity-theme-ui-link: url('/assets/icon/unity/theme-ui/light/link.svg');
+  --unity-theme-ui-link-on: url('/assets/icon/unity/theme-ui/light/link-on.svg');
+  --unity-theme-ui-menu: url('/assets/icon/unity/theme-ui/light/menu.svg');
+  --unity-theme-ui-menu-on: url('/assets/icon/unity/theme-ui/light/menu-on.svg');
+  --unity-theme-ui-print: url('/assets/icon/unity/theme-ui/light/print.svg');
+  --unity-theme-ui-reading-time: url('/assets/icon/unity/theme-ui/light/reading-time.svg');
+  --unity-theme-ui-sidebar-toggle: url('/assets/icon/unity/theme-ui/light/sidebar-toggle.svg');
+  --unity-theme-ui-tag: url('/assets/icon/unity/theme-ui/light/tag.svg');
+  --unity-theme-ui-tag-on: url('/assets/icon/unity/theme-ui/light/tag-on.svg');
+  --unity-theme-ui-timeline: url('/assets/icon/unity/theme-ui/light/timeline.svg');
+  --unity-theme-ui-timeline-on: url('/assets/icon/unity/theme-ui/light/timeline-on.svg');
+  --unity-theme-ui-visibility: url('/assets/icon/unity/theme-ui/light/visibility.svg');
+  --unity-theme-ui-visibility-on: url('/assets/icon/unity/theme-ui/light/visibility-on.svg');
+  --unity-theme-ui-word-count: url('/assets/icon/unity/theme-ui/light/word-count.svg');
 }
 
 html[data-theme='dark'] {
-  --unity-theme-ui-appearance: url('/assets/icon/unity/theme-ui/dark/appearance.png');
-  --unity-theme-ui-appearance-on: url('/assets/icon/unity/theme-ui/dark/appearance-on.png');
-  --unity-theme-ui-article: url('/assets/icon/unity/theme-ui/dark/article.png');
-  --unity-theme-ui-article-on: url('/assets/icon/unity/theme-ui/dark/article-on.png');
-  --unity-theme-ui-nav-home: url('/assets/icon/unity/theme-ui/dark/nav-home.png');
-  --unity-theme-ui-nav-home-on: url('/assets/icon/unity/theme-ui/dark/nav-home-on.png');
-  --unity-theme-ui-nav-articles: url('/assets/icon/unity/theme-ui/dark/nav-articles.png');
-  --unity-theme-ui-nav-articles-on: url('/assets/icon/unity/theme-ui/dark/nav-articles-on.png');
-  --unity-theme-ui-nav-algorithm: url('/assets/icon/unity/theme-ui/dark/nav-algorithm.png');
-  --unity-theme-ui-nav-algorithm-on: url('/assets/icon/unity/theme-ui/dark/nav-algorithm-on.png');
-  --unity-theme-ui-nav-game-development: url('/assets/icon/unity/theme-ui/dark/nav-game-development.png');
-  --unity-theme-ui-nav-game-development-on: url('/assets/icon/unity/theme-ui/dark/nav-game-development-on.png');
-  --unity-theme-ui-nav-design-patterns: url('/assets/icon/unity/theme-ui/dark/nav-design-patterns.png');
-  --unity-theme-ui-nav-design-patterns-on: url('/assets/icon/unity/theme-ui/dark/nav-design-patterns-on.png');
-  --unity-theme-ui-nav-unity-best-practice: url('/assets/icon/unity/theme-ui/dark/nav-unity-best-practice.png');
-  --unity-theme-ui-nav-unity-best-practice-on: url('/assets/icon/unity/theme-ui/dark/nav-unity-best-practice-on.png');
+  --unity-theme-ui-appearance: url('/assets/icon/unity/theme-ui/dark/appearance.svg');
+  --unity-theme-ui-appearance-on: url('/assets/icon/unity/theme-ui/dark/appearance-on.svg');
+  --unity-theme-ui-article: url('/assets/icon/unity/theme-ui/dark/article.svg');
+  --unity-theme-ui-article-on: url('/assets/icon/unity/theme-ui/dark/article-on.svg');
+  --unity-theme-ui-nav-home: url('/assets/icon/unity/theme-ui/dark/nav-home.svg');
+  --unity-theme-ui-nav-home-on: url('/assets/icon/unity/theme-ui/dark/nav-home-on.svg');
+  --unity-theme-ui-nav-articles: url('/assets/icon/unity/theme-ui/dark/nav-articles.svg');
+  --unity-theme-ui-nav-articles-on: url('/assets/icon/unity/theme-ui/dark/nav-articles-on.svg');
+  --unity-theme-ui-nav-algorithm: url('/assets/icon/unity/theme-ui/dark/nav-algorithm.svg');
+  --unity-theme-ui-nav-algorithm-on: url('/assets/icon/unity/theme-ui/dark/nav-algorithm-on.svg');
+  --unity-theme-ui-nav-game-development: url('/assets/icon/unity/theme-ui/dark/nav-game-development.svg');
+  --unity-theme-ui-nav-game-development-on: url('/assets/icon/unity/theme-ui/dark/nav-game-development-on.svg');
+  --unity-theme-ui-nav-design-patterns: url('/assets/icon/unity/theme-ui/dark/nav-design-patterns.svg');
+  --unity-theme-ui-nav-design-patterns-on: url('/assets/icon/unity/theme-ui/dark/nav-design-patterns-on.svg');
+  --unity-theme-ui-nav-unity-best-practice: url('/assets/icon/unity/theme-ui/dark/nav-unity-best-practice.svg');
+  --unity-theme-ui-nav-unity-best-practice-on: url('/assets/icon/unity/theme-ui/dark/nav-unity-best-practice-on.svg');
   --unity-blue: #3A72B0;
   --vp-c-brand: var(--unity-blue);
   --theme-color: var(--unity-blue);
-  --unity-theme-ui-caret-down: url('/assets/icon/unity/theme-ui/dark/caret-down.png');
-  --unity-theme-ui-caret-down-on: url('/assets/icon/unity/theme-ui/dark/caret-down-on.png');
-  --unity-theme-ui-caret-right: url('/assets/icon/unity/theme-ui/dark/caret-right.png');
-  --unity-theme-ui-caret-right-on: url('/assets/icon/unity/theme-ui/dark/caret-right-on.png');
-  --unity-theme-ui-category: url('/assets/icon/unity/theme-ui/dark/category.png');
-  --unity-theme-ui-category-on: url('/assets/icon/unity/theme-ui/dark/category-on.png');
-  --unity-theme-ui-chevron-down: url('/assets/icon/unity/theme-ui/dark/chevron-down.png');
-  --unity-theme-ui-chevron-left: url('/assets/icon/unity/theme-ui/dark/chevron-left.png');
-  --unity-theme-ui-chevron-right: url('/assets/icon/unity/theme-ui/dark/chevron-right.png');
-  --unity-theme-ui-color-auto: url('/assets/icon/unity/theme-ui/dark/color-auto.png');
-  --unity-theme-ui-color-auto-on: url('/assets/icon/unity/theme-ui/dark/color-auto-on.png');
-  --unity-theme-ui-color-dark: url('/assets/icon/unity/theme-ui/dark/color-dark.png');
-  --unity-theme-ui-color-dark-on: url('/assets/icon/unity/theme-ui/dark/color-dark-on.png');
-  --unity-theme-ui-color-light: url('/assets/icon/unity/theme-ui/dark/color-light.png');
-  --unity-theme-ui-color-light-on: url('/assets/icon/unity/theme-ui/dark/color-light-on.png');
-  --unity-theme-ui-date: url('/assets/icon/unity/theme-ui/dark/date.png');
-  --unity-theme-ui-edit: url('/assets/icon/unity/theme-ui/dark/edit.png');
-  --unity-theme-ui-fullscreen: url('/assets/icon/unity/theme-ui/dark/fullscreen.png');
-  --unity-theme-ui-fullscreen-on: url('/assets/icon/unity/theme-ui/dark/fullscreen-on.png');
-  --unity-theme-ui-language: url('/assets/icon/unity/theme-ui/dark/language.png');
-  --unity-theme-ui-language-on: url('/assets/icon/unity/theme-ui/dark/language-on.png');
-  --unity-theme-ui-link: url('/assets/icon/unity/theme-ui/dark/link.png');
-  --unity-theme-ui-link-on: url('/assets/icon/unity/theme-ui/dark/link-on.png');
-  --unity-theme-ui-menu: url('/assets/icon/unity/theme-ui/dark/menu.png');
-  --unity-theme-ui-menu-on: url('/assets/icon/unity/theme-ui/dark/menu-on.png');
-  --unity-theme-ui-print: url('/assets/icon/unity/theme-ui/dark/print.png');
-  --unity-theme-ui-reading-time: url('/assets/icon/unity/theme-ui/dark/reading-time.png');
-  --unity-theme-ui-sidebar-toggle: url('/assets/icon/unity/theme-ui/dark/sidebar-toggle.png');
-  --unity-theme-ui-tag: url('/assets/icon/unity/theme-ui/dark/tag.png');
-  --unity-theme-ui-tag-on: url('/assets/icon/unity/theme-ui/dark/tag-on.png');
-  --unity-theme-ui-timeline: url('/assets/icon/unity/theme-ui/dark/timeline.png');
-  --unity-theme-ui-timeline-on: url('/assets/icon/unity/theme-ui/dark/timeline-on.png');
-  --unity-theme-ui-visibility: url('/assets/icon/unity/theme-ui/dark/visibility.png');
-  --unity-theme-ui-visibility-on: url('/assets/icon/unity/theme-ui/dark/visibility-on.png');
-  --unity-theme-ui-word-count: url('/assets/icon/unity/theme-ui/dark/word-count.png');
+  --unity-theme-ui-caret-down: url('/assets/icon/unity/theme-ui/dark/caret-down.svg');
+  --unity-theme-ui-caret-down-on: url('/assets/icon/unity/theme-ui/dark/caret-down-on.svg');
+  --unity-theme-ui-caret-right: url('/assets/icon/unity/theme-ui/dark/caret-right.svg');
+  --unity-theme-ui-caret-right-on: url('/assets/icon/unity/theme-ui/dark/caret-right-on.svg');
+  --unity-theme-ui-category: url('/assets/icon/unity/theme-ui/dark/category.svg');
+  --unity-theme-ui-category-on: url('/assets/icon/unity/theme-ui/dark/category-on.svg');
+  --unity-theme-ui-chevron-down: url('/assets/icon/unity/theme-ui/dark/chevron-down.svg');
+  --unity-theme-ui-chevron-left: url('/assets/icon/unity/theme-ui/dark/chevron-left.svg');
+  --unity-theme-ui-chevron-right: url('/assets/icon/unity/theme-ui/dark/chevron-right.svg');
+  --unity-theme-ui-color-auto: url('/assets/icon/unity/theme-ui/dark/color-auto.svg');
+  --unity-theme-ui-color-auto-on: url('/assets/icon/unity/theme-ui/dark/color-auto-on.svg');
+  --unity-theme-ui-color-dark: url('/assets/icon/unity/theme-ui/dark/color-dark.svg');
+  --unity-theme-ui-color-dark-on: url('/assets/icon/unity/theme-ui/dark/color-dark-on.svg');
+  --unity-theme-ui-color-light: url('/assets/icon/unity/theme-ui/dark/color-light.svg');
+  --unity-theme-ui-color-light-on: url('/assets/icon/unity/theme-ui/dark/color-light-on.svg');
+  --unity-theme-ui-date: url('/assets/icon/unity/theme-ui/dark/date.svg');
+  --unity-theme-ui-edit: url('/assets/icon/unity/theme-ui/dark/edit.svg');
+  --unity-theme-ui-fullscreen: url('/assets/icon/unity/theme-ui/dark/fullscreen.svg');
+  --unity-theme-ui-fullscreen-on: url('/assets/icon/unity/theme-ui/dark/fullscreen-on.svg');
+  --unity-theme-ui-language: url('/assets/icon/unity/theme-ui/dark/language.svg');
+  --unity-theme-ui-language-on: url('/assets/icon/unity/theme-ui/dark/language-on.svg');
+  --unity-theme-ui-link: url('/assets/icon/unity/theme-ui/dark/link.svg');
+  --unity-theme-ui-link-on: url('/assets/icon/unity/theme-ui/dark/link-on.svg');
+  --unity-theme-ui-menu: url('/assets/icon/unity/theme-ui/dark/menu.svg');
+  --unity-theme-ui-menu-on: url('/assets/icon/unity/theme-ui/dark/menu-on.svg');
+  --unity-theme-ui-print: url('/assets/icon/unity/theme-ui/dark/print.svg');
+  --unity-theme-ui-reading-time: url('/assets/icon/unity/theme-ui/dark/reading-time.svg');
+  --unity-theme-ui-sidebar-toggle: url('/assets/icon/unity/theme-ui/dark/sidebar-toggle.svg');
+  --unity-theme-ui-tag: url('/assets/icon/unity/theme-ui/dark/tag.svg');
+  --unity-theme-ui-tag-on: url('/assets/icon/unity/theme-ui/dark/tag-on.svg');
+  --unity-theme-ui-timeline: url('/assets/icon/unity/theme-ui/dark/timeline.svg');
+  --unity-theme-ui-timeline-on: url('/assets/icon/unity/theme-ui/dark/timeline-on.svg');
+  --unity-theme-ui-visibility: url('/assets/icon/unity/theme-ui/dark/visibility.svg');
+  --unity-theme-ui-visibility-on: url('/assets/icon/unity/theme-ui/dark/visibility-on.svg');
+  --unity-theme-ui-word-count: url('/assets/icon/unity/theme-ui/dark/word-count.svg');
 }
 
 @mixin unity-theme-icon($icon, $size: 1rem) {
@@ -943,84 +992,84 @@ html[data-theme='dark'] {
   @include unity-theme-icon(var(--unity-theme-ui-nav-icon), 0.95rem);
 }
 
-.vp-navbar .route-link:has(> img[src$='/home.svg']),
-.vp-nav-screen .route-link:has(> img[src$='/home.svg']),
-.vp-sidebar .vp-sidebar-link:has(> img[src$='/home.svg']) {
+.vp-navbar .route-link:has(> img[src$='/home.png']),
+.vp-nav-screen .route-link:has(> img[src$='/home.png']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/home.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-home);
 }
 
-.vp-navbar .route-link.route-link-active:has(> img[src$='/home.svg']),
-.vp-nav-screen .route-link.route-link-active:has(> img[src$='/home.svg']),
-.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/home.svg']) {
+.vp-navbar .route-link.route-link-active:has(> img[src$='/home.png']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/home.png']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/home.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-home-on);
 }
 
-.vp-navbar .vp-dropdown-title:has(> img[src$='/articles.svg']),
-.vp-nav-screen .vp-nav-screen-menu-title:has(img[src$='/articles.svg']) {
+.vp-navbar .vp-dropdown-title:has(> img[src$='/articles.png']),
+.vp-nav-screen .vp-nav-screen-menu-title:has(img[src$='/articles.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-articles);
 }
 
-.vp-navbar .vp-dropdown-wrapper:hover > .vp-dropdown-title:has(> img[src$='/articles.svg']),
-.vp-navbar .vp-dropdown-title:hover:has(> img[src$='/articles.svg']),
-.vp-navbar .vp-dropdown-title:focus-visible:has(> img[src$='/articles.svg']),
-.vp-navbar .vp-dropdown-wrapper:has(.route-link-active) > .vp-dropdown-title:has(> img[src$='/articles.svg']),
-.vp-nav-screen .vp-nav-screen-menu-title:has(.arrow.down):has(img[src$='/articles.svg']) {
+.vp-navbar .vp-dropdown-wrapper:hover > .vp-dropdown-title:has(> img[src$='/articles.png']),
+.vp-navbar .vp-dropdown-title:hover:has(> img[src$='/articles.png']),
+.vp-navbar .vp-dropdown-title:focus-visible:has(> img[src$='/articles.png']),
+.vp-navbar .vp-dropdown-wrapper:has(.route-link-active) > .vp-dropdown-title:has(> img[src$='/articles.png']),
+.vp-nav-screen .vp-nav-screen-menu-title:has(.arrow.down):has(img[src$='/articles.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-articles-on);
 }
 
-.vp-navbar .route-link:has(> img[src$='/algorithm.svg']),
-.vp-nav-screen .route-link:has(> img[src$='/algorithm.svg']),
-.vp-sidebar .vp-sidebar-link:has(> img[src$='/algorithm.svg']),
-.vp-sidebar .vp-sidebar-header:has(> img[src$='/algorithm.svg']) {
+.vp-navbar .route-link:has(> img[src$='/algorithm.png']),
+.vp-nav-screen .route-link:has(> img[src$='/algorithm.png']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/algorithm.png']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/algorithm.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-algorithm);
 }
 
-.vp-navbar .route-link.route-link-active:has(> img[src$='/algorithm.svg']),
-.vp-nav-screen .route-link.route-link-active:has(> img[src$='/algorithm.svg']),
-.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/algorithm.svg']),
-.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/algorithm.svg']) {
+.vp-navbar .route-link.route-link-active:has(> img[src$='/algorithm.png']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/algorithm.png']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/algorithm.png']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/algorithm.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-algorithm-on);
 }
 
-.vp-navbar .route-link:has(> img[src$='/game-development.svg']),
-.vp-nav-screen .route-link:has(> img[src$='/game-development.svg']),
-.vp-sidebar .vp-sidebar-link:has(> img[src$='/game-development.svg']),
-.vp-sidebar .vp-sidebar-header:has(> img[src$='/game-development.svg']) {
+.vp-navbar .route-link:has(> img[src$='/game-development.png']),
+.vp-nav-screen .route-link:has(> img[src$='/game-development.png']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/game-development.png']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/game-development.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-game-development);
 }
 
-.vp-navbar .route-link.route-link-active:has(> img[src$='/game-development.svg']),
-.vp-nav-screen .route-link.route-link-active:has(> img[src$='/game-development.svg']),
-.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/game-development.svg']),
-.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/game-development.svg']) {
+.vp-navbar .route-link.route-link-active:has(> img[src$='/game-development.png']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/game-development.png']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/game-development.png']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/game-development.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-game-development-on);
 }
 
-.vp-navbar .route-link:has(> img[src$='/design-patterns.svg']),
-.vp-nav-screen .route-link:has(> img[src$='/design-patterns.svg']),
-.vp-sidebar .vp-sidebar-link:has(> img[src$='/design-patterns.svg']),
-.vp-sidebar .vp-sidebar-header:has(> img[src$='/design-patterns.svg']) {
+.vp-navbar .route-link:has(> img[src$='/design-patterns.png']),
+.vp-nav-screen .route-link:has(> img[src$='/design-patterns.png']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/design-patterns.png']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/design-patterns.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-design-patterns);
 }
 
-.vp-navbar .route-link.route-link-active:has(> img[src$='/design-patterns.svg']),
-.vp-nav-screen .route-link.route-link-active:has(> img[src$='/design-patterns.svg']),
-.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/design-patterns.svg']),
-.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/design-patterns.svg']) {
+.vp-navbar .route-link.route-link-active:has(> img[src$='/design-patterns.png']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/design-patterns.png']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/design-patterns.png']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/design-patterns.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-design-patterns-on);
 }
 
-.vp-navbar .route-link:has(> img[src$='/unity-best-practice.svg']),
-.vp-nav-screen .route-link:has(> img[src$='/unity-best-practice.svg']),
-.vp-sidebar .vp-sidebar-link:has(> img[src$='/unity-best-practice.svg']),
-.vp-sidebar .vp-sidebar-header:has(> img[src$='/unity-best-practice.svg']) {
+.vp-navbar .route-link:has(> img[src$='/unity-best-practice.png']),
+.vp-nav-screen .route-link:has(> img[src$='/unity-best-practice.png']),
+.vp-sidebar .vp-sidebar-link:has(> img[src$='/unity-best-practice.png']),
+.vp-sidebar .vp-sidebar-header:has(> img[src$='/unity-best-practice.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-unity-best-practice);
 }
 
-.vp-navbar .route-link.route-link-active:has(> img[src$='/unity-best-practice.svg']),
-.vp-nav-screen .route-link.route-link-active:has(> img[src$='/unity-best-practice.svg']),
-.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/unity-best-practice.svg']),
-.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/unity-best-practice.svg']) {
+.vp-navbar .route-link.route-link-active:has(> img[src$='/unity-best-practice.png']),
+.vp-nav-screen .route-link.route-link-active:has(> img[src$='/unity-best-practice.png']),
+.vp-sidebar .vp-sidebar-link.route-link-active:has(> img[src$='/unity-best-practice.png']),
+.vp-sidebar .vp-sidebar-header.active:has(> img[src$='/unity-best-practice.png']) {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-unity-best-practice-on);
 }
 
@@ -1204,12 +1253,18 @@ html[data-theme='dark'] {
 
 .vp-social-media:hover::before,
 .vp-social-media:focus-visible::before {
-  background-image: var(--unity-theme-ui-link-on);
+  // Keep platform-specific icon on hover; tint via filter instead of replacing
+  filter: brightness(1.3);
 }
 
 .vp-dropdown-title .arrow,
 .vp-nav-screen-menu-title .arrow,
 .vp-sidebar-header .vp-arrow,
+// Floating “reopen sidebar” control in article body (not used in this layout)
+.toggle-sidebar-wrapper {
+  display: none !important;
+}
+
 .toggle-sidebar-wrapper .arrow,
 .vp-page-nav .hint .arrow {
   width: 1rem;
@@ -2114,17 +2169,17 @@ input[type="checkbox"] + label {
     &.active,
     &[aria-pressed="true"],
     &.selected {
-      background: #96C3FB;
-      border-color: #7EB3E8;
+      background: var(--vp-c-brand-secondary);
+      border-color: color-mix(in srgb, var(--vp-c-brand-secondary) 85%, var(--vp-c-text));
       color: var(--vp-c-text);
       z-index: 2;
 
       &:hover {
-        background: #A8CFF7;
+        background: color-mix(in srgb, var(--vp-c-brand-secondary) 88%, white);
       }
 
       &:active {
-        background: #82B8F0;
+        background: color-mix(in srgb, var(--vp-c-brand-secondary) 78%, var(--vp-c-text));
       }
     }
   }
@@ -2142,16 +2197,16 @@ html[data-theme='dark'] {
       &.active,
       &[aria-pressed="true"],
       &.selected {
-        background: #2C5D87;
-        border-color: #1E4F76;
+        background: var(--vp-c-brand);
+        border-color: color-mix(in srgb, var(--vp-c-brand) 75%, black);
         color: #fff;
 
         &:hover {
-          background: #346A96;
+          background: color-mix(in srgb, var(--vp-c-brand) 90%, white);
         }
 
         &:active {
-          background: #245478;
+          background: color-mix(in srgb, var(--vp-c-brand) 80%, black);
         }
       }
     }
@@ -2450,7 +2505,11 @@ html[data-theme='dark'] {
   border: none;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.75rem;
+
+  .article-item {
+    margin-bottom: 0; // gap handles spacing now
+  }
 }
 
 /* ========================================
@@ -2499,4 +2558,227 @@ html[data-theme='dark'] {
   }
 }
 
+// Classic blog home: floating control to return to Unity Editor layout
+.home-view-switch-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+  background: var(--vp-c-bg-elv);
+  color: var(--vp-c-text);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  box-shadow: var(--vp-shadow-2);
+
+  &:hover {
+    background: var(--vp-c-bg-soft);
+  }
+}
+
+.home-view-switch-fab-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  background: url('/assets/icon/unity/theme-ui/light/toolbar-editor-view.svg') center / contain
+    no-repeat;
+}
+
+html[data-theme='dark'] .home-view-switch-fab-icon {
+  background-image: url('/assets/icon/unity/theme-ui/dark/toolbar-editor-view.svg');
+}
+
+/* ========================================
+ * Blogger Info Panel — Avatar Interaction
+ * ======================================== */
+
+.vp-blogger-avatar img,
+.vp-blog-infos .vp-blogger-avatar img {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  border: 2px solid var(--vp-c-border-soft);
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* ========================================
+ * Blog Type Tabs — Refined Spacing & Transition
+ * ======================================== */
+
+.vp-blog-type-switcher,
+.vp-blog-type-wrapper {
+  gap: 2px;
+
+  .vp-blog-type-icon-wrapper {
+    transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+
+    &.active {
+      border-bottom: 2px solid transparent;
+      border-image: var(--unity-gradient) 1;
+      border-image-slice: 1;
+    }
+  }
+}
+
+/* ========================================
+ * Pagination — Unity Control Style
+ * ======================================== */
+
+.vp-blog-main .vp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 1.5rem;
+  padding: 0.75rem 0;
+
+  button,
+  .page-number,
+  .vp-pagination-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 2px 8px;
+    font-size: $font-size-normal;
+    font-weight: 500;
+    background: var(--unity-control-bg);
+    border: 1px solid var(--unity-control-border);
+    border-radius: var(--radius-control);
+    color: var(--vp-c-text);
+    cursor: pointer;
+    transition: background-color var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast);
+
+    &:hover:not(.active):not(:disabled) {
+      background: var(--unity-control-bg-hover);
+      border-color: var(--vp-c-brand);
+    }
+
+    &:active:not(:disabled) {
+      background: var(--unity-control-bg-pressed);
+    }
+
+    &.active {
+      background: var(--vp-c-brand);
+      border-color: var(--vp-c-brand);
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* ========================================
+ * Dark Mode — Article Card Contrast Boost
+ * ======================================== */
+
+html[data-theme='dark'] {
+  .vp-blog-main .article-wrapper .article-item,
+  .article-list > .article-item {
+    border-color: rgba(255, 255, 255, 0.08);
+
+    &:hover {
+      border-color: var(--vp-c-brand);
+    }
+  }
+}
+
+/* ========================================
+ * Star Articles — Visual Emphasis
+ * ======================================== */
+
+.vp-star-article-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+
+  > .title {
+    font-weight: 600;
+    font-size: $font-size-big;
+    color: var(--vp-c-text);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--vp-c-brand);
+    margin-bottom: 0.75rem;
+
+    &::after {
+      content: ' ⭐';
+      font-size: 0.85em;
+    }
+  }
+
+  .article-item {
+    position: relative;
+    border-left: 3px solid var(--vp-c-brand);
+    padding-left: 1rem;
+    background: var(--unity-tint);
+    border-radius: var(--radius-surface);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0.75rem 0.5rem 1rem;
+    transition: background-color var(--transition-fast),
+                transform var(--transition-base);
+
+    &:hover {
+      background: color-mix(in srgb, var(--vp-c-brand) 10%, transparent);
+      transform: translateX(2px);
+    }
+  }
+}
+
+/* ========================================
+ * Timeline — Improved Spacing
+ * ======================================== */
+
+.timeline-list-wrapper {
+  .article-item {
+    padding: 6px 12px;
+  }
+
+  // Year group separators
+  .timeline-year-wrapper + .timeline-year-wrapper {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--vp-c-border-soft);
+  }
+}
+/* ========================================
+ * Article Card Cover Image Enhancements
+ * ======================================== */
+
+.vp-article-item {
+  .vp-article-cover {
+    height: 180px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius-surface) var(--radius-surface) 0 0;
+    transition: transform var(--transition-slow);
+    
+    @media (max-width: 768px) {
+      height: 140px;
+    }
+  }
+
+  &:hover {
+    .vp-article-cover {
+      transform: scale(1.025);
+    }
+  }
+}
+
+@import 'unity-tokens';
+@import 'unity-editor';
+@import 'unity-editor-components';
+@import 'unity-editor-ui-groups';
 @import 'responsive';
