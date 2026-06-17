@@ -71,9 +71,8 @@ function copyIcon(libRoot, entry) {
 function main() {
   const libRoot = process.env.UNITY_ICON_LIBRARY ?? DEFAULT_LIB;
   if (!fs.existsSync(libRoot)) {
-    console.error(`[sync-unity-icons] Library not found: ${libRoot}`);
-    console.error('Set UNITY_ICON_LIBRARY to the icon pack folder.');
-    process.exit(1);
+    console.warn(`[sync-unity-icons] Library not found: ${libRoot}. Skipping icon synchronization.`);
+    process.exit(0);
   }
 
   const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));

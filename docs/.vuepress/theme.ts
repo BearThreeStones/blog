@@ -51,7 +51,7 @@ export default hopeTheme({
 
   docsDir: "docs",
 
-  docsBranch: "clean-main",
+  docsBranch: "main",
 
 
 
