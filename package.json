@@ -7,10 +7,12 @@
   "scripts": {
     "build:glossary": "node docs/.vuepress/scripts/build-unity-glossary.mjs",
     "build:icons": "node docs/.vuepress/scripts/sync-unity-icons.mjs",
+    "capture:game-previews": "node scripts/capture-game-previews.mjs",
     "docs:build": "npm run build:glossary && npm run build:icons && cross-env NODE_ENV=production vuepress-vite build docs",
     "docs:clean-dev": "npm run build:glossary && npm run build:icons && vuepress-vite dev docs --clean-cache",
     "docs:dev": "npm run build:glossary && npm run build:icons && vuepress-vite dev docs",
-    "docs:update-package": "npx vp-update"
+    "docs:update-package": "npx vp-update",
+    "test": "node --test docs/.vuepress/plugins/unity-webgl-plugin/lib/*.test.mjs docs/.vuepress/plugins/classic-animations/lib/*.test.mjs docs/.vuepress/plugins/desktop-sidebar-toggle/lib/*.test.mjs scripts/lib/*.test.mjs"
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.30",
@@ -18,13 +20,16 @@
     "@vuepress/plugin-docsearch": "^2.0.0-rc.130",
     "@vuepress/plugin-google-analytics": "^2.0.0-rc.130",
     "@vuepress/plugin-pwa": "^2.0.0-rc.130",
+    "@vueuse/core": "^13.9.0",
     "cross-env": "^10.1.0",
     "echarts": "^6.1.0",
     "markmap-lib": "^0.18.12",
     "markmap-toolbar": "^0.18.12",
     "markmap-view": "^0.18.12",
     "mermaid": "^11.11.0",
+    "playwright": "^1.52.0",
     "sass": "^1.97.2",
+    "sharp": "^0.34.5",
     "vue": "^3.5.34",
     "vuepress": "2.0.0-rc.30",
     "vuepress-plugin-lightgallery": "2.0.0-rc.107",
