@@ -13,6 +13,7 @@ A VuePress plugin that enables embedding Unity WebGL games in markdown using sim
 - 📱 **Mobile-Aware**: Shows disclaimer for mobile devices
 - 🛡️ **Error Handling**: Graceful failure for missing builds
 - 🎯 **Multi-Game Support**: Multiple games on a single page
+- 🖼️ **Preview Posters**: INITIAL state shows a gameplay screenshot when `preview.webp` exists on the server
 
 ## Installation
 
@@ -177,6 +178,20 @@ The plugin tries these paths in order:
 <!-- Tall game for mobile -->
 ![game](mobile-game?width=480&height=854)
 ```
+
+## Game Preview Posters
+
+Before the user clicks **Load Game**, the player shows a poster image if `/games/{name}/Build/preview.webp` exists on the server. This file is generated automatically during game deploy (CI) and is not committed to git.
+
+### Generate previews locally
+
+```bash
+npm run capture:game-previews -- strategy
+npm run capture:game-previews          # all games
+sh deploy-games.sh capture-previews strategy
+```
+
+Requires Playwright Chromium (`npx playwright install chromium` after `npm ci`).
 
 ## Troubleshooting
 
