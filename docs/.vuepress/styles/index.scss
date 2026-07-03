@@ -1446,27 +1446,40 @@ html[data-theme='dark'] {
   --unity-theme-ui-nav-icon: var(--unity-theme-ui-nav-home-on);
 }
 
-#color-mode-switch {
+#color-mode-switch,
+.vp-color-mode-switch {
   min-width: 1.35rem;
   min-height: 1.35rem;
 }
 
-#color-mode-switch > * {
+// Keep Hope's mode icons in DOM for :has() state, but remove from flex layout
+#color-mode-switch > *,
+.vp-color-mode-switch > * {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
   opacity: 0 !important;
-  width: 1rem;
-  height: 1rem;
   pointer-events: none;
 }
 
-#color-mode-switch::before {
+#color-mode-switch::before,
+.vp-color-mode-switch::before {
+  position: absolute;
+  inset: 0;
+  margin: auto;
   @include unity-theme-icon(var(--unity-theme-ui-color-auto-on));
 }
 
-#color-mode-switch:has(> :nth-child(2)[style*='block'])::before {
+#color-mode-switch:has(> :nth-child(2)[style*='block'])::before,
+.vp-color-mode-switch:has(> :nth-child(2)[style*='block'])::before {
   background-image: var(--unity-theme-ui-color-dark-on);
 }
 
-#color-mode-switch:has(> :nth-child(3)[style*='block'])::before {
+#color-mode-switch:has(> :nth-child(3)[style*='block'])::before,
+.vp-color-mode-switch:has(> :nth-child(3)[style*='block'])::before {
   background-image: var(--unity-theme-ui-color-light-on);
 }
 

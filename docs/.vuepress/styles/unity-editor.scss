@@ -278,20 +278,28 @@ html.unity-editor-active[data-theme='dark'] {
   align-items: center;
 
   #color-mode-switch {
+    position: relative;
     min-width: 1.35rem;
     min-height: 1.35rem;
     cursor: pointer;
   }
 
   #color-mode-switch > * {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
     opacity: 0 !important;
-    width: 1rem;
-    height: 1rem;
     pointer-events: none;
   }
 
   #color-mode-switch::before {
     content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
     display: block;
     width: 1.05rem;
     height: 1.05rem;
