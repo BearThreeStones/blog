@@ -89,6 +89,11 @@ export default hopeTheme({
 
       },
 
+      // Include h1 section headings (e.g. 方法一/方法二) — Hope default "deep" is h2–h6 only.
+      toc: {
+        levels: [1, 6],
+      },
+
       blog: {
 
         avatar: "/logo.png",
@@ -96,8 +101,6 @@ export default hopeTheme({
         name: "StonyBear",
 
         description: "分享游戏开发和算法知识",
-
-        intro: "/intro.html",
 
         medias: {
 
@@ -179,6 +182,10 @@ export default hopeTheme({
 
       },
 
+      toc: {
+        levels: [1, 6],
+      },
+
       blog: {
 
         avatar: "/logo.png",
@@ -186,8 +193,6 @@ export default hopeTheme({
         name: "StonyBear",
 
         description: "Game development and algorithms",
-
-        intro: "/en/intro.html",
 
         medias: {
 
@@ -351,7 +356,16 @@ export default hopeTheme({
 
 
 
-    blog: true,
+    blog: {
+      filter: (page) => {
+        const relative = page.filePathRelative;
+        if (!relative || page.frontmatter.home) return false;
+        if (page.frontmatter.article === false) return false;
+        if (relative.startsWith(".vuepress/")) return false;
+        if (relative.startsWith("superpowers/")) return false;
+        return relative.startsWith("posts/");
+      },
+    },
 
 
 
