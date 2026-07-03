@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 600" fill="none" role="img" aria-label="StonyBear blog hero background">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1920" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a2f6b"/>
+      <stop offset="45%" stop-color="#213183"/>
+      <stop offset="100%" stop-color="#0075de"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(960 220) rotate(90) scale(420 760)">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+    <pattern id="hex" width="56" height="48" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)">
+      <path d="M28 2 L50 14 L50 34 L28 46 L6 34 L6 14 Z" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1" fill="none"/>
+    </pattern>
+    <linearGradient id="fade" x1="960" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f1838" stop-opacity="0.15"/>
+      <stop offset="55%" stop-color="#0f1838" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0a1028" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="600" fill="url(#bg)"/>
+  <rect width="1920" height="600" fill="url(#grid)"/>
+  <rect width="1920" height="600" fill="url(#hex)" opacity="0.65"/>
+  <rect width="1920" height="600" fill="url(#glow)"/>
+
+  <!-- Algorithm graph nodes -->
+  <g opacity="0.22" stroke="#ffffff" stroke-width="1.5">
+    <circle cx="280" cy="170" r="5" fill="#62aef0"/>
+    <circle cx="360" cy="120" r="4" fill="#ff64c8"/>
+    <circle cx="430" cy="190" r="4" fill="#1aae39"/>
+    <circle cx="340" cy="240" r="4" fill="#ffffff"/>
+    <path d="M280 170 L360 120 L430 190 M360 120 L340 240 M280 170 L340 240"/>
+  </g>
+  <g opacity="0.18" stroke="#ffffff" stroke-width="1.5">
+    <circle cx="1540" cy="420" r="5" fill="#62aef0"/>
+    <circle cx="1620" cy="360" r="4" fill="#d6b6f6"/>
+    <circle cx="1680" cy="450" r="4" fill="#1aae39"/>
+    <circle cx="1580" cy="480" r="4" fill="#ffffff"/>
+    <path d="M1540 420 L1620 360 L1680 450 M1620 360 L1580 480 M1540 420 L1580 480"/>
+  </g>
+
+  <!-- Unity-style wireframe cube -->
+  <g transform="translate(1480 110)" opacity="0.2" stroke="#ffffff" stroke-width="2" fill="none">
+    <path d="M0 70 L60 35 L120 70 L60 105 Z"/>
+    <path d="M0 70 L0 130 L60 165 L60 105"/>
+    <path d="M120 70 L120 130 L60 165"/>
+    <path d="M60 35 L60 105"/>
+    <path d="M0 130 L60 95 L120 130"/>
+  </g>
+  <g transform="translate(220 360) scale(0.75)" opacity="0.16" stroke="#ffffff" stroke-width="2" fill="none">
+    <path d="M0 70 L60 35 L120 70 L60 105 Z"/>
+    <path d="M0 70 L0 130 L60 165 L60 105"/>
+    <path d="M120 70 L120 130 L60 165"/>
+    <path d="M60 35 L60 105"/>
+    <path d="M0 130 L60 95 L120 130"/>
+  </g>
+
+  <!-- Accent constellation -->
+  <g opacity="0.75">
+    <circle cx="150" cy="90" r="6" fill="#ff64c8"/>
+    <circle cx="1760" cy="80" r="8" fill="#62aef0"/>
+    <circle cx="1680" cy="520" r="5" fill="#d6b6f6"/>
+    <circle cx="120" cy="500" r="4" fill="#1aae39"/>
+    <circle cx="960" cy="540" r="3" fill="#ffffff" opacity="0.5"/>
+  </g>
+
+  <rect width="1920" height="600" fill="url(#fade)"/>
+</svg>

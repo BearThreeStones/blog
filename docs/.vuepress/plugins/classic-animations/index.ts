@@ -1,0 +1,11 @@
+import type { Plugin } from 'vuepress';
+import { getDirname, path } from 'vuepress/utils';
+
+const __dirname = getDirname(import.meta.url);
+
+export const classicAnimationsPlugin = (): Plugin => ({
+  name: 'classic-animations',
+  clientConfigFile: path.resolve(__dirname, './client.ts'),
+});
+
+export default classicAnimationsPlugin;

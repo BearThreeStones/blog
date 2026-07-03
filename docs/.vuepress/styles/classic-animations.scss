@@ -1,0 +1,108 @@
+@keyframes classic-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes classic-hero-ambient {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.96;
+  }
+}
+
+html.classic-home-animations {
+  .vp-blog-hero {
+    .vp-blog-mask {
+      animation: classic-hero-ambient 12s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    .vp-blog-hero-title,
+    .vp-blog-hero-description,
+    .vp-blog-hero-actions .vp-button {
+      opacity: 0;
+      animation: classic-hero-enter 500ms var(--ease-out) forwards;
+    }
+
+    .vp-blog-hero-title {
+      animation-delay: var(--classic-hero-delay-title, 0ms);
+    }
+
+    .vp-blog-hero-description {
+      animation-delay: var(--classic-hero-delay-tagline, 120ms);
+    }
+
+    .vp-blog-hero-actions .vp-button {
+      animation-delay: var(--classic-hero-delay-actions, 240ms);
+    }
+  }
+
+  .classic-article-reveal-pending {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .classic-article-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 450ms var(--ease-out),
+      transform 450ms var(--ease-out);
+    transition-delay: var(--classic-reveal-delay, 0ms);
+  }
+}
+
+html[data-view-transition='out'] .home-view-transition-overlay,
+html[data-view-transition='in'] .home-view-transition-overlay {
+  opacity: 1;
+}
+
+.home-view-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  background: var(--vp-c-bg);
+  opacity: 0;
+  transition: opacity 250ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.classic-home-animations {
+    .vp-blog-hero .vp-blog-mask {
+      animation: none !important;
+    }
+
+    .vp-blog-hero-title,
+    .vp-blog-hero-description,
+    .vp-blog-hero-actions .vp-button {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .classic-article-reveal-pending {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .classic-article-revealed {
+      transition: none !important;
+    }
+  }
+
+  .home-view-transition-overlay {
+    transition: none !important;
+  }
+}
