@@ -58,14 +58,12 @@ export function useHomeViewMode() {
 
 
 
-  const getMode = (): HomeViewMode | null => {
-
-    if (typeof localStorage === 'undefined') return null;
+  const getMode = (): HomeViewMode => {
+    if (typeof localStorage === 'undefined') return 'classic';
 
     const raw = localStorage.getItem(STORAGE_KEY);
 
-    return raw === 'classic' || raw === 'editor' ? raw : null;
-
+    return raw === 'editor' ? 'editor' : 'classic';
   };
 
 
