@@ -8,6 +8,8 @@ import { themeUiIconSyncPlugin } from "./plugins/theme-ui-icon-sync/index.js";
 import { unityEditorCatalogPlugin } from "./plugins/unity-editor-catalog/index.js";
 import { unityWebGLPlugin } from "./plugins/unity-webgl-plugin/index.js";
 import { autoCoverPlugin } from "./plugins/auto-cover-plugin/index.js";
+import { classicAnimationsPlugin } from "./plugins/classic-animations/index.js";
+import { desktopSidebarTogglePlugin } from "./plugins/desktop-sidebar-toggle/index.js";
 
 import {
   baiduAnalyticsId,
@@ -101,6 +103,8 @@ export default defineUserConfig({
     localeContentMirrorPlugin(),
     echartsTabsPlugin(),
     themeUiIconSyncPlugin(),
+    classicAnimationsPlugin(),
+    desktopSidebarTogglePlugin(),
     unityEditorCatalogPlugin(),
     unityWebGLPlugin(),
     autoCoverPlugin(),

@@ -42,14 +42,20 @@ export const autoCoverPlugin = (): Plugin => {
         return;
       }
 
+      const applyCover = (coverUrl: string) => {
+        page.frontmatter.cover = coverUrl;
+        // Blog plugin snapshots cover into routeMeta before this plugin runs.
+        page.routeMeta = { ...page.routeMeta, cover: coverUrl };
+      };
+
       // 4. Handle remote or absolute paths
       if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('//')) {
-        page.frontmatter.cover = imageUrl;
+        applyCover(imageUrl);
         return;
       }
 
       if (imageUrl.startsWith('/')) {
-        page.frontmatter.cover = imageUrl;
+        applyCover(imageUrl);
         return;
       }
 
@@ -71,7 +77,7 @@ export const autoCoverPlugin = (): Plugin => {
 
       const publicUrlPath = `/auto-covers/${relativeMdDir.replace(/\\/g, '/')}/${imgFilename}`;
 
-      page.frontmatter.cover = publicUrlPath;
+      applyCover(publicUrlPath);
 
       if (!copiedImages.has(destImgPath)) {
         try {

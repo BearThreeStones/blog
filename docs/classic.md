@@ -7,6 +7,8 @@ icon: /assets/icon/unity/home.svg
 heroText: StonyBear 程序开发分享
 tagline: 分享游戏开发和算法知识
 heroFullScreen: false
+bgImage: /assets/hero/blog-hero-light.svg
+bgImageDark: /assets/hero/blog-hero-dark.svg
 actions:
   - text: 浏览文章
     link: /posts/algorithm/

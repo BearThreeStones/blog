@@ -2,7 +2,11 @@ import { sidebar } from "vuepress-theme-hope";
 
 export const sidebarZh = sidebar({
   "/": [
-    "",
+    {
+      text: "首页",
+      icon: "/assets/icon/unity/home.svg",
+      link: "/classic/",
+    },
     {
       text: "算法",
       icon: "/assets/icon/unity/algorithm.svg",
@@ -29,7 +33,11 @@ export const sidebarZh = sidebar({
 
 export const sidebarEn = sidebar({
   "/en/": [
-    "",
+    {
+      text: "Home",
+      icon: "/assets/icon/unity/home.svg",
+      link: "/en/",
+    },
     {
       text: "Algorithms",
       icon: "/assets/icon/unity/algorithm.svg",

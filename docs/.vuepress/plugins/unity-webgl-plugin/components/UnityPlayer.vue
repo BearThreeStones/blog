@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import type { UnityInstance, UnityPlayerState } from '../types.js';
+import { getGamePreviewUrl, getGamePreviewDevUrl } from '../lib/preview.mjs';
 
 // Props
 interface Props {
@@ -55,6 +56,17 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const componentId = ref(`unity-player-${Math.random().toString(36).substr(2, 9)}`);
 const isMobile = ref(false);
 const isFullscreen = ref(false);
+const previewAvailable = ref(false);
+const previewUrl = ref('');
+
+const initialStateStyle = computed(() => {
+  if (!previewAvailable.value || !previewUrl.value) {
+    return {};
+  }
+  return {
+    backgroundImage: `url(${previewUrl.value})`,
+  };
+});
 
 // Computed
 const containerStyle = computed(() => ({
@@ -185,11 +197,36 @@ async function resolveUnityBuildInfo(
   };
 }
 
-// Detect mobile
+// Detect mobile and probe preview poster
+async function probePreviewPoster(): Promise<void> {
+  const candidates = [
+    getGamePreviewUrl(props.gamePath),
+    getGamePreviewDevUrl(gameDisplayName.value),
+  ];
+
+  for (const url of candidates) {
+    const loaded = await new Promise<boolean>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+    if (loaded) {
+      previewUrl.value = url;
+      previewAvailable.value = true;
+      return;
+    }
+  }
+
+  previewUrl.value = '';
+  previewAvailable.value = false;
+}
+
 onMounted(() => {
   isMobile.value = 
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth < 768;
+  void probePreviewPoster();
 });
 
 async function detectGzipWithoutEncoding(gamePath: string): Promise<string | null> {
@@ -578,7 +615,12 @@ onBeforeUnmount(async () => {
     </div>
     
     <!-- INITIAL State: Click-to-Play Button -->
-    <div v-if="state === 'INITIAL'" class="unity-initial-state">
+    <div
+      v-if="state === 'INITIAL'"
+      class="unity-initial-state"
+      :class="{ 'has-poster': previewAvailable }"
+      :style="initialStateStyle"
+    >
       <button type="button" class="unity-load-button" @click.stop="handleLoadClick">
         <img class="unity-button-icon" :src="uiIcons.load" alt="" aria-hidden="true" no-view>
         <span>Load Game</span>
@@ -653,6 +695,26 @@ onBeforeUnmount(async () => {
   justify-content: center;
   height: 100%;
   gap: 1rem;
+  position: relative;
+}
+
+.unity-initial-state.has-poster {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.unity-initial-state.has-poster::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.unity-initial-state.has-poster > * {
+  position: relative;
+  z-index: 1;
 }
 
 .unity-load-button {

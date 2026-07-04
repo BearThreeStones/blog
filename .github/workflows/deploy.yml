@@ -47,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -110,6 +110,21 @@ jobs:
           sparse-checkout: |
             deploy-games.sh
             docs/.vuepress/public/games
+            scripts
+            package.json
+            package-lock.json
+            docs/.vuepress/plugins/unity-webgl-plugin/lib
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies and Playwright
+        run: |
+          npm ci
+          npx playwright install chromium --with-deps
 
       - name: Start SSH agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -149,6 +164,21 @@ jobs:
           sparse-checkout: |
             deploy-games.sh
             docs/.vuepress/public/games
+            scripts
+            package.json
+            package-lock.json
+            docs/.vuepress/plugins/unity-webgl-plugin/lib
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies and Playwright
+        run: |
+          npm ci
+          npx playwright install chromium --with-deps
 
       - name: Start SSH agent
         uses: webfactory/ssh-agent@v0.9.0

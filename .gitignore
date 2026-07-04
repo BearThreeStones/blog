@@ -1,9 +1,13 @@
 node_modules/
+.cursor/
+.codegraph/
 docs/.env
 *.pem
 docs/.vuepress/.cache/
 docs/.vuepress/.temp/
 docs/.vuepress/dist/
+docs/.vuepress/public/games/*/Build/preview.webp
+docs/.vuepress/public/assets/game-previews/*.webp
 # English locale mirror (junction/symlink + copied README); recreated by locale-content-mirror plugin
 docs/en/
 syncToGitee.yml

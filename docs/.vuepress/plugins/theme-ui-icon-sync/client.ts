@@ -47,6 +47,8 @@ const syncBlogTypeIcons = (): void => {
 
   const rootStyles = window.getComputedStyle(document.documentElement);
 
+  const isDarkMode = document.documentElement.dataset.theme === 'dark';
+
   document.querySelectorAll<HTMLElement>('.vp-blog-type-icon-wrapper').forEach((element) => {
     const label = element.getAttribute('aria-label') ?? '';
     const iconConfig = BLOG_TYPE_ICON_MAP[label];
@@ -55,7 +57,10 @@ const syncBlogTypeIcons = (): void => {
       return;
     }
 
-    const iconVariableName = element.classList.contains('active')
+    // Light mode: -on icons are pale/white (Unity toolbar); use inactive icons
+    // on the light pill so selected tabs stay readable.
+    const useActiveIcon = element.classList.contains('active') && isDarkMode;
+    const iconVariableName = useActiveIcon
       ? iconConfig.active
       : iconConfig.inactive;
     const iconValue = rootStyles.getPropertyValue(iconVariableName).trim();

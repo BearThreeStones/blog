@@ -50,7 +50,7 @@ const { getMode, classicHomePath } = useHomeViewMode();
 const router = useRouter();
 
 onMounted(() => {
-  if (getMode() === 'classic') {
+  if (getMode() !== 'editor') {
     void router.replace(classicHomePath.value);
     return;
   }

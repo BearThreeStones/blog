@@ -124,7 +124,8 @@ iframe.giscus-frame {
 
   // Blog article cards
   .vp-blog-main .article-wrapper .article-item,
-  .article-list > .article-item {
+  .article-list > .article-item,
+  .vp-blog-main .vp-article-item:not(:has(.vp-article-cover)) {
     padding: 0.75rem 0.875rem 0.75rem 1rem;
   }
 

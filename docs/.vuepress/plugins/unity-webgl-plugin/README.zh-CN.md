@@ -13,6 +13,7 @@
 - 📱 **移动端适配**：在移动设备显示提示
 - 🛡️ **错误处理**：缺失构建时优雅降级
 - 🎯 **多游戏支持**：同一页面可嵌入多个游戏
+- 🖼️ **预览海报**：若服务器存在 `preview.webp`，INITIAL 状态会显示游戏截图而非黑屏
 
 ## 安装
 
@@ -175,6 +176,20 @@ docs/.vuepress/public/games/
 <!-- 面向移动端的高画面 -->
 ![game](mobile-game?width=480&height=854)
 ```
+
+## 游戏预览海报
+
+用户点击 **Load Game** 之前，若服务器上存在 `/games/{name}/Build/preview.webp`，播放器会显示该海报图。该文件在游戏部署时由 CI 自动生成，不提交到 git。
+
+### 本地生成预览
+
+```bash
+npm run capture:game-previews -- strategy
+npm run capture:game-previews          # 全部游戏
+sh deploy-games.sh capture-previews strategy
+```
+
+需安装 Playwright Chromium（`npm ci` 后执行 `npx playwright install chromium`）。
 
 ## 故障排查
 

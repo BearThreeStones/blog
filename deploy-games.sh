@@ -98,10 +98,24 @@ _deploy_one_game() {
 		_expand_gzip_in_tree "$_staging"
 	fi
 	echo "---- rsync -> ${DEPLOY_PATH}/games/${_game}/"
+	_capture_game_preview "$_game"
 	# shellcheck disable=SC2086
 	rsync $RSYNC_OPTS "$_staging/" "$dest"
 	rm -rf "$_staging"
 	echo "---- 完成: ${_game}"
+}
+
+_capture_game_preview() {
+	_game="$1"
+	if ! command -v node >/dev/null 2>&1; then
+		echo "    skip preview capture (node not found)" >&2
+		return 0
+	fi
+	if [ ! -f "scripts/capture-game-previews.mjs" ]; then
+		return 0
+	fi
+	echo "---- capture preview"
+	node scripts/capture-game-previews.mjs "$_game" || echo "    preview capture warning for ${_game}" >&2
 }
 
 _build_batch_plan() {
@@ -218,6 +232,7 @@ _print_usage() {
 	echo "  batch <N> | <N>   部署动态第 N 批" >&2
 	echo "  batch-count       输出批次数" >&2
 	echo "  batch-matrix      输出批次 JSON 数组（CI matrix）" >&2
+	echo "  capture-previews [slug...]  仅生成 preview.webp（不 rsync）" >&2
 }
 
 _cmd="${1:-}"
@@ -264,6 +279,19 @@ case "$_cmd" in
 		;;
 	changed)
 		_deploy_changed_games
+		;;
+	capture-previews)
+		shift
+		if [ $# -eq 0 ]; then
+			_all=$(_list_games)
+			for _g in $_all; do
+				_capture_game_preview "$_g"
+			done
+		else
+			for _g in "$@"; do
+				_capture_game_preview "$_g"
+			done
+		fi
 		;;
 	batch)
 		if [ -z "${2:-}" ]; then
