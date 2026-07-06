@@ -27,6 +27,7 @@ GAMES_BATCH_MAX_MB="${GAMES_BATCH_MAX_MB:-150}"
 
 RSYNC_OPTS="-rvz --no-times --omit-dir-times --no-perms --no-owner --no-group"
 _PLAN_DIR=""
+_BATCH_TOTAL=0
 
 _cleanup() {
 	if [ -n "$_PLAN_DIR" ] && [ -d "$_PLAN_DIR" ]; then
@@ -87,6 +88,9 @@ _deploy_one_game() {
 		echo "==> 部署游戏: ${_game}"
 	fi
 
+	# Generate preview.webp into the source tree before staging copy so rsync includes it.
+	_capture_game_preview "$_game"
+
 	_staging="$(mktemp -d 2>/dev/null || echo "/tmp/blog-game-staging-$$-${_game}")"
 	if [ "${GAMES_SKIP_EXPAND:-}" = "true" ]; then
 		echo "---- 准备（复制，跳过解压；依赖 nginx gzip 头）"
@@ -98,7 +102,6 @@ _deploy_one_game() {
 		_expand_gzip_in_tree "$_staging"
 	fi
 	echo "---- rsync -> ${DEPLOY_PATH}/games/${_game}/"
-	_capture_game_preview "$_game"
 	# shellcheck disable=SC2086
 	rsync $RSYNC_OPTS "$_staging/" "$dest"
 	rm -rf "$_staging"
@@ -119,6 +122,9 @@ _capture_game_preview() {
 }
 
 _build_batch_plan() {
+	if [ -n "$_PLAN_DIR" ] && [ -d "$_PLAN_DIR" ]; then
+		rm -rf "$_PLAN_DIR"
+	fi
 	_plan_dir=$(mktemp -d 2>/dev/null || echo "/tmp/blog-games-plan-$$")
 	_PLAN_DIR="$_plan_dir"
 	_batch=1
@@ -134,14 +140,14 @@ _build_batch_plan() {
 		_batch_mb=$((_batch_mb + _mb))
 	done
 
-	echo "$_batch"
+	_BATCH_TOTAL=$_batch
 }
 
 _print_plan() {
-	_total_batches=$(_build_batch_plan)
-	echo "共 $(_list_games | wc -w | tr -d ' ') 个游戏，动态分为 ${_total_batches} 批（每批约 ≤ ${GAMES_BATCH_MAX_MB} MB）:"
+	_build_batch_plan
+	echo "共 $(_list_games | wc -w | tr -d ' ') 个游戏，动态分为 ${_BATCH_TOTAL} 批（每批约 ≤ ${GAMES_BATCH_MAX_MB} MB）:"
 	_b=1
-	while [ "$_b" -le "$_total_batches" ]; do
+	while [ "$_b" -le "$_BATCH_TOTAL" ]; do
 		_games=$(tr '\n' ' ' < "${_PLAN_DIR}/batch-${_b}" | sed 's/ $//')
 		_mb=0
 		for _g in $_games; do
@@ -154,10 +160,12 @@ _print_plan() {
 
 _batch_count() {
 	_build_batch_plan
+	echo "$_BATCH_TOTAL"
 }
 
 _batch_matrix_json() {
-	_total=$(_batch_count)
+	_build_batch_plan
+	_total=$_BATCH_TOTAL
 	_out=""
 	_i=1
 	while [ "$_i" -le "$_total" ]; do
@@ -170,7 +178,8 @@ _batch_matrix_json() {
 
 _deploy_batch() {
 	_n="$1"
-	_total_batches=$(_build_batch_plan)
+	_build_batch_plan
+	_total_batches=$_BATCH_TOTAL
 	if [ "$_n" -lt 1 ] || [ "$_n" -gt "$_total_batches" ]; then
 		echo "跳过无效批次 ${_n}（当前共 ${_total_batches} 批）"
 		return 0

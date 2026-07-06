@@ -1,0 +1,7 @@
+[Unit]
+Description=Alert on certbot renewal failure
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/certbot_renew_alert.sh
