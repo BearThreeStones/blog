@@ -110,7 +110,6 @@ textarea,
 
 // Force Unity-strict zero radius only for the structural chrome where it matters
 .vp-navbar,
-.vp-sidebar,
 .vp-footer,
 .vp-toggle-navbar-button,
 .vp-toggle-sidebar-button {
@@ -620,13 +619,33 @@ html.unity-editor-active ::selection {
 }
 
 /* ========================================
- * Sidebar Styles - Unity Hierarchy Base 2
+ * Sidebar Styles — frosted glass panel
  * ======================================== */
 
 .vp-sidebar {
-  background: var(--vp-c-bg-alt) !important;
-  border-right: 1px solid var(--vp-c-border);
-  box-shadow: none;
+  --sidebar-frost-tint: color-mix(in srgb, var(--vp-c-bg-alt) 68%, transparent);
+
+  top: calc(#{$navbar-height} + 0.5rem) !important;
+  bottom: 0.5rem !important;
+  inset-inline-start: 0.5rem !important;
+  height: auto !important;
+  border-radius: var(--radius-overlay) !important;
+  background: transparent !important;
+  border: 1px solid var(--vp-c-border-soft) !important;
+  box-shadow: var(--shadow-sm) !important;
+  -webkit-backdrop-filter: saturate(160%) blur(96px) !important;
+  backdrop-filter: saturate(160%) blur(96px) !important;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--sidebar-frost-tint);
+    pointer-events: none;
+  }
 
   .vp-sidebar-item {
     font-size: 0.875rem;
@@ -650,6 +669,20 @@ html.unity-editor-active ::selection {
         font-weight: 600;
       }
     }
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .vp-sidebar {
+    --sidebar-frost-tint: color-mix(in srgb, var(--vp-c-bg-alt) 92%, transparent);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .vp-sidebar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    --sidebar-frost-tint: var(--vp-c-bg-alt);
   }
 }
 
@@ -2860,10 +2893,8 @@ html[data-theme='dark'] {
 }
 
 // Apply View Group styling to existing VuePress containers
-// Sidebar acts as a View Group panel
+// Sidebar acts as a View Group panel (radius/frost set above)
 .vp-sidebar {
-  border-radius: 0 !important; // Sidebar is flush, no panel radius
-
   .vp-sidebar-group {
     border-bottom: 1px solid var(--vp-c-border-soft);
 
@@ -3787,8 +3818,217 @@ html[data-theme='dark'] {
   }
 }
 
+/* ========================================
+ * Article cover — Blender Studio frosted glass
+ * Ref: studio.blender.org .hero-blog .hero-content-inner
+ * ======================================== */
+
+.vp-page:has(.page-cover) {
+  --page-cover-height: clamp(16rem, 44vh, 28rem);
+  --page-frost-overlap: 5.5rem;
+  --page-frost-radius: var(--radius-overlay, 1rem);
+  --page-frost-tint: color-mix(in srgb, var(--vp-c-bg) 68%, transparent);
+
+  .page-cover {
+    width: 100vw;
+    max-width: none;
+    margin-inline: calc(50% - 50vw);
+
+    img {
+      display: block;
+      width: 100%;
+      height: var(--page-cover-height);
+      max-height: none;
+      object-fit: cover;
+      border-radius: 0;
+    }
+  }
+
+  // Frosted panel starts at breadcrumb (or title when breadcrumb is off)
+  .vp-breadcrumb:not(.disable),
+  .vp-breadcrumb.disable + .vp-page-title {
+    margin-top: calc(var(--page-frost-overlap) * -1);
+  }
+
+  .vp-breadcrumb:not(.disable),
+  .vp-page-title {
+    position: relative;
+    z-index: 1;
+    max-width: var(--content-width, 780px);
+    margin-inline: auto;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-backdrop-filter: blur(96px);
+    backdrop-filter: blur(96px);
+    background: transparent;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: var(--page-frost-tint);
+      pointer-events: none;
+    }
+  }
+
+  .vp-breadcrumb:not(.disable) {
+    padding: 2.75rem 1.25rem 0.35rem;
+    border-top-left-radius: var(--page-frost-radius);
+    border-top-right-radius: var(--page-frost-radius);
+
+    &::before {
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+    }
+  }
+
+  .vp-breadcrumb:not(.disable) + .vp-page-title {
+    padding: 0.35rem 1.25rem 1.75rem;
+
+    &::before {
+      // Fade frosted tint into solid page bg (Blender hero-content-inner gradient)
+      background: linear-gradient(
+        to bottom,
+        var(--page-frost-tint) 0%,
+        var(--vp-c-bg) 100%
+      );
+    }
+  }
+
+  .vp-breadcrumb.disable + .vp-page-title {
+    padding: 2.75rem 1.25rem 1.75rem;
+    border-top-left-radius: var(--page-frost-radius);
+    border-top-right-radius: var(--page-frost-radius);
+
+    &::before {
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+      background: linear-gradient(
+        to bottom,
+        var(--page-frost-tint) 0%,
+        var(--vp-c-bg) 100%
+      );
+    }
+  }
+
+  .vp-page-title hr {
+    border-color: color-mix(in srgb, var(--vp-c-border) 55%, transparent);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .vp-page:has(.page-cover) {
+    --page-frost-tint: color-mix(in srgb, var(--vp-c-bg) 92%, transparent);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .vp-page:has(.page-cover) {
+    .vp-breadcrumb:not(.disable),
+    .vp-page-title {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    --page-frost-tint: var(--vp-c-bg);
+  }
+}
+
+@media (max-width: 719px) {
+  .vp-page:has(.page-cover) {
+    --page-frost-overlap: 3.5rem;
+    --page-frost-radius: 0;
+
+    .vp-breadcrumb:not(.disable),
+    .vp-breadcrumb.disable + .vp-page-title,
+    .vp-breadcrumb:not(.disable) + .vp-page-title {
+      padding-inline: 1rem;
+    }
+  }
+}
+
 @import 'unity-tokens';
 @import 'unity-editor';
 @import 'unity-editor-components';
 @import 'unity-editor-ui-groups';
 @import 'responsive';
+
+/* ========================================
+ * Sidebar chrome — rounded frosted glass (final override)
+ * ======================================== */
+
+aside#sidebar.vp-sidebar {
+  --sidebar-frost-tint: color-mix(in srgb, var(--vp-c-bg-alt) 55%, transparent);
+
+  top: calc(#{$navbar-height} + 0.75rem) !important;
+  right: auto !important;
+  bottom: 0.75rem !important;
+  left: 0.75rem !important;
+  inset-inline-start: 0.75rem !important;
+  inset-inline-end: auto !important;
+  height: auto !important;
+  width: calc(var(--sidebar-width, 15rem) - 0.5rem) !important;
+  border-radius: 20px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--vp-c-border) 55%, transparent) !important;
+  box-shadow: var(--shadow-md) !important;
+  -webkit-backdrop-filter: saturate(160%) blur(96px) !important;
+  backdrop-filter: saturate(160%) blur(96px) !important;
+  isolation: isolate;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--sidebar-frost-tint);
+    pointer-events: none;
+  }
+
+  // Let nested category cards pick up a bit of the frost
+  > .vp-sidebar-links > .vp-sidebar-group {
+    background: color-mix(in srgb, var(--vp-c-bg) 72%, transparent) !important;
+  }
+
+  > .vp-sidebar-links > .vp-sidebar-item > .vp-sidebar-link {
+    background: color-mix(in srgb, var(--vp-c-brand) 6%, transparent) !important;
+  }
+}
+
+html[data-theme='dark'] aside#sidebar.vp-sidebar {
+  --sidebar-frost-tint: color-mix(in srgb, var(--vp-c-bg-alt) 58%, transparent);
+
+  > .vp-sidebar-links > .vp-sidebar-group {
+    background: color-mix(in srgb, var(--vp-c-bg-elv) 78%, transparent) !important;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  aside#sidebar.vp-sidebar {
+    --sidebar-frost-tint: color-mix(in srgb, var(--vp-c-bg-alt) 92%, transparent);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  aside#sidebar.vp-sidebar {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    --sidebar-frost-tint: var(--vp-c-bg-alt);
+  }
+}
+
+@media (max-width: 960px) {
+  aside#sidebar.vp-sidebar {
+    top: #{$navbar-height} !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    inset-inline-start: 0 !important;
+    width: var(--sidebar-width, 15rem) !important;
+    border-radius: 0 16px 16px 0 !important;
+  }
+}
